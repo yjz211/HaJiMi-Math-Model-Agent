@@ -400,12 +400,12 @@ function isWithin(path: string, root: string): boolean {
 }
 
 export function windowsPathToWsl(path: string): string {
-  const normalized = resolve(path);
-  const driveMatch = /^([A-Za-z]):[\\/](.*)$/.exec(normalized);
+  if (path.startsWith("/")) return path;
+  const driveMatch = /^([A-Za-z]):[\\/](.*)$/.exec(path);
   if (driveMatch) {
     return `/mnt/${driveMatch[1].toLowerCase()}/${driveMatch[2].replaceAll("\\", "/")}`;
   }
-  const uncMatch = /^\\\\(?:wsl\$|wsl\.localhost)\\[^\\]+\\?(.*)$/i.exec(normalized);
+  const uncMatch = /^\\\\(?:wsl\$|wsl\.localhost)\\[^\\]+\\?(.*)$/i.exec(path);
   if (uncMatch) return `/${uncMatch[1].replaceAll("\\", "/")}`.replace(/\/$/, "") || "/";
   throw new Error(`HaJiMi WSL backend does not support this workspace path: ${path}`);
 }
