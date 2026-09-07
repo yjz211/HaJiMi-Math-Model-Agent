@@ -242,6 +242,7 @@ export interface HajimiInteraction {
   runtimeFailure?: { message: string; recordedAt: string };
   reviewInput?: { id: string; text: string; stage: HajimiStageId; gateId?: string };
   mode: "unselected" | "automatic" | "supervised";
+  executionPolicy?: "unselected" | "strict" | "lean";
   stageStartedAt: string;
   pending: { kind: "mode" | "stage" | "final" | "gate"; stage: HajimiStageId; reportPath?: string; gateId?: string } | null;
   reports: Array<{ stage: HajimiStageId; path: string; summary: string; createdAt: string }>;

@@ -37,6 +37,7 @@ export interface HajimiValidationSummary {
   strict: boolean;
   passed: boolean;
   summary: { passed: number; failed: number };
+  checks?: Array<{ name: string; passed: boolean; severity?: string; detail?: string }>;
 }
 
 interface LegacyStateV1 {

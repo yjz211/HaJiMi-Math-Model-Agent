@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-export const ORIGINAL_HELPER_SHA256 = '63ad0791b7262e562a28e1500ba8f15005ca66e815f6230df1951197beb89a25';
+export const ORIGINAL_HELPER_SHA256 = '8399c469450a2b8c33c9ce70b19c04db93bf5c3b3c94f00f83423670e3d713d1';
 
 function replaceOnce(text, before, after) {
   if (text.split(before).length !== 2) throw new Error(`Legacy plot source changed: ${before}`);

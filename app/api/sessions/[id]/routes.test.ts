@@ -1,7 +1,7 @@
 import test, { after, before } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, sep } from "node:path";
 import { SessionManager } from "@earendil-works/pi-coding-agent";
@@ -12,6 +12,11 @@ import { GET as exportSession } from "./export/route.ts";
 
 const originalAgentDir = process.env.PI_CODING_AGENT_DIR;
 const testAgentDir = mkdtempSync(join(tmpdir(), "pi-routes-agent-"));
+
+function canonicalPath(path: string): string {
+  const resolved = realpathSync.native(path);
+  return process.platform === "win32" ? resolved.toLowerCase() : resolved;
+}
 
 before(() => {
   // SessionManager.forkFrom() uses the default agent directory when cloning.
@@ -224,15 +229,15 @@ test("POST /api/sessions/[id]/clone creates a session in a Git worktree", async 
     const data = await res.json();
     assert.equal(data.success, true);
     assert.equal(data.workspace.mode, "worktree");
-    assert.equal(data.workspace.cwd, resolve(targetCwd));
+    assert.equal(canonicalPath(data.workspace.cwd), canonicalPath(targetCwd));
     assert.equal(data.workspace.branchName, branchName);
     clonedSessionFile = data.sessionFile;
     worktreeCreated = true;
 
     const clonedSm = SessionManager.open(data.sessionFile, testAgentDir);
     assert.equal(clonedSm.getSessionName(), "Worktree Clone");
-    assert.equal(clonedSm.getCwd(), resolve(targetCwd));
-    assert.equal(resolve(runGit(targetCwd, ["rev-parse", "--show-toplevel"])), resolve(targetCwd));
+    assert.equal(canonicalPath(clonedSm.getCwd()), canonicalPath(targetCwd));
+    assert.equal(canonicalPath(runGit(targetCwd, ["rev-parse", "--show-toplevel"])), canonicalPath(targetCwd));
     assert.equal(runGit(targetCwd, ["branch", "--show-current"]), branchName);
   } finally {
     if (clonedSessionFile) rmSync(clonedSessionFile, { force: true });

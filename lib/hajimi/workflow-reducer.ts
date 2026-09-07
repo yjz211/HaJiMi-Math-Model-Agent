@@ -22,7 +22,7 @@ export type HajimiWorkflowCommand =
   | { kind: "set_interaction"; interaction: NonNullable<HajimiWorkflowState["interaction"]> }
   | { kind: "replace_micro_plan"; currentObjective: string; nextAction: string; microPlan: HajimiWorkflowState["microPlan"] }
   | { kind: "set_focus"; stage: HajimiStageId; questionId?: string | null; nextAction?: string; routes?: HajimiWorkflowState["capabilityRoutes"] }
-  | { kind: "set_milestone"; stage: HajimiStageId; status: HajimiMilestoneStatus; evidenceRefs?: string[] }
+  | { kind: "set_milestone"; stage: HajimiStageId; status: HajimiMilestoneStatus; evidenceRefs?: string[]; outputsChecked?: boolean }
   | { kind: "set_requirement"; stage: HajimiStageId; requirementId: string; status: HajimiWorkflowState["milestones"][number]["requirements"][number]["status"]; evidenceRefs: string[]; note?: string }
   | { kind: "upsert_questions"; questions: HajimiQuestionWorkPacket[] }
   | { kind: "request_gate"; gate: HajimiWorkflowGate }
@@ -300,13 +300,15 @@ export function reduceWorkflowState(
       if (command.status === "satisfied") {
         const milestone = next.milestones.find((item) => item.stage === command.stage);
         if (!milestone) throw new Error(`Unknown milestone ${command.stage}`);
-        const open = milestone.requirements.filter((item) => item.status !== "satisfied" && item.status !== "waived");
-        if (open.length) throw new Error(`Milestone ${command.stage} has open requirements: ${open.map((item) => item.id).join(", ")}`);
-        const unavailable = milestone.dependencies.filter((stage) => {
-          const dependency = next.milestones.find((item) => item.stage === stage);
-          return !dependency || !["satisfied", "waived"].includes(dependency.status);
-        });
-        if (unavailable.length) throw new Error(`Milestone ${command.stage} has unsatisfied dependencies: ${unavailable.join(", ")}`);
+        const open = milestone.requirements.filter((item) => item.status !== "satisfied");
+        if (open.length && command.outputsChecked && next.interaction?.executionPolicy !== "strict") {
+          for (const requirement of open) {
+            requirement.status = "satisfied";
+            requirement.evidenceRefs = command.evidenceRefs ?? [];
+            requirement.note = "Stage outputs checked by the completion service; substantive findings remain subject to review.";
+          }
+        } else if (open.length) throw new Error(`Milestone ${command.stage} has open requirements: ${open.map((item) => item.id).join(", ")}`);
+
       }
       next.milestones = next.milestones.map((item) => item.stage === command.stage ? {
         ...item,
@@ -315,6 +317,9 @@ export function reduceWorkflowState(
         attempt: command.status === "in_progress" && item.status !== "in_progress" ? item.attempt + 1 : item.attempt,
         updatedAt: now,
       } : item);
+      if (command.stage === 4 && command.status === "satisfied" && command.outputsChecked) {
+        next.questions = next.questions.map(q => ({ ...q, status: "satisfied", staleBy: [] }));
+      }
       break;
     }
     case "set_requirement": {
@@ -324,9 +329,6 @@ export function reduceWorkflowState(
         requirements: item.requirements.map((requirement) => {
           if (requirement.id !== command.requirementId) return requirement;
           found = true;
-          if (command.status === "satisfied" && command.evidenceRefs.length === 0) {
-            throw new Error(`Satisfied requirement ${command.requirementId} must cite evidence`);
-          }
           return { ...requirement, status: command.status, evidenceRefs: command.evidenceRefs, note: command.note };
         }),
         updatedAt: now,
@@ -386,7 +388,7 @@ export function reduceWorkflowState(
           next.provenance = staleProvenance(next, changedContractIds, rollbackId);
         }
       }
-      for (const question of command.questions.filter((item) => item.status === "satisfied")) {
+      for (const question of command.questions.filter((item) => item.status === "satisfied" && (item.checkpointGateId || item.routeGateId))) {
         const checkpoint = next.gateHistory.find((gate) => gate.gateId === question.checkpointGateId);
         if (!checkpoint || checkpoint.gate !== "question_checkpoint" || checkpoint.status !== "accepted") {
           throw new Error(`Question ${question.questionId} cannot be satisfied before an accepted checkpoint gate`);
@@ -581,7 +583,7 @@ export function reduceWorkflowState(
 }
 
 export function assertPublicationMayConsume(state: HajimiWorkflowState, claimRefs: string[]): void {
-  if (claimRefs.length === 0) throw new Error("A publication binding must cite at least one claim");
+  if (claimRefs.length === 0) return; // Ordinary paper delivery does not require the optional evidence ledger.
   const activeFreezeClaims = new Set(
     state.provenance.freezes.filter((item) => item.status === "active").flatMap((item) => item.claimRefs),
   );

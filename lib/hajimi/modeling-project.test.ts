@@ -3,7 +3,14 @@ import test from "node:test";
 import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createModelingDirectory } from "./modeling-project.ts";
+import { createModelingDirectory, modelingProjectsRoot, projectLocationNotice } from "./modeling-project.ts";
+
+test("stage zero notice identifies the actual folder and keeps old project locations truthful", () => {
+  const current = join(modelingProjectsRoot(), "数学建模1");
+  assert.ok(projectLocationNotice(current).includes(current));
+  assert.match(projectLocationNotice(current), /一一对应/);
+  assert.match(projectLocationNotice(join(tmpdir(), "existing-task")), /原位置/);
+});
 import { ensureHajimiTask, freezeHajimiInputs } from "./task-state.ts";
 import { importProblemFiles } from "./input-upload.ts";
 

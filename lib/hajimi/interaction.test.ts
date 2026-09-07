@@ -6,7 +6,7 @@ import test from "node:test";
 
 import { captureStageFiles } from "./stage-files.ts";
 import { finishStage, handleReviewInput, interactionFor, saveInteraction, reviewAssent, recordReviewInput, acceptInterpretedReview } from "./interaction.ts";
-import { ensureHajimiTask, readHajimiTask } from "./task-state.ts";
+import { ensureHajimiTask, readHajimiTask, freezeHajimiInputs } from "./task-state.ts";
 import { setMilestone, setRequirement, setWorkflowFocus } from "./workflow-service.ts";
 import type { HajimiStageId, HajimiWorkflowState } from "./workflow-types.ts";
 
@@ -53,10 +53,15 @@ async function initializeInteraction(cwd: string): Promise<HajimiWorkflowState> 
 
 async function satisfyCurrent(cwd: string, state: HajimiWorkflowState): Promise<HajimiWorkflowState> {
   const stage = state.focus.stage;
+  if (stage === 0) {
+    writeFileSync(join(cwd, "input/problem.txt"), "Compare two methods.");
+    await freezeHajimiInputs(cwd);
+  }
   for (const requirement of state.milestones[stage].requirements) {
     state = await setRequirement(cwd, state.revision, stage, requirement.id, "satisfied", [`stage-${stage}-evidence`]);
   }
-  return setMilestone(cwd, state.revision, stage, "satisfied", [`stage-${stage}-evidence`]);
+  writeFileSync(join(cwd, "work/stage-result.md"), "Problem facts, assumptions and outputs.");
+  return setMilestone(cwd, state.revision, stage, "satisfied", ["work/stage-result.md"]);
 }
 
 test("stage 0 pauses for an explicit mode and automatic mode advances without later stage pauses", async () => {
@@ -76,6 +81,7 @@ test("stage 0 pauses for an explicit mode and automatic mode advances without la
     assert.equal(await handleReviewInput(cwd, "全自动并帮我继续"), null, "a longer sentence must not silently authorize mode selection");
     assert.equal((await readHajimiTask(cwd))!.state.interaction?.pending?.kind, "mode");
     assert.match((await handleReviewInput(cwd, "全自动")) ?? "", /已选择全自动/);
+    await handleReviewInput(cwd, "清爽快速运行型");
     state = (await readHajimiTask(cwd))!.state;
     state = await setWorkflowFocus(cwd, state.revision, 1, null);
     state = await satisfyCurrent(cwd, state);
@@ -95,6 +101,7 @@ test("supervised mode hard-stops after a stage report and discussion does not au
     state = await satisfyCurrent(cwd, state);
     state = (await finishStage(cwd, state, "stage zero")).state;
     await handleReviewInput(cwd, "半自动");
+    await handleReviewInput(cwd, "清爽快速运行型");
     state = (await readHajimiTask(cwd))!.state;
     state = await setWorkflowFocus(cwd, state.revision, 1, null);
     state = await satisfyCurrent(cwd, state);
@@ -134,6 +141,7 @@ test("next-stage suggestions require stage acceptance and survive a state reload
     state = await satisfyCurrent(cwd, state);
     state = (await finishStage(cwd, state)).state;
     await handleReviewInput(cwd, "半自动");
+    await handleReviewInput(cwd, "清爽快速运行型");
     state = (await readHajimiTask(cwd))!.state;
     state = await setWorkflowFocus(cwd, state.revision, 1, null);
     state = await satisfyCurrent(cwd, state);
@@ -149,13 +157,14 @@ test("next-stage suggestions require stage acceptance and survive a state reload
   } finally { rmSync(cwd, { recursive: true, force: true }); }
 });
 
-test("stage seven asks for plotting style in both modes and retains the selection", async () => {
+test("stage seven keeps supervised style feedback and does not pause automatic work", async () => {
  const cwd=mkdtempSync(join(tmpdir(),"hajimi-style-handoff-"));
  try {
   for(const mode of ["automatic","supervised"] as const){
    let state=await initializeInteraction(cwd);
    state={...state,focus:{...state.focus,stage:7},interaction:{...interactionFor(state),mode}};
    const finished=await finishStage(cwd,state,"evidence ready");
+   if (mode === "automatic") { assert.equal(finished.state.interaction?.pending, null); continue; }
    assert.equal(finished.state.interaction?.pending?.stage,7);
    assert.match(finished.report.text,/鲜艳舒适型/);assert.match(finished.report.text,/稳重科研型/);
    await handleReviewInput(cwd,"继续，鲜艳舒适型");
@@ -164,4 +173,38 @@ test("stage seven asks for plotting style in both modes and retains the selectio
    assert.match(after.interaction?.nextStageDirection?.text??"",/鲜艳舒适型/);
   }
  }finally{rmSync(cwd,{recursive:true,force:true});}
+});
+
+
+test("onboarding asks independent questions and persists strict policy", async () => {
+  const cwd = mkdtempSync(join(tmpdir(), "hajimi-policy-choice-"));
+  try {
+    let state = await initializeInteraction(cwd);
+    state = await satisfyCurrent(cwd, state);
+    const finished = await finishStage(cwd, state);
+    assert.match(finished.report.text, /第一题/);
+    assert.doesNotMatch(finished.report.text, /第二题|全自动＋/);
+    assert.equal(await handleReviewInput(cwd, "全自动＋清爽快速运行型"), null);
+    const second = await handleReviewInput(cwd, "全自动");
+    assert.match(second!, /第二题/);
+    assert.match(second!, /1.5倍/);
+    state = (await readHajimiTask(cwd))!.state;
+    await assert.rejects(setWorkflowFocus(cwd, state.revision, 1, null), /pending/);
+    await handleReviewInput(cwd, "严格清单门禁型");
+    state = (await readHajimiTask(cwd))!.state;
+    assert.equal(state.interaction?.mode, "automatic");
+    assert.equal(state.interaction?.executionPolicy, "strict");
+    assert.equal(state.interaction?.pending, null);
+    state = (await finishStage(cwd, state, "Materials already checked")).state;
+    assert.equal(state.interaction?.pending, null, "repeating the stage zero report must not ask mode choices again");
+    state = await setWorkflowFocus(cwd, state.revision, 1, null);
+    await assert.rejects(setMilestone(cwd, state.revision, 1, "satisfied", ["work/stage-result.md"]), /Strict checklist/);
+    await handleReviewInput(cwd, "半自动");
+    state = (await readHajimiTask(cwd))!.state;
+    assert.equal(state.interaction?.executionPolicy, "strict");
+    await handleReviewInput(cwd, "清爽快速运行型");
+    state = (await readHajimiTask(cwd))!.state;
+    assert.equal(state.interaction?.mode, "supervised");
+    await setMilestone(cwd, state.revision, 1, "satisfied", ["work/stage-result.md"]);
+  } finally { rmSync(cwd, { recursive: true, force: true }); }
 });

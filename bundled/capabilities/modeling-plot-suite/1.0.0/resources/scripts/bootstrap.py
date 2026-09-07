@@ -77,7 +77,7 @@ def main():
     # HaJiMi: refresh only the identified pristine helper, preserving custom files.
     for relative in ("_utils/plot_utils.py", "skills/shared-scripts/plot_utils.py"):
         existing = workspace / relative
-        if existing.is_file() and sha256(existing) == "63ad0791b7262e562a28e1500ba8f15005ca66e815f6230df1951197beb89a25":
+        if existing.is_file() and sha256(existing) == "8399c469450a2b8c33c9ce70b19c04db93bf5c3b3c94f00f83423670e3d713d1":
             shutil.copy2(assets / "shared-scripts/plot_utils.py", existing)
     profile = detect_profile(workspace) if args.profile == "auto" else args.profile
 

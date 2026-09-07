@@ -1,4 +1,10 @@
 export const en = {
+  "hajimi.projectLocation": "Your project folder is ready at: {root}\nBy default this is projects inside HaJiMi on your desktop (a custom location takes precedence). Its project folders correspond to the projects on the left. Current project: {cwd}\nOpen this folder to find uploaded materials, figures and generated papers.",
+  "hajimi.existingProjectLocation": "Current project folder: {cwd}\nThis project remains at its existing location. The files shown on the left are stored here, including materials, figures and generated papers.",
+  "hajimi.paperFullPath": "Paper PDF full path",
+  "hajimi.executionChoice": "Materials are ready. Question 1: choose execution mode: automatic (continue through stages) or supervised (review each stage). Both allow stopping and steering and pause for paper acceptance. Reply 全自动 or 半自动.",
+  "hajimi.workflowChoices": "Question 2: choose workflow policy:\n\n- Lean fast: fewer registrations, snapshots and gates; more model autonomy.\n- Strict checklist: explicit records, evidence snapshots and delivery audits; more process and Tokens.\n\nBoth use the same completion checks and preserve stages 0–9, necessary experiments, method comparisons, independent verification, figures and paper requirements. Strong models are expected to produce similar final quality; weaker models may benefit from strict checklists. Token usage may differ substantially: strict may cost about 1.5× lean. This is an unmeasured estimate; actual results depend on the problem and model.\n\nReply 清爽快速运行型 or 严格清单门禁型.",
+  "hajimi.choiceSaved": "Selected {choice}.",
   "language.label": "Language",
   "language.system": "System default",
   "language.english": "English",
@@ -72,7 +78,7 @@ export const en = {
   "hajimi.blocked": "Blocked",
   "hajimi.waived": "Waived",
   "hajimi.effort_auto": "Auto",
-  "hajimi.automaticLocked": "Automatic mode is completing stages 1–8. Review opens after delivery; recovery opens if the runtime fails.",
+  "hajimi.automaticLocked": "Automatic mode is running. You can stop, steer, or switch modes at any time.",
   "hajimi.effort_off": "Off",
   "hajimi.effort_minimal": "Minimal",
   "hajimi.effort_low": "Low",
@@ -463,6 +469,12 @@ export type TranslationKey = keyof typeof en;
 export type TranslationValues = Record<string, string | number>;
 
 export const zhCN: Record<TranslationKey, string> = {
+  "hajimi.projectLocation": "项目文件夹已准备好：{root}\n默认位于桌面的 HaJiMi 文件夹下的 projects 中（设置了自定义位置时以实际路径为准）。里面的项目文件夹与左侧项目一一对应。当前项目完整路径：{cwd}\n打开这个文件夹，就能找到上传的材料、图表和生成的论文。",
+  "hajimi.existingProjectLocation": "当前项目文件夹：{cwd}\n这个项目仍保留在原位置，左侧显示的项目文件就存放在这里，包括材料、图表和生成的论文。",
+  "hajimi.paperFullPath": "论文 PDF 完整路径",
+  "hajimi.executionChoice": "材料已核对。第一题：请选择执行方式：全自动（连续推进）／半自动（每阶段等待审查）。两者都可随时停止或纠偏，并在论文交付后等待人工验收。请回复「全自动」或「半自动」。",
+  "hajimi.workflowChoices": "第二题：请选择工作策略：\n\n- 清爽快速运行型：减少登记、冻结和门禁，让模型自主组织工作。\n- 严格清单门禁型：逐项登记、证据冻结和交付审计，过程更细，Token 消耗更高。\n\n两者采用相同的完成检查，都保留0–9阶段、必要实验、多方法比较、独立验证、图表和论文要求。强模型的最终解题效果预计基本相近；弱模型可能更适合严格清单。Token 差异可能很大，严格型可暂按清爽型的约1.5倍估算；这是待实测的预期，实际取决于题目与模型。\n\n请回复「清爽快速运行型」或「严格清单门禁型」。",
+  "hajimi.choiceSaved": "已选择{choice}。",
   "language.label": "语言",
   "language.system": "跟随系统",
   "language.english": "English",
@@ -536,7 +548,7 @@ export const zhCN: Record<TranslationKey, string> = {
   "hajimi.blocked": "受阻",
   "hajimi.waived": "已豁免",
   "hajimi.effort_auto": "自动",
-  "hajimi.automaticLocked": "全自动正在连续执行阶段 1—8。论文交付后开放验收，运行失败时开放恢复。",
+  "hajimi.automaticLocked": "全自动正在运行，可随时停止、补充指令或切换模式。",
   "hajimi.effort_off": "关闭",
   "hajimi.effort_minimal": "极低",
   "hajimi.effort_low": "低",

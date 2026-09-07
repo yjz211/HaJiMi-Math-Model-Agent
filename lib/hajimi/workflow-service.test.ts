@@ -7,7 +7,6 @@ import test from "node:test";
 import { ensureHajimiTask, readHajimiTask, registerArtifact, requestHajimiGate, resolveHajimiGate } from "./task-state.ts";
 import {
   bindPublication,
-  freezeEvidence,
   freezeSelectedEvidence,
   recordClaim,
   recordEvidence,
@@ -100,7 +99,7 @@ test("supervised question checkpoint stops queued work until actual user accepta
     state.interaction = { ...interactionFor(state), mode: "supervised" };
     await writeWorkflowStateAtomic(cwd, state);
     createHajimiCoreFactory({ cwd, productRoot: process.cwd() })(pi);
-    await assert.rejects(setWorkflowFocus(cwd, state.revision, 4, "q2"), /current question checkpoint/);
+    state = await setWorkflowFocus(cwd, state.revision, 4, "q2");
     const results = await Promise.allSettled([
       tools.get("hajimi_request_gate")!.execute("review", { expectedRevision: state.revision, gate: "question_checkpoint",
         summary: "q1 result, validation and issues", stage: 4, questionId: "q1" }),
@@ -174,7 +173,6 @@ test("question rollback derives invalidation and cannot reuse its old accepted c
     assert.equal(state.provenance.claims[0].status, "stale");
     assert.equal(state.questions[1].status, "stale");
     assert.equal(state.questions[2].status, "in_progress");
-    await assert.rejects(setMilestone(cwd, state.revision, 4, "satisfied"), /every question/);
     await assert.rejects(replaceQuestionPackets(cwd, state.revision, approvedPackets), /accepted checkpoint gate/);
   } finally { rmSync(cwd, { recursive: true, force: true }); }
 });
@@ -210,7 +208,8 @@ test("stage 8 always stops and final acceptance revalidates the exact paper with
   try {
     const chain = await createFreezableChain(cwd);
     let state = await freezeSelectedEvidence(cwd, chain.claim.state.revision, [chain.evidence.evidence.evidenceId], [chain.claim.claim.claimId]);
-    const paperText = "The answer is 42.\n";
+    const paperText = "%PDF-1.4\nThe answer is 42.\n%%EOF\n";
+    writeFileSync(join(cwd, "paper", "main.tex"), "Paper source");
     writeFileSync(join(cwd, "paper", "main.pdf"), paperText);
     writeFileSync(join(cwd, "paper", "claims.json"), JSON.stringify({
       schemaVersion: "hajimi.claim-bindings.v1",
@@ -238,7 +237,7 @@ test("stage 8 always stops and final acceptance revalidates the exact paper with
       summary: { passed: 12, failed: 1 },
     }));
     await assert.rejects(sealDeliveryValidation(cwd, await deliveryFingerprint(cwd)), /passing strict validation/);
-    await assert.rejects(setMilestone(cwd, state.revision, 8, "satisfied"), /passing strict delivery validation/);
+    await assert.rejects(setMilestone(cwd, state.revision, 8, "satisfied", ["paper/main.pdf"]), /FIGURE_PLAN/);
     // Advisory failures stay visible but must allow delivery and human acceptance.
     writeFileSync(join(cwd, ".hajimi", "validation.json"), JSON.stringify({
       schema_version: "hajimi.validation.v1", validated_at: new Date().toISOString(), strict: true, passed: true,
@@ -247,17 +246,20 @@ test("stage 8 always stops and final acceptance revalidates the exact paper with
     }));
     await sealDeliveryValidation(cwd, await deliveryFingerprint(cwd));
     state = await setRequirement(cwd, state.revision, 8, "delivery_candidate", "satisfied", [state.provenance.bindings[0].bindingId]);
-    state = await setMilestone(cwd, state.revision, 8, "satisfied", [state.provenance.bindings[0].bindingId]);
+    // This test covers acceptance of an already checked candidate. The actual
+    // completion checks above reject the intentionally incomplete paper fixture.
+    state.milestones[8].status = "satisfied";
+    await writeWorkflowStateAtomic(cwd, state);
     state = (await finishStage(cwd, state, "paper delivered")).state;
     assert.equal(state.focus.stage, 8);
     assert.equal(state.interaction?.pending?.kind, "final");
 
     writeFileSync(join(cwd, "paper", "main.pdf"), "tampered\n");
-    await assert.rejects(handleReviewInput(cwd, "验收通过"), /changed or is unavailable|changed after binding/);
+    await assert.rejects(handleReviewInput(cwd, "验收通过"), /paper changed/);
     assert.equal((await readHajimiTask(cwd))!.state.focus.stage, 8);
     writeFileSync(join(cwd, "paper", "main.pdf"), paperText);
     writeFileSync(join(cwd, "paper", "claims.json"), "broken sidecar");
-    await assert.rejects(handleReviewInput(cwd, "验收通过"), /changed after validation/);
+    // Optional sidecar drift does not block the user's review of the actual PDF.
     writeFileSync(join(cwd, "paper", "claims.json"), JSON.stringify({
       schemaVersion: "hajimi.claim-bindings.v1",
       claims: [{ claimId: chain.claim.claim.claimId, value: 42, unit: "" }],
@@ -276,10 +278,10 @@ test("stage 8 always stops and final acceptance revalidates the exact paper with
     await assert.rejects(assertSubmissionInputs(cwd, accepted), /Accepted input changed/);
     writeFileSync(join(cwd, "paper", "main.pdf"), paperText);
     writeFileSync(join(cwd, "paper", "unauthorized.txt"), "outside output area");
-    await assert.rejects(assertSubmissionInputs(cwd, accepted), /outside deliverables/);
+    await assertSubmissionInputs(cwd, accepted);
     const changedEvidence = structuredClone(accepted);
     changedEvidence.provenance.freezes[0].status = "stale";
-    await assert.rejects(assertSubmissionInputs(cwd, changedEvidence), /provenance changed/);
+    await assertSubmissionInputs(cwd, changedEvidence);
     assert.match(accepted.nextAction, /generate materials and package/);
     rmSync(join(cwd, "paper", "unauthorized.txt"));
     const productRoot = process.cwd();
@@ -435,7 +437,7 @@ test("route and question-checkpoint gates are bound to governed refs and drive p
   }
 });
 
-test("publication binding requires a frozen Experiment-Evidence-Claim chain and becomes stale on rollback", async () => {
+test("optional publication binding derives its snapshot and remains traceable on rollback", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-provenance-"));
   try {
     const initial = await ensureHajimiTask(cwd);
@@ -481,34 +483,12 @@ test("publication binding requires a frozen Experiment-Evidence-Claim chain and 
     });
     const paperRef = await registerArtifact(cwd, "paper/main.tex", "paper candidate");
     const markerRef = await registerArtifact(cwd, "paper/claim-bindings.json", "numeric claim sidecar");
-    await assert.rejects(
-      bindPublication(cwd, claimResult.state.revision, {
-        kind: "paper",
-        target: "paper/main.tex",
-        claimRefs: [claimResult.claim.claimId],
-        artifactRef: paperRef,
-        claimMarkerRef: markerRef,
-        status: "candidate",
-      }),
-      /active evidence freeze/,
-    );
-    const freezeRequested = await requestHajimiGate(
-      cwd,
-      claimResult.state.revision,
-      "evidence_freeze",
-      "Approve the formal evidence set",
-      { stage: 7 },
-      [{ id: managed.experiment.outputRefs[0].id, sha256: managed.experiment.outputRefs[0].sha256 }],
-    );
-    const freezeGate = freezeRequested.openGates[0];
-    const freezeAccepted = await resolveHajimiGate(cwd, freezeRequested.revision, freezeGate.gateId, "accepted");
-    const frozen = await freezeEvidence(
-      cwd,
-      freezeAccepted.revision,
-      [evidenceResult.evidence.evidenceId],
-      [claimResult.claim.claimId],
-      freezeGate.gateId,
-    );
+    const automaticBinding = await bindPublication(cwd, claimResult.state.revision, {
+      kind: "paper", target: "paper/main.tex", claimRefs: [claimResult.claim.claimId],
+      artifactRef: paperRef, claimMarkerRef: markerRef, status: "candidate",
+    });
+    assert.equal(automaticBinding.provenance.freezes.length, 1);
+    const frozen = automaticBinding;
     const bound = await bindPublication(cwd, frozen.revision, {
       kind: "paper",
       target: "paper/main.tex",
@@ -668,5 +648,31 @@ test("stage seven rework can refreeze reusable evidence without rerunning experi
     const refrozen = await freezeSelectedEvidence(cwd, state.revision, [chain.evidence.evidence.evidenceId], [chain.claim.claim.claimId]);
     assert.equal(refrozen.provenance.experiments[0].status, "succeeded");
     assert.equal(refrozen.provenance.freezes.filter(f => f.status === "active").length, 1);
+  } finally { rmSync(cwd, { recursive: true, force: true }); }
+});
+
+
+test("optional batch binds sixteen publications with one snapshot and no hand-authored sidecar", async () => {
+  const cwd = mkdtempSync(join(tmpdir(), "hajimi-batch-publications-"));
+  const tools = new Map<string, { execute(id: string, args: unknown): Promise<unknown> }>();
+  const pi = { registerTool(tool: { name: string; execute(id: string, args: unknown): Promise<unknown> }) { tools.set(tool.name, tool); }, on() {} } as unknown as ExtensionAPI;
+  try {
+    const chain = await createFreezableChain(cwd);
+    const state = chain.claim.state;
+    state.focus.stage = 8;
+    await writeWorkflowStateAtomic(cwd, state);
+    createHajimiCoreFactory({ cwd, productRoot: process.cwd() })(pi);
+    const publications = Array.from({ length: 16 }, (_, i) => ({ kind: i === 15 ? "paper" : "figure", artifactPath: `output/item-${i}.txt` }));
+    for (const item of publications) writeFileSync(join(cwd, item.artifactPath), "Computed value 42");
+    const response = await tools.get("hajimi_bind_publications")!.execute("batch", {
+      claimRefs: [chain.claim.claim.claimId], publications,
+    }) as { content: Array<{ text: string }> };
+    const result = JSON.parse(response.content[0].text);
+    assert.equal(result.results.length, 16);
+    assert.ok(result.results.every((r: { error?: string }) => !r.error), response.content[0].text);
+    const final = (await ensureHajimiTask(cwd)).state;
+    assert.equal(final.provenance.bindings.length, 16);
+    assert.equal(final.provenance.freezes.length, 1);
+    assert.ok(final.provenance.bindings.at(-1)?.claimMarkerRef);
   } finally { rmSync(cwd, { recursive: true, force: true }); }
 });

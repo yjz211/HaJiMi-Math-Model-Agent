@@ -109,7 +109,7 @@ export async function routeCapabilities(input: {
   const stage = input.stage ?? input.state.focus.stage;
   const maxChars = input.maxChars ?? 7_000;
   const registry = await loadCapabilityRegistry(input.productRoot);
-  const activeFreeze = input.state.provenance.freezes.some((freeze) => freeze.status === "active");
+  const activeFreeze = input.state.provenance.freezes.some(f => f.status === "active");
   const selected = registry.filter((capability) => capability.manifest.allowedStages.includes(stage));
   const eligibleFragments = selected.flatMap((capability) => capability.manifest.contextFragments
     .filter((fragment) => fragment.stages.includes(stage))
@@ -119,8 +119,7 @@ export async function routeCapabilities(input: {
   const decisions = selected.map((capability) => {
     const fragmentIds = eligibleFragments.filter((item) => item.capability === capability).map((item) => item.fragment.id);
     const missingInputs = capability.manifest.requiredInputs.filter((required) =>
-      (required === "active_evidence_freeze" && !activeFreeze)
-      || (required === "human_accepted_paper" && !input.state.interaction?.finalAccepted));
+      (required === "human_accepted_paper" && !input.state.interaction?.finalAccepted));
     return ({
     routeId: `${capability.manifest.id}@${capability.manifest.version}:${capability.manifestHash}:stage-${stage}:${sha256(fragmentIds.join("|"))}`,
     capabilityId: capability.manifest.id,
@@ -146,7 +145,7 @@ export async function routeCapabilities(input: {
       `Bundled revision: ${capability.manifestHash}. Reload applicable guidance if this revision changed.`,
       `Resolve that skill's references, workflows, scripts and assets relative to ${resourceRoot}.`,
       "Follow the selected workflow and its required references completely; the stage summaries below do not replace them. At stage 8 read ../stage8-policy.md first. Its three-phase and light-review policy supersedes legacy repeated audit/repair loops, while writing standards and templates remain. Reuse unchanged guidance.",
-      `Formal publication use remains limited to stages ${capability.manifest.allowedStages.join(", ")} and requires active frozen evidence.`,
+      `Formal publication use remains limited to stages ${capability.manifest.allowedStages.join(", ")} ; binding derives the evidence snapshot automatically.`,
       capability.manifest.id === "modeling-plot-suite"
         ? "The user-designated pre-native-20260904 skill is the authoritative plotting implementation. For a new full-paper figure set, read ../upstream-planning.md and call hajimi_validate_figure_plan begin then validate before drawing. Read workflows/paper-figure.md and references/paper-figure.md completely for DATA; run scripts/bootstrap.py with the managed Python and follow its original _utils style-guide, recipe prefetch and per-figure workflow. The bundled helper fixes exported palette list identity; bootstrap refreshes only recognized pristine helpers in both _utils and skills/shared-scripts, preserving custom files. In new generators read active colors after setup_style(), e.g. import _utils.plot_utils as pu; pu.setup_style(); use pu.PALETTE and pu.COLORS. Map 鲜艳舒适型 to expressive and 稳重科研型 to restrained, using the stage-7 handoff direction. Preserve original defaults unless the user selects expressive or restrained: read ../profiles/<selection>.md relative to resources and apply the project palette/style markers. Do not substitute the migrated global skill. Apply the original-size-preflight excerpt below before writing figsize, using the actual include width and height constraints; no new sizing standard or automatic redraw gate. Recovery begins with the original manifest reconciliation and existing-output verification. INFO/WARNING alone do not justify regeneration; diagnose real defects and preserve prior outputs before any repair. Original source supplements must identify exact source and applicability. Frozen-evidence and user acceptance requirements remain in force."
         : "Preserve the full writing constraints and the selected paper route; checkers do not replace semantic and visual review.",
@@ -163,8 +162,6 @@ export async function routeCapabilities(input: {
     const capabilityShellRoot = `$HAJIMI_CAPABILITIES_ROOT/${capability.manifest.id}/${capability.manifest.version}`;
     const guard = capability.manifest.requiredInputs.includes("human_accepted_paper") && !input.state.interaction?.finalAccepted
       ? "SUBMISSION BLOCKED: the user must accept the current stage-8 paper before stage-9 packaging. Do not accept on the user's behalf.\n"
-      : capability.manifest.activation.requiresActiveEvidenceFreeze && !activeFreeze
-      ? "FORMAL-CONSUMPTION BLOCKED: return to stage 7 and create an active evidence freeze before generating publication content.\n"
       : "";
     const body = `${guard}Capability resource root for shell commands: ${capabilityShellRoot}\n${await readFile(path, "utf8")}`;
     if (contextChars + body.length > maxChars) {

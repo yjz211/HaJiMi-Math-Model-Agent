@@ -12,21 +12,23 @@ import {
 } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 
-import { HAJIMI_IDENTITY_KERNEL, projectWorkflowContext } from "./context-projector.ts";
+import { workflowIdentity, projectWorkflowContext } from "./context-projector.ts";
 import { installCacheDiagnostics } from "./cache-diagnostics.ts";
-import { automaticRunLocked, AUTOMATIC_LOCK_MESSAGE } from "./automatic-policy.ts";
+import { automaticRunActive, automaticRunBlocked } from "./automatic-policy.ts";
 import { routeCapabilities } from "./capability-router.ts";
 import { readStage8, moveStage8, assertStage8 } from './stage8-phases.ts';
-import { beginFigurePlan, requireFigurePlan, validateFigurePlan } from './figure-plan.ts';
-import { STAGE_GUIDANCE } from "./modeling-project.ts";
+import { translate } from '../i18n/index.ts';
+import { beginFigurePlan, validateFigurePlan } from './figure-plan.ts';
+import { STAGE_GUIDANCE, projectLocationNotice } from "./modeling-project.ts";
 import { finishStage, handleReviewInput, interactionFor, reviewPrompt, saveInteraction, recordReviewInput, acceptInterpretedReview } from "./interaction.ts";
 import { deliveryFingerprint, sealDeliveryValidation } from "./delivery-seal.ts";
-import { captureStageFiles } from "./stage-files.ts";
+import { captureStageFiles, fileReadUrl } from "./stage-files.ts";
 import { runSubmissionAction } from "./submission-service.ts";
 import {
   appendExperiment,
   createHajimiCheckpoint,
   ensureHajimiTask,
+  readHajimiValidation,
   freezeHajimiInputs,
   registerArtifact,
   requestHajimiGate,
@@ -41,7 +43,6 @@ import {
   recordClaim,
   recordEvidence,
   recordManagedExperiment,
-  reconcileProvenance,
   replaceQuestionPackets,
   rollbackWorkflow,
   setMilestone,
@@ -71,6 +72,7 @@ export const HAJIMI_TOOL_NAMES = [
   "hajimi_record_claim",
   "hajimi_freeze_evidence",
   "hajimi_bind_publication",
+  "hajimi_bind_publications",
   "hajimi_register_artifact",
   "hajimi_checkpoint",
   "hajimi_validate_delivery",
@@ -110,19 +112,20 @@ const ALWAYS_STAGE_TOOLS = new Set([
 
 export function hajimiToolsForStage(stage: number): string[] {
   const allowed = new Set(ALWAYS_STAGE_TOOLS);
-  if (stage >= 3 && stage <= 7) {
+  if (stage >= 1 && stage <= 8) {
     allowed.add("hajimi_record_experiment");
     allowed.add("hajimi_run_managed_experiment");
     allowed.add("hajimi_select_experiment");
     allowed.add("hajimi_record_evidence");
     allowed.add("hajimi_record_claim");
   }
-  if (stage === 7) allowed.add("hajimi_freeze_evidence");
+  if (stage >= 3 && stage <= 8) allowed.add("hajimi_freeze_evidence");
   if (stage === 7 || stage === 8) allowed.add("hajimi_validate_figure_plan");
   if (stage === 9) allowed.add("hajimi_generate_submission");
   if (stage === 8) {
     allowed.add("hajimi_stage8_phase");
     allowed.add("hajimi_bind_publication");
+    allowed.add("hajimi_bind_publications");
     allowed.add("hajimi_validate_delivery");
   }
   return HAJIMI_TOOL_NAMES.filter((name) => allowed.has(name));
@@ -203,16 +206,19 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
           execute(...args) {
             const run = executionTail.then(async () => {
               const state = (await ensureHajimiTask(cwd)).state;
-              if ((state.interaction?.pending || (state.interaction?.finalAccepted && tool.name !== "hajimi_generate_submission"))
+              if (state.interaction?.pending
                 && !["read", "ls", "find", "grep", "hajimi_task_status", "hajimi_accept_user_review"].includes(tool.name)) {
                 throw new Error(reviewPrompt(state));
               }
               if (args[2]?.aborted) throw new Error("Tool execution aborted.");
-              if (tool.name === 'bash') await requireFigurePlan(cwd);
               if (state.focus.stage === 8) {
-                const input = args[1] as Record<string, unknown>;
-                if (tool.name === 'hajimi_validate_delivery') await assertStage8(cwd,['review','ready']);
-                if ((tool.name === 'hajimi_set_milestone' && input.stage === 8 && input.status === 'satisfied') || (tool.name === 'hajimi_request_gate' && input.gate === 'final_delivery')) await assertStage8(cwd,['ready']);
+                if (tool.name === 'hajimi_validate_delivery') await assertStage8(cwd, ['review', 'ready']);
+                if (tool.name === 'hajimi_request_gate' && (args[1] as Record<string, unknown>).gate === 'final_delivery') await assertStage8(cwd, ['ready']);
+              }
+              // Calls are serialized here: revisions are runtime bookkeeping,
+              // not a reason for another model round trip between independent tools.
+              if (tool.name.startsWith("hajimi_")) {
+                (args[1] as Record<string, unknown>).expectedRevision = state.revision;
               }
               return tool.execute(...args);
             });
@@ -229,7 +235,6 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
     let lastGuidanceText: string | undefined;
     let lastRoutingTags: string | undefined;
     async function workflowMessage(force = false) {
-      await reconcileProvenance(cwd);
       const snapshot = await ensureHajimiTask(cwd);
       applyStageToolPolicy(pi, snapshot.state.focus.stage, options.getMode?.() ?? "full");
       const routingTags = JSON.stringify([...snapshot.state.problemTags].sort());
@@ -253,10 +258,7 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
     pi.on("input", async (event) => {
       if (event.source === "extension") return;
       const snapshot = await ensureHajimiTask(cwd);
-      if (automaticRunLocked(snapshot.state)) {
-        pi.sendMessage({ customType: "hajimi-auto-lock", display: true, content: AUTOMATIC_LOCK_MESSAGE }, { triggerTurn: false });
-        return { action: "handled" as const };
-      }
+      idleContinuations = 0;
       if (snapshot.state.interaction?.runtimeFailure) {
         const interaction = interactionFor(snapshot.state);
         delete interaction.runtimeFailure;
@@ -289,7 +291,7 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
       if (snapshot.state.focus.stage > 0) await freezeHajimiInputs(cwd);
       await backend.prepare?.();
       const health = await backend.health();
-      if (automaticRunLocked(snapshot.state)) {
+      if (automaticRunActive(snapshot.state)) {
         // A newly bound session cannot own a run from the previous process.
         // Preserve progress and expose recovery after an app/process interruption.
         const interaction = interactionFor(snapshot.state);
@@ -311,7 +313,7 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
             /^Current working directory:.*$/m,
             `Current working directory: HaJiMi task root (${backend.describe().kind} backend; use relative paths)`,
           )
-          .concat(`\n\n${HAJIMI_IDENTITY_KERNEL}`)
+          .concat(`\n\n${workflowIdentity((await ensureHajimiTask(cwd)).state)}`)
           .concat(backend.describe().kind === "windows-managed"
             ? "\nExecution contract: native Windows CPython/XeLaTeX with PortableGit Bash. Use task-relative paths and quote paths containing spaces. Do not use /mnt/c, apt, sudo or Linux ELF binaries. Python/python3 resolve to managed CPython. Base offline routes: Matplotlib, TikZ and bundled Draw.io desktop (DRAWIO_PATH; export with export_drawio.py); HTML/Mermaid/SVG-input rendering are not installed. New ctex documents must explicitly select fontset=fandol; no implicit Microsoft fonts. Shell has the current user's permissions, not OS sandboxing."
             : ""),
@@ -339,7 +341,9 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
     });
 
     let lastRunFailure: string | undefined;
-    pi.on("agent_start", () => { lastRunFailure = undefined; });
+    let idleContinuations = 0;
+    let usefulWork = false;
+    pi.on("agent_start", () => { lastRunFailure = undefined; usefulWork = false; });
     pi.on("message_end", (event) => {
       if (event.message.role === "assistant") {
         lastRunFailure = event.message.stopReason === "error" || event.message.stopReason === "aborted"
@@ -349,23 +353,27 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
     // Wait for Pi's retry/compaction cycle to settle, not its low-level agent_end.
     pi.on("agent_settled", async (_event, ctx) => {
       const snapshot = await ensureHajimiTask(cwd);
-      if (!automaticRunLocked(snapshot.state) || !ctx.isIdle()) return;
+      if (!automaticRunActive(snapshot.state) || !ctx.isIdle()) return;
+      if (usefulWork) idleContinuations = 0;
+      if (automaticRunBlocked(snapshot.state)) lastRunFailure ??= "当前阶段已标记受阻，自动续跑已停止。请查看已有成果和具体阻碍。";
+      if (!lastRunFailure && idleContinuations >= 2) lastRunFailure = "连续两次续跑没有实质工作进展，已停止重复唤醒。已有成果已保留。";
       if (lastRunFailure) {
         const interaction = interactionFor(snapshot.state);
         interaction.runtimeFailure = { message: lastRunFailure, recordedAt: new Date().toISOString() };
         await saveInteraction(cwd, snapshot.state, interaction);
         pi.sendMessage({ customType: "hajimi-runtime-failure", display: true,
-          content: `全自动运行中断，已保留阶段进度。需要恢复运行环境或模型服务后继续：${lastRunFailure}` }, { triggerTurn: false });
+          content: `全自动已暂停，已有进度和成果已保留：${lastRunFailure}` }, { triggerTurn: false });
         return;
       }
+      idleContinuations++;
       pi.sendMessage({ customType: "hajimi-auto-continue", display: false,
-        content: "全自动模式继续执行当前阶段并依次完成阶段 1—8。普通路线选择按你的推荐决定；工具或验证失败自行诊断修复，不请求用户选择，不把失败标为通过。第 8 阶段交付后停止等待人工验收。" },
+        content: "全自动模式继续执行当前阶段并依次完成阶段 1—8。普通路线选择按你的推荐决定；常规问题自主处理；同一失败未有新信息时停止重复检查并报告阻碍，立即展示已有候选成果。遵循用户的停止、纠偏和模式切换。第 8 阶段交付后停止等待人工验收。" },
       { triggerTurn: true, deliverAs: "followUp" });
     });
 
     pi.on("tool_call", async (event) => {
       const snapshot = await ensureHajimiTask(cwd);
-      if (snapshot.state.interaction?.pending || (snapshot.state.interaction?.finalAccepted && event.toolName !== "hajimi_generate_submission")) {
+      if (snapshot.state.interaction?.pending) {
         if (!["read", "ls", "find", "grep", "hajimi_task_status", "hajimi_accept_user_review"].includes(event.toolName)) {
           stopAfterTurn = true;
           return { block: true, reason: `${reviewPrompt(snapshot.state)} Do not execute further work. Answer the user in chat.` };
@@ -381,6 +389,7 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
     });
 
     pi.on("tool_result", async (event) => {
+      if (!event.isError && ["write", "edit", "bash", "hajimi_run_managed_experiment", "hajimi_set_focus", "hajimi_set_milestone"].includes(event.toolName)) usefulWork = true;
       if (event.toolName === "hajimi_set_milestone" || event.toolName === "hajimi_request_gate") {
         if ((await ensureHajimiTask(cwd)).state.interaction?.pending) stopAfterTurn = true;
       }
@@ -391,9 +400,8 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
       return { operations: { ...operations, exec: (...args: Parameters<typeof operations.exec>) => {
         const run = executionTail.then(async () => {
           const state = (await ensureHajimiTask(cwd)).state;
-          if (state.interaction?.pending || state.interaction?.finalAccepted) throw new Error(reviewPrompt(state));
+          if (state.interaction?.pending) throw new Error(reviewPrompt(state));
           if (args[2]?.signal?.aborted) throw new Error("Tool execution aborted.");
-          await requireFigurePlan(cwd);
           return operations.exec(...args);
         });
         executionTail = run.catch(() => undefined);
@@ -490,7 +498,7 @@ function registerTaskTools(
 ): void {
   pi.registerTool({
     name:'hajimi_stage8_phase', label:'Stage 8 phase',
-    description:'Advance figures -> writing -> review -> ready. Figures: one brief overlap inspection and one coordinated placement repair if needed, no paper float positioning. Writing preserves existing skill/template standards and stable figures. Review is light; only severe issues justify a targeted rollback. Report minor issues to the human. Pass completed figurePaths for legacy plans; current FIGURE_PLAN outputs are included automatically.',
+    description:'Strict: follow figures → writing → review → ready without skipping; writing freezes figures, review freezes the paper. Roll back only for severeIssues, specifying affected captured repairPaths for figure repairs. Validate delivery in review, then mark ready before completing the milestone. Evidence/experiment/freeze repair tools remain available in stage 8. Lean: activity labels with output checks; ready follows milestone completion.',
     parameters:Type.Object({phase:StringEnum(['figures','writing','review','ready'] as const),note:Type.String({minLength:1}),figurePaths:Type.Optional(Type.Array(Type.String())),severeIssues:Type.Optional(Type.Array(Type.String())),repairPaths:Type.Optional(Type.Array(Type.String()))}),
     async execute(_id,params){return textResult(JSON.stringify(await moveStage8(cwd,params.phase,params.note,params.figurePaths,params.severeIssues,params.repairPaths)));}
   });
@@ -505,7 +513,7 @@ function registerTaskTools(
   });
   pi.registerTool({
     name: 'hajimi_validate_figure_plan', label: 'Upstream figure plan',
-    description: 'For a new full-paper figure set, begin upstream planning before shell commands, then validate FIGURE_PLAN.json before generation. This checks count, types, recipes, reasons, sources and diagram triggers. Not a visual audit. Never inflate minimum without a user request. Explicit single-figure corrections do not restart full-set planning.',
+    description: 'Check the existing full-paper figure plan: count, types, recipes, reasons, sources and diagram triggers. Completion checks this plan in both policies; shell/repair commands stay available. Not a visual audit. Never inflate minimum without a user request. Single-figure corrections do not restart full-set planning.',
     parameters: Type.Object({ action: StringEnum(['begin','validate'] as const), planPath: Type.Optional(Type.String()), minimum: Type.Optional(Type.Number({minimum:8})) }),
     async execute(_id, params) { return textResult(JSON.stringify(params.action === 'begin' ? await beginFigurePlan(cwd, params.minimum) : await validateFigurePlan(cwd, params.planPath ?? 'FIGURE_PLAN.json'))); },
   });
@@ -597,7 +605,7 @@ function registerTaskTools(
       } else {
         result = { identity: snapshot.identity, revision: state.revision, status: state.status,
           focus: state.focus, currentObjective: state.currentObjective, nextAction: state.nextAction,
-          interaction: { mode: state.interaction?.mode ?? "unselected", pending: state.interaction?.pending ?? null,
+          interaction: { mode: state.interaction?.mode ?? "unselected", executionPolicy: state.interaction?.executionPolicy ?? "lean", pending: state.interaction?.pending ?? null,
             finalAccepted: state.interaction?.finalAccepted ?? false },
           milestone: state.milestones.find(item => item.stage === state.focus.stage),
           questions: state.questions.map(item => ({ questionId: item.questionId, status: item.status, dependencies: item.dependencies })),
@@ -641,7 +649,7 @@ function registerTaskTools(
   pi.registerTool({
     name: "hajimi_set_milestone",
     label: "Update milestone",
-    description: "Update one 0-9 milestone without flattening the dynamic micro-plan.",
+    description: "Complete a stage with its actual output files and findings. Both policies check completion: inputs, question solutions/comparisons/validation, computation code and results, planned figures and full paper requirements. Provide generated paths in files (or evidenceRefs). Lean avoids separate administrative ledger calls. Repair failures with normal tools; never waive functional requirements.",
     promptSnippet: "Update a HaJiMi milestone status",
     parameters: Type.Object({
       expectedRevision: Type.Number({ minimum: 0 }),
@@ -651,23 +659,40 @@ function registerTaskTools(
       summary: Type.Optional(Type.String({ description: "Stage findings, methods, validation and unresolved issues for the user report." })),
       files: Type.Optional(Type.Array(Type.Object({ path: Type.String(), purpose: Type.String() }))),
     }),
-    async execute(_id, params) {
+    async execute(_id, params, signal) {
       if (!isHajimiStageId(params.stage)) throw new Error("stage must be an integer from 0 through 9");
-      let state = await setMilestone(cwd, params.expectedRevision, params.stage, params.status, params.evidenceRefs);
+      let state = await setMilestone(cwd, params.expectedRevision, params.stage, params.status, params.files?.map(file => file.path) ?? params.evidenceRefs, { backend, productRoot, signal });
+      if (params.stage === 8 && params.status === "satisfied") await moveStage8(cwd, "ready", "All paper completion checks passed.");
       if (params.status === "satisfied" && params.stage === state.focus.stage && params.stage <= 8 && state.interaction) {
         const completed = await finishStage(cwd, state, params.summary, params.files);
         state = completed.state;
-        pi.sendMessage({ customType: "hajimi-stage-report", display: true, content: completed.report.text,
+        const highlights = (params.files ?? []).slice(0, 6).map(file => `- [${file.path}](${fileReadUrl(resolve(cwd, file.path))})：${file.purpose}`);
+        if (params.stage === 0) highlights.unshift(projectLocationNotice(cwd));
+        const paper = params.stage === 8 ? state.provenance.bindings.findLast(b => b.kind === "paper" && b.status === "candidate")?.artifactRef : undefined;
+        if (paper) highlights.unshift(`- [论文 PDF](${fileReadUrl(resolve(cwd, paper.path))})\n\n${translate("zh-CN", "hajimi.paperFullPath")}: \`${resolve(cwd, paper.path)}\``);
+        pi.sendMessage({ customType: "hajimi-stage-report", display: true,
+          content: `第 ${params.stage} 阶段：${completed.report.summary}\n\n${highlights.join("\n")}\n\n[完整成果清单](${fileReadUrl(resolve(cwd, completed.report.path))})\n\n${reviewPrompt(state)}`,
           details: { stage: params.stage, path: completed.report.path } }, { triggerTurn: false });
       }
-      return textResult(`Milestone ${params.stage} updated at revision ${state.revision}.`, { revision: state.revision });
+      if (params.status === "satisfied" && params.stage >= 1 && params.stage < 8
+          && state.interaction?.mode === "automatic" && !state.interaction.pending) {
+        const stage = (params.stage + 1) as typeof state.focus.stage;
+        const routing = await routeCapabilities({ state, productRoot, stage });
+        state = await setWorkflowFocus(cwd, state.revision, stage, null, undefined, routing.decisions);
+        applyStageToolPolicy(pi, stage, getMode?.() ?? "full");
+      }
+      const deliveredPaper = params.stage === 8 && params.status === "satisfied"
+        ? state.provenance.bindings.findLast(b => b.kind === "paper" && b.status === "candidate")?.artifactRef : undefined;
+      const deliveryNote = deliveredPaper ? `\nPaper PDF absolute path: ${resolve(cwd, deliveredPaper.path)}\nInclude this exact full path in your final reply alongside the review instructions.`
+        : params.stage === 0 && params.status === "satisfied" ? `\n${projectLocationNotice(cwd)}\nInclude this folder location and sidebar correspondence in your reply before the mode questions.` : "";
+      return textResult(`Milestone ${params.stage} updated. Current stage: ${state.focus.stage}. ${STAGE_GUIDANCE[state.focus.stage]}${deliveryNote}`, { revision: state.revision });
     },
   });
 
   pi.registerTool({
     name: "hajimi_set_requirement",
     label: "Update milestone requirement",
-    description: "Attach evidence and update one explicit milestone requirement before satisfying the milestone.",
+    description: "Update an existing completion checklist item. Strict mode requires individual completion; lean checks outputs at the stage report. Neither policy permits waiving functional requirements.",
     promptSnippet: "Update a HaJiMi stage requirement with evidence",
     parameters: Type.Object({
       expectedRevision: Type.Number({ minimum: 0 }),
@@ -928,8 +953,8 @@ function registerTaskTools(
   pi.registerTool({
     name: "hajimi_bind_publication",
     label: "Bind publication artifact",
-    description: "Bind a figure, paper, or final answer to claims from an active evidence freeze.",
-    promptSnippet: "Bind a publication candidate to frozen claims",
+    description: "Bind a publication to supported claims; the runtime creates the evidence snapshot and numeric sidecar. Prefer hajimi_bind_publications for a set.",
+    promptSnippet: "Bind a publication; prefer hajimi_bind_publications for multiple files",
     parameters: Type.Object({
       expectedRevision: Type.Number({ minimum: 0 }),
       kind: StringEnum(["figure", "paper", "final_answer"] as const),
@@ -950,6 +975,38 @@ function registerTaskTools(
         status: "candidate",
       });
       return textResult(`Publication candidate bound at revision ${state.revision}.`, { revision: state.revision, bindingId: state.provenance.bindings.at(-1)?.bindingId });
+    },
+  });
+
+  pi.registerTool({
+    name: "hajimi_bind_publications",
+    label: "Bind publication set",
+    description: "Register and bind the entire figure/paper set in ONE call. Reuses a shared claim set unless overridden per entry; snapshots and numeric sidecars are generated automatically. Returns per-entry results; retry only failed entries.",
+    parameters: Type.Object({
+      claimRefs: Type.Array(Type.String(), { minItems: 1 }),
+      publications: Type.Array(Type.Object({
+        kind: StringEnum(["figure", "paper", "final_answer"] as const),
+        artifactPath: Type.String(),
+        target: Type.Optional(Type.String()),
+        claimRefs: Type.Optional(Type.Array(Type.String(), { minItems: 1 })),
+        claimBindingPath: Type.Optional(Type.String()),
+      }), { minItems: 1, maxItems: 100 }),
+    }),
+    async execute(_id, params, signal) {
+      const results: Array<{ path: string; bindingId?: string; error?: string }> = [];
+      for (const item of params.publications) {
+        if (signal?.aborted) throw new Error("Tool execution aborted.");
+        try {
+          const artifactRef = await registerArtifact(cwd, item.artifactPath, `${item.kind} publication binding`);
+          const claimMarkerRef = item.claimBindingPath ? await registerArtifact(cwd, item.claimBindingPath) : undefined;
+          const current = (await ensureHajimiTask(cwd)).state;
+          const state = await bindPublication(cwd, current.revision, { kind: item.kind,
+            target: item.target ?? item.artifactPath, claimRefs: item.claimRefs ?? params.claimRefs,
+            artifactRef, claimMarkerRef, status: "candidate" });
+          results.push({ path: item.artifactPath, bindingId: state.provenance.bindings.at(-1)?.bindingId });
+        } catch (error) { results.push({ path: item.artifactPath, error: error instanceof Error ? error.message : String(error) }); }
+      }
+      return textResult(JSON.stringify({ results, revision: (await ensureHajimiTask(cwd)).state.revision }));
     },
   });
 
@@ -977,37 +1034,46 @@ function registerTaskTools(
     },
   });
 
+  let lastAudit: { fingerprint: string; strict: boolean; text: string } | undefined;
   pi.registerTool({
     name: "hajimi_validate_delivery",
     label: "Validate delivery",
-    description: "Run HaJiMi's deterministic input, artifact, figure, LaTeX, PDF, and traceability checks.",
+    description: "Detailed delivery audit, required for strict checklist policy and optional for lean policy. Do not repeat unchanged failures.",
     promptSnippet: "Validate modeling deliverables before final submission",
     parameters: Type.Object({
       expectedRevision: Type.Number({ minimum: 0 }),
       strict: Type.Optional(Type.Boolean()),
     }),
     async execute(_id, params, signal, onUpdate) {
-      onUpdate?.(textResult("Running HaJiMi delivery validation in the selected runtime..."));
       const before = await deliveryFingerprint(cwd);
-      const command = deliveryValidationCommand(params.strict !== false);
-      const result = await backend.runShell(command, { cwd, signal, timeoutSeconds: 300 });
-      const output = [result.stdout.toString("utf8"), result.stderr.toString("utf8")].filter(Boolean).join("\n").trim();
-      if (result.exitCode !== 0) throw new Error(output || `Validation failed with exit code ${result.exitCode}`);
-      await sealDeliveryValidation(cwd, before);
-      const current = (await ensureHajimiTask(cwd)).state;
-      const bindingRefs = current.provenance.bindings
-        .filter((binding) => binding.kind === "paper" && binding.status === "candidate")
-        .map((binding) => binding.bindingId);
-      if (bindingRefs.length === 0) throw new Error("Delivery validation passed file checks but no claim-bound publication candidate exists");
-      const state = await setRequirement(cwd, params.expectedRevision, 8, "delivery_candidate", "satisfied", bindingRefs);
-      return textResult(output || "Delivery validation passed.", { exitCode: result.exitCode, revision: state.revision });
+      const strict = params.strict !== false;
+      if (lastAudit?.fingerprint === before && lastAudit.strict === strict) {
+        return textResult(`Unchanged files: reusing the previous audit. Do not repeat it without a relevant change.\n${lastAudit.text}`);
+      }
+      onUpdate?.(textResult("Running optional HaJiMi delivery audit..."));
+      const result = await backend.runShell(deliveryValidationCommand(strict), { cwd, signal, timeoutSeconds: 300 });
+      const report = await readHajimiValidation(cwd);
+      const output = report ? JSON.stringify({ passed: report.passed, summary: report.summary,
+        issues: (report.checks ?? []).filter(check => !check.passed).slice(0, 12), report: ".hajimi/validation.json",
+        note: "Strict checklist policy requires a passing strict audit; lean policy treats this audit as optional." })
+        : result.stderr.toString("utf8").slice(-2000) || `Audit exited ${result.exitCode}; no report was produced.`;
+      if (report?.passed && strict && result.exitCode === 0) {
+        await sealDeliveryValidation(cwd, before);
+        const state = (await ensureHajimiTask(cwd)).state;
+        if (state.interaction?.executionPolicy === "strict" && state.focus.stage === 8) {
+          await setRequirement(cwd, state.revision, 8, "delivery_candidate", "satisfied", [], "Strict delivery audit passed.");
+        }
+      }
+      lastAudit = { fingerprint: before, strict, text: output };
+      return textResult(output);
+
     },
   });
 
   pi.registerTool({
     name: "hajimi_request_gate",
     label: "Request human gate",
-    description: "Record a workflow decision. Technical gates are derived automatically. Human stage review happens in chat, without popups. Use hajimi_freeze_evidence with evidenceRefs and claimRefs to freeze; never assemble hash lists.",
+    description: "Optional decision discussion. Ordinary scientific route choices and stage completion need no gate. Final paper review opens from stage completion; optional snapshots use hajimi_freeze_evidence.",
     promptSnippet: "Ask the user to approve a consequential modeling decision or final delivery",
     parameters: Type.Object({
       expectedRevision: Type.Number({ minimum: 0 }),
@@ -1019,6 +1085,7 @@ function registerTaskTools(
     }),
     async execute(_id, params) {
       if (!isHajimiStageId(params.stage)) throw new Error("stage must be an integer from 0 through 9");
+      if (params.gate === "final_delivery") return textResult("No separate final gate or audit is required. Complete stage 8 with hajimi_set_milestone and a short paper summary; the runtime registers the PDF and opens human review.");
       if (params.gate === "evidence_freeze") return textResult("Call hajimi_freeze_evidence with evidenceRefs and claimRefs. The program computes all hashes and performs the technical freeze; no separate approval or governedRefs is needed.");
       const requested = await requestHajimiGate(
         cwd,
@@ -1030,9 +1097,9 @@ function registerTaskTools(
       );
       const gateId = requested.openGates.at(-1)!.gateId;
       const interaction = interactionFor(requested);
-      if (params.gate === "final_delivery" || interaction.mode === "unselected"
+      if (interaction.mode === "unselected"
         || (params.gate === "question_checkpoint" && interaction.mode === "supervised")) {
-        interaction.pending = { kind: params.gate === "final_delivery" ? "final" : "gate", stage: params.stage, gateId };
+        interaction.pending = { kind: "gate", stage: params.stage, gateId };
         const state = await saveInteraction(cwd, requested, interaction);
         pi.sendMessage({ customType: "hajimi-review", display: true, content: `${params.summary}\n\n${reviewPrompt(state)}` }, { triggerTurn: false });
         return textResult("Decision presented in chat. Wait for the user's response.");

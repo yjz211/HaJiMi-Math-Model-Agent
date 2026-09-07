@@ -65,19 +65,19 @@ export const MODELING_WORKFLOW_DEFINITION: HajimiWorkflowDefinition = {
       requirement("baseline_run", "基线已实际运行并保存失败案例。", "provenance_freeze"),
     ]),
     stage(4, "逐问建模与代码求解", "按依赖顺序完成每个小问的候选比较、实现和局部验证。", [3], [
-      requirement("question_packets", "全部逐问工作包闭环并通过检查点。", "question_packets"),
+      requirement("question_packets", "各问完成模型比较、求解和必要的独立验证。", "question_packets"),
     ]),
-    stage(5, "整题集成与联合审查", "检查跨问合同并从冻结输入端到端运行。", [4], [
+    stage(5, "整题集成与联合审查", "核对跨问数据、符号和接口，必要时端到端复算。", [4], [
       requirement("integrated_run", "逐问覆盖完整且整题入口运行通过。", "provenance_freeze"),
     ]),
     stage(6, "结果验证", "用适配任务的独立方法检查结论、稳健性和现实边界。", [5], [
       requirement("independent_validation", "每个关键结论至少有一种独立检查。", "provenance_freeze"),
     ]),
-    stage(7, "证据与展示结果整理", "冻结实验、证据和主张，建立机器结果到展示项的映射。", [6], [
-      requirement("evidence_freeze", "正式主张均由冻结证据支持。", "provenance_freeze"),
+    stage(7, "证据与展示结果整理", "整理有效计算结果与展示方案，复用已有验证。", [6], [
+      requirement("evidence_freeze", "关键结论有实际计算依据；登记与冻结可选。", "provenance_freeze"),
     ]),
-    stage(8, "论文与图表制作", "从冻结主张和证据生成图表、LaTeX 论文与 PDF 候选稿。", [7], [
-      requirement("delivery_candidate", "图表和论文只消费冻结证据并通过技术验收。", "delivery_validation"),
+    stage(8, "论文与图表制作", "依据实际建模结果生成图表、LaTeX 论文与 PDF 候选稿。", [7], [
+      requirement("delivery_candidate", "交付实际论文源文件与PDF，供用户审查。", "delivery_validation"),
     ]),
     stage(9, "提交材料与打包", "人工验收正文后生成代码附录、AI使用说明和提交包。", [8], [
       requirement("human_final_review", "用户审查结论与所有高优先级问题均已记录。", "human"),

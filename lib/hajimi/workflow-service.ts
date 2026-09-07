@@ -1,11 +1,14 @@
+import { assertDeliverySeal } from "./delivery-seal.ts";
+import { checkStageCompletion } from "./completion-checks.ts";
+import { checkPaperQuality } from "./paper-quality.ts";
+import { assertStage8 } from "./stage8-phases.ts";
 import { createHash, randomUUID } from "node:crypto";
-import { lstat, readFile } from "node:fs/promises";
+import { lstat, readFile, writeFile, mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { ensureHajimiTask, readHajimiValidation, registerArtifact } from "./task-state.ts";
-import { assertDeliverySeal } from "./delivery-seal.ts";
+import { ensureHajimiTask, registerArtifact, readHajimiValidation } from "./task-state.ts";
 import { captureStageFiles } from "./stage-files.ts";
-import { assertPublicationMayConsume, assertQuestionGateMatches, createRollback } from "./workflow-reducer.ts";
+import { assertPublicationMayConsume, createRollback } from "./workflow-reducer.ts";
 import { mutateWorkflowState } from "./workflow-store.ts";
 import type {
   HajimiClaimRecord,
@@ -35,18 +38,11 @@ export async function setWorkflowFocus(
 ): Promise<HajimiWorkflowState> {
   const current = (await ensureHajimiTask(cwd)).state;
   if (current.interaction?.pending) throw new Error("Stage or question review is pending in chat. Wait for the user.");
-  if (current.interaction?.mode === "supervised" && current.focus.stage === 4
-    && (stage !== 4 || questionId !== current.focus.questionId) && current.focus.questionId) {
-    const question = current.questions.find(item => item.questionId === current.focus.questionId);
-    const checkpoint = current.gateHistory.find(item => item.gateId === question?.checkpointGateId);
-    if (question?.status !== "satisfied" || checkpoint?.status !== "accepted") {
-      throw new Error("Complete the current question checkpoint and wait for user review before changing focus.");
-    }
-  }
   if (stage > current.focus.stage + 1) throw new Error(`Cannot skip from stage ${current.focus.stage} to stage ${stage}.`);
   if (stage > current.focus.stage && current.interaction) {
     if (current.interaction.pending) throw new Error("Stage review is pending in chat. Discuss the report and wait for the user.");
     if (current.interaction.mode === "unselected") throw new Error("Ask the user to choose 全自动 or 半自动 in chat before continuing.");
+    if (current.interaction.executionPolicy === "unselected") throw new Error("Choose workflow policy before continuing.");
     const completed = current.milestones.find(item => item.stage === current.focus.stage);
     if (completed?.status !== "satisfied") throw new Error(`Stage ${current.focus.stage} must be satisfied before advancing.`);
     if (!current.interaction.reports.some(report => report.stage === current.focus.stage)) throw new Error(`Stage ${current.focus.stage} must produce a report before advancing.`);
@@ -55,14 +51,6 @@ export async function setWorkflowFocus(
   }
   if (questionId && !current.questions.some((item) => item.questionId === questionId)) {
     throw new Error(`Unknown question packet: ${questionId}`);
-  }
-  if (stage > current.focus.stage) {
-    const milestone = current.milestones.find((item) => item.stage === stage);
-    const blockedBy = milestone?.dependencies.filter((dependencyId) => {
-      const dependency = current.milestones.find((item) => item.stage === dependencyId);
-      return !dependency || dependency.status !== "satisfied";
-    }) ?? [];
-    if (blockedBy.length) throw new Error(`Cannot enter stage ${stage}; dependencies are not satisfied: ${blockedBy.join(", ")}`);
   }
   let next = await mutate(cwd, expectedRevision, { kind: "set_focus", stage, questionId, nextAction, routes });
   if (stage !== current.focus.stage && next.interaction) {
@@ -85,9 +73,9 @@ export async function setRequirement(
 ): Promise<HajimiWorkflowState> {
   const current = (await ensureHajimiTask(cwd)).state;
   if (stage !== current.focus.stage) throw new Error(`Only requirements for the current stage ${current.focus.stage} may be changed.`);
+  if (status === "waived") throw new Error("Completion requirements cannot be waived in either workflow policy.");
   const requirement = current.milestones.find(item => item.stage === stage)?.requirements.find(item => item.id === requirementId);
   if (!requirement) throw new Error(`Unknown requirement ${stage}/${requirementId}`);
-  if (status === "waived" && requirement.severity === "required") throw new Error(`Required requirement ${requirementId} cannot be waived.`);
   return mutate(cwd, expectedRevision, { kind: "set_requirement", stage, requirementId, status, evidenceRefs, note });
 }
 
@@ -97,52 +85,76 @@ export async function setMilestone(
   stage: HajimiStageId,
   status: HajimiWorkflowState["milestones"][number]["status"],
   evidenceRefs?: string[],
+  qualityRuntime?: Parameters<typeof checkPaperQuality>[1],
 ): Promise<HajimiWorkflowState> {
   const current = (await ensureHajimiTask(cwd)).state;
   if (stage !== current.focus.stage) throw new Error(`Only the current stage ${current.focus.stage} milestone may be changed.`);
   if (status === "waived") throw new Error("Stage milestones cannot be waived; complete the stage report or request rework.");
-  if (stage === 4 && status === "satisfied") {
-    if (!current.questions.length || current.questions.some(question => question.status !== "satisfied")) {
-      throw new Error("Stage 4 requires every question to pass its current checkpoint before completion.");
-    }
-    for (const question of current.questions) {
-      const gate = current.gateHistory.find(item => item.gateId === question.checkpointGateId);
-      if (!gate || gate.status !== "accepted" || gate.gate !== "question_checkpoint" || gate.target.questionId !== question.questionId) {
-        throw new Error("Stage 4 requires an accepted checkpoint for every question.");
-      }
-      assertQuestionGateMatches(current, gate);
+  if (status === "satisfied" && stage <= 8) {
+    if (stage === 8) await assertStage8(cwd, ["ready"]);
+    await checkStageCompletion(cwd, current, stage, evidenceRefs ?? []);
+    if (stage === 8) await checkPaperQuality(cwd, qualityRuntime);
+  }
+  if (current.interaction?.executionPolicy === "strict" && status === "satisfied") {
+    const open = current.milestones.find(m => m.stage === stage)?.requirements.filter(r => r.status !== "satisfied") ?? [];
+    if (open.length) throw new Error(`Strict checklist: complete ${open.map(r => r.id).join(", ")} before finishing stage ${stage}.`);
+    if (stage === 7 && !current.provenance.freezes.some(f => f.status === "active")) throw new Error("Strict checklist stage 7 requires an evidence snapshot; use hajimi_freeze_evidence.");
+    if (stage === 8) {
+      const report = await readHajimiValidation(cwd);
+      if (!report?.passed || !report.strict) throw new Error("Strict checklist stage 8 requires a passing delivery audit.");
+      const candidate = current.provenance.bindings.findLast(b => b.kind === "paper" && b.status === "candidate");
+      if (!candidate?.claimRefs.length) throw new Error("Strict checklist requires an evidence-bound paper candidate.");
+      assertPublicationMayConsume(current, candidate.claimRefs);
+      await assertDeliverySeal(cwd);
     }
   }
-  if (stage === 7 && status === "satisfied" && !current.provenance.freezes.some(f => f.status === "active")) throw new Error("Stage 7 requires an active evidence freeze.");
-  if (stage === 8 && status === "satisfied") await assertFinalDeliveryReady(cwd, current);
+  if (stage === 8 && status === "satisfied") {
+    // Delivery is about the actual paper, not completion of the optional ledger.
+    const artifactRef = await registerPaperCandidate(cwd);
+    const latest = current.provenance.bindings.findLast(b => b.kind === "paper" && b.status === "candidate");
+    const existing = latest?.artifactRef?.path === artifactRef.path && latest.artifactRef.sha256 === artifactRef.sha256;
+    if (current.interaction?.executionPolicy === "strict" && !existing) throw new Error("Bind the current paper PDF before completing strict delivery.");
+    let next = current;
+    if (!existing) next = await mutate(cwd, expectedRevision, { kind: "bind_publication", binding: {
+      bindingId: randomUUID(), kind: "paper", target: artifactRef.path, claimRefs: [], artifactRef, status: "candidate", staleBy: [],
+    } });
+    return mutate(cwd, next.revision, { kind: "set_milestone", stage, status, evidenceRefs, outputsChecked: true });
+  }
   if (stage === 9 && status === "satisfied") throw new Error("Stage 9 requires verified submission outputs; generated candidates alone cannot complete the task.");
-  return mutate(cwd, expectedRevision, { kind: "set_milestone", stage, status, evidenceRefs });
+  return mutate(cwd, expectedRevision, { kind: "set_milestone", stage, status, evidenceRefs, outputsChecked: status === "satisfied" });
+}
+
+async function registerPaperCandidate(cwd: string) {
+  let config: { mainTex?: string; finalPdf?: string } = {};
+  try { config = JSON.parse(await readFile(resolve(cwd, "paper/hajimi-paper-config.json"), "utf8")); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+  const source = await registerArtifact(cwd, config.mainTex ?? "paper/main.tex", "Paper source");
+  if (!source.sizeBytes) throw new Error("Paper source is empty.");
+  const pdf = await registerArtifact(cwd, config.finalPdf ?? "paper/main.pdf", "Paper candidate");
+  const bytes = await readFile(resolve(cwd, pdf.path));
+  if (!bytes.subarray(0, 1024).includes(Buffer.from("%PDF-")) || !bytes.subarray(-1024).includes(Buffer.from("%%EOF"))) {
+    throw new Error("Paper PDF is missing its header or end marker; compile the paper before delivery.");
+  }
+  return pdf;
 }
 
 async function assertFinalDeliveryReady(cwd: string, state: HajimiWorkflowState): Promise<string[]> {
-  const validation = await readHajimiValidation(cwd);
-  if (!validation?.strict || !validation.passed) {
-    throw new Error("Stage 8 requires a passing strict delivery validation.");
+  // The last delivered candidate is the one the user reviewed. Historical
+  // bindings and optional audits do not freeze unrelated work.
+  const candidate = state.provenance.bindings.findLast(b => b.kind === "paper" && b.status === "candidate");
+  if (!candidate?.artifactRef) throw new Error("Deliver a paper candidate before human acceptance.");
+  const ref = candidate.artifactRef;
+  const info = await lstat(resolve(cwd, ref.path));
+  const bytes = await readFile(resolve(cwd, ref.path));
+  if (!info.isFile() || info.isSymbolicLink() || bytes.length !== ref.sizeBytes
+      || createHash("sha256").update(bytes).digest("hex") !== ref.sha256) {
+    throw new Error("The delivered paper changed; present the updated candidate for review.");
   }
-  const candidates = state.provenance.bindings.filter(binding => binding.kind === "paper" && binding.status === "candidate");
-  if (!candidates.length) throw new Error("Stage 8 requires a claim-bound paper candidate.");
-  for (const binding of candidates) {
-    if (!binding.artifactRef) throw new Error(`Paper binding ${binding.bindingId} has no paper artifact.`);
-    assertPublicationMayConsume(state, binding.claimRefs);
-    const absolute = resolve(cwd, binding.artifactRef.path);
-    const info = await lstat(absolute);
-    if (!info.isFile() || info.isSymbolicLink() || info.size !== binding.artifactRef.sizeBytes) {
-      throw new Error(`Paper artifact changed or is unavailable: ${binding.artifactRef.path}`);
-    }
-    const hash = createHash("sha256").update(await readFile(absolute)).digest("hex");
-    if (hash !== binding.artifactRef.sha256) throw new Error(`Paper artifact changed after binding: ${binding.artifactRef.path}`);
-  }
-  await assertDeliverySeal(cwd);
-  return candidates.map(binding => binding.bindingId);
+  return [candidate.bindingId];
 }
 
 export async function acceptFinalDelivery(cwd: string, expectedRevision: number, note: string): Promise<HajimiWorkflowState> {
-  const current = await assertNoProvenanceDrift(cwd);
+  const current = (await ensureHajimiTask(cwd)).state;
   if (current.revision !== expectedRevision) throw new Error(`Revision changed: read task status (current ${current.revision}).`);
   const bindingRefs = await assertFinalDeliveryReady(cwd, current);
   const stage8 = current.milestones.find(item => item.stage === 8);
@@ -150,7 +162,7 @@ export async function acceptFinalDelivery(cwd: string, expectedRevision: number,
   if (!current.interaction?.reports.some(report => report.stage === 8)) throw new Error("Stage 8 report is missing.");
   const files = await captureStageFiles(cwd, true);
   // Recheck after capture so the accepted snapshot cannot follow a changed paper.
-  await assertDeliverySeal(cwd);
+  await assertFinalDeliveryReady(cwd, current);
   return mutate(cwd, current.revision, { kind: "accept_final", bindingRefs, note, files });
 }
 
@@ -443,10 +455,28 @@ export async function bindPublication(
   expectedRevision: number,
   input: Omit<HajimiPublicationBinding, "bindingId" | "staleBy"> & { bindingId?: string },
 ): Promise<HajimiWorkflowState> {
-  const current = await assertNoProvenanceDrift(cwd);
+  let current = await assertNoProvenanceDrift(cwd);
+  if (current.revision !== expectedRevision) throw new Error(`Revision changed: current ${current.revision}.`);
+  const frozen = new Set(current.provenance.freezes.filter(f => f.status === "active").flatMap(f => f.claimRefs));
+  if (input.claimRefs.some(id => !frozen.has(id))) {
+    const evidenceRefs = [...new Set(input.claimRefs.flatMap(id => current.provenance.claims.find(c => c.claimId === id)?.evidenceRefs ?? []))];
+    current = await freezeSelectedEvidence(cwd, current.revision, evidenceRefs, input.claimRefs);
+  }
+  // A sidecar is a deterministic registry export, not another model-authored audit.
+  if (input.kind === "paper" && !input.claimMarkerRef) {
+    const claims = input.claimRefs.map(id => current.provenance.claims.find(c => c.claimId === id))
+      .filter((claim): claim is HajimiClaimRecord => claim?.kind === "numeric");
+    if (claims.length) {
+      const path = `work/claim-bindings-${randomUUID()}.json`;
+      await mkdir(resolve(cwd, "work"), { recursive: true });
+      await writeFile(resolve(cwd, path), JSON.stringify({ schemaVersion: "hajimi.claim-bindings.v1",
+        claims: claims.map(({ claimId, value, unit }) => ({ claimId, value, unit })) }), "utf8");
+      input = { ...input, claimMarkerRef: await registerArtifact(cwd, path, "Generated numeric claim registry") };
+    }
+  }
   await assertPublicationMarkers(cwd, current, input);
   const binding: HajimiPublicationBinding = { ...input, bindingId: input.bindingId ?? randomUUID(), staleBy: [] };
-  return mutate(cwd, expectedRevision, { kind: "bind_publication", binding });
+  return mutate(cwd, current.revision, { kind: "bind_publication", binding });
 }
 
 async function assertPublicationMarkers(

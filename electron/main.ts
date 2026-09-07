@@ -164,6 +164,7 @@ async function findFreePort(startPort: number, maxAttempts = 10): Promise<number
 // Next.js server lifecycle
 // ---------------------------------------------------------------------------
 function startNextServer(port: number): ServerProcess {
+  process.env.HAJIMI_PROJECTS_ROOT ??= path.join(app.getPath("desktop"), "HaJiMi", "projects");
   const isDev = !app.isPackaged;
   const {
     agentDir: hajimiAgentDir,

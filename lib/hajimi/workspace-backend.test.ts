@@ -8,6 +8,7 @@ import { windowsPathToWsl, WslWorkspaceBackend } from "./workspace-backend.ts";
 
 test("windowsPathToWsl maps drive paths to /mnt", () => {
   assert.equal(windowsPathToWsl("C:\\Users\\Example\\Task"), "/mnt/c/Users/Example/Task");
+  assert.equal(windowsPathToWsl("/tmp/hajimi-task"), "/tmp/hajimi-task");
 });
 
 test("WSL backend rejects a junction that redirects outside the task root", { skip: process.platform !== "win32" }, async (t) => {

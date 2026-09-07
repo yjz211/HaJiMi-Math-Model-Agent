@@ -144,7 +144,8 @@ for (const capability of capabilities.filter(item => !args.length || item.id ===
   const sourceSkill = join(sourceRoot, "SKILL.md");
   await stat(sourceSkill);
   const copyPaths = legacyPlot
-    ? (await walk(sourceRoot)).map(path => normalizePath(relative(sourceRoot, path))).filter(path => !path.includes('__pycache__'))
+    ? (await walk(sourceRoot)).map(path => normalizePath(relative(sourceRoot, path)))
+      .filter(path => !path.includes('__pycache__') && !path.endsWith('.pyc'))
     : capability.copy;
   for (const relativePath of copyPaths) {
     const source = join(sourceRoot, ...relativePath.split("/"));
@@ -156,7 +157,7 @@ for (const capability of capabilities.filter(item => !args.length || item.id ===
   if (legacyPlot) await patchHajimiLegacyPlot(destinationRoot);
   const sourceEntrypointHash = await sha256File(sourceSkill);
   const files = [];
-  for (const path of await walk(destinationRoot)) {
+  for (const path of (await walk(destinationRoot)).filter(path => !path.includes('__pycache__') && !path.endsWith('.pyc'))) {
     if (path === join(destinationRoot, "manifest.json")) continue;
     const info = await stat(path);
     files.push({

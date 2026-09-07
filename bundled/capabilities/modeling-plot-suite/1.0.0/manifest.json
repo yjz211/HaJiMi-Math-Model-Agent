@@ -5,7 +5,7 @@
   "source": {
     "kind": "user-authorized-local-codex-skill",
     "logicalPath": "toolkit/legacy-modeling-plot-suite",
-    "entrypointSha256": "861c546140c778693229624e537d120578545991c1986c5363715510b1c0a128",
+    "entrypointSha256": "4fd6727f5c552302a439412130f337461412db03b0fc5ad1571e46c548822ab8",
     "licenseStatus": "not-declared-in-source-snapshot",
     "redistributionScope": "HaJiMi local and packaged builds authorized by the user"
   },
@@ -295,13 +295,13 @@
     },
     {
       "path": "profiles/expressive.md",
-      "sizeBytes": 2878,
-      "sha256": "3f12b3500890f062c556cd5fec0e4e57f17da26260a12d7eba433b7d6635c461"
+      "sizeBytes": 2864,
+      "sha256": "a7718ea450936914a76eba1828073a1503ebc299ef9515ff7e91178880e6ec85"
     },
     {
       "path": "profiles/restrained.md",
-      "sizeBytes": 1659,
-      "sha256": "2446a4103a6d13cdc1cef4ad7ebe80bfe793ef682fd9856b1adf637525109e01"
+      "sizeBytes": 1648,
+      "sha256": "24b0efc1b1dff1693b568235573abf1a8331d6a49787771eca65b71bff9e7b44"
     },
     {
       "path": "resources/PACKAGE_MANIFEST.md",
@@ -310,18 +310,18 @@
     },
     {
       "path": "resources/PROMPT_PROVENANCE.json",
-      "sizeBytes": 2104,
-      "sha256": "6f9c8897d4623b16f39357dec3464c4ebbf05927b2171d48844947e30ad36101"
+      "sizeBytes": 2075,
+      "sha256": "3bd9c19b13302d0b22aa2c297f6d709e1ca589f21580d149720463c4903abc26"
     },
     {
       "path": "resources/SKILL.md",
-      "sizeBytes": 2959,
-      "sha256": "142b01fb2636373db1c2afbcc18527dfea5fa6cb9bded5e6239f9dd58a5a3120"
+      "sizeBytes": 2956,
+      "sha256": "4fd6727f5c552302a439412130f337461412db03b0fc5ad1571e46c548822ab8"
     },
     {
       "path": "resources/agents/openai.yaml",
-      "sizeBytes": 120,
-      "sha256": "4dc608e8995f239667dd438229ca4bf824e58965d30629c6ec1280ef4dcad526"
+      "sizeBytes": 117,
+      "sha256": "a2ca79ead57274a5da7d55898a8330f54fc1f149e0ffcf7799d229ea3f7eea3f"
     },
     {
       "path": "resources/assets/html-templates/html_pdf_check.py",
@@ -360,8 +360,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/NOTICE-humanities.md",
-      "sizeBytes": 1157,
-      "sha256": "d58e3210d289211b8f7979004fd372580006ebccbaeec0fd941b75550e0b9b0d"
+      "sizeBytes": 1136,
+      "sha256": "dde7649c6b8e6076fbef87b3d9b269040b5fa7e91d761abe264c1d180c593869"
     },
     {
       "path": "resources/assets/shared-scripts/NOTICE-humanities.md.enc",
@@ -425,8 +425,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/claim_code_check.py",
-      "sizeBytes": 11198,
-      "sha256": "4d14e17a4c4c58a078b9f659f5bb468b269bf2c16f6f9bd274afc3693c4f3c7b"
+      "sizeBytes": 10978,
+      "sha256": "67e14035725c51d547afd118e13462039e28460cb460687719a6bf72838c98da"
     },
     {
       "path": "resources/assets/shared-scripts/claim_code_check.py.enc",
@@ -445,8 +445,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/compile_utils.sh",
-      "sizeBytes": 85377,
-      "sha256": "cb2c106969e1739939ca8c61dfa0ce1be34915000bc6c7e227fa675342e302a6"
+      "sizeBytes": 83685,
+      "sha256": "a5fd4514ffd57b2dd59442477ebdf8d6f2bc8c443b9cdb7fd3d96885e4d1fecc"
     },
     {
       "path": "resources/assets/shared-scripts/compile_utils.sh.enc",
@@ -505,8 +505,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/demo_all_templates.tex",
-      "sizeBytes": 8840,
-      "sha256": "fa9b350a3dd9ce55629b54a4ba40d835bf65001ee829bdfbc3633a5d9303f686"
+      "sizeBytes": 8656,
+      "sha256": "f9f32444c366b47c4a529c106249e6df526c93a3590fc90a9d6e2920efbd58d9"
     },
     {
       "path": "resources/assets/shared-scripts/demo_all_templates.tex.enc",
@@ -515,8 +515,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_competition.tex",
-      "sizeBytes": 4374,
-      "sha256": "5355b140e3697df1c9ba7e7f13afa2b83064aa7628bb66fa2ed368aae33720f0"
+      "sizeBytes": 4283,
+      "sha256": "08540f7c0a4b84642ea46ba9f80a9be8958094bb97b327c62eed91470ed9a7c8"
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_competition.tex.enc",
@@ -525,8 +525,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_research_pipeline.tex",
-      "sizeBytes": 5063,
-      "sha256": "8bcf15bf62114bda1e4fc1f50f0f088724077bab94035cf580838ae521da4684"
+      "sizeBytes": 4972,
+      "sha256": "fae355601ef4b1c0c0f3ee88ee535826b2c1c0d650f87015da8ad910415eb8aa"
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_research_pipeline.tex.enc",
@@ -535,8 +535,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_research_premium.tex",
-      "sizeBytes": 5894,
-      "sha256": "5c2772e5925acf0ca9e6f0f98491c80a4533c3942998d217cbed94a145333ba4"
+      "sizeBytes": 5755,
+      "sha256": "544b79e712cbd7c8db46e1beafdc14061a22cec466b2e31bd5673a1799d9a591"
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_research_premium.tex.enc",
@@ -545,8 +545,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_template4.tex",
-      "sizeBytes": 4325,
-      "sha256": "0d23872eb54b9d651bb8986ecba6c30920e389ccc2d275982c003ac24ff5265d"
+      "sizeBytes": 4233,
+      "sha256": "0565c7905fcd9e7784f398996d48595dc72ef8e7e4c2d1a41142b902fde73397"
     },
     {
       "path": "resources/assets/shared-scripts/demo_roadmap_template4.tex.enc",
@@ -555,8 +555,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/drawio_check.py",
-      "sizeBytes": 20967,
-      "sha256": "b68be731d50d0869627a066ccc19011221b0d791502dc6315c765f4277f35335"
+      "sizeBytes": 20575,
+      "sha256": "cf8c3058249009dbfa99b1f0a3f60f8950d53766319a03accb994090926d07df"
     },
     {
       "path": "resources/assets/shared-scripts/drawio_check.py.enc",
@@ -565,8 +565,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/drawio_rules.md",
-      "sizeBytes": 25899,
-      "sha256": "74e61c2b2d1baf087a529480ddc108b64bd5436d183a5c288050ad2280a5660f"
+      "sizeBytes": 25541,
+      "sha256": "3b1d731dd73a26aec970e60a4752ed907e908d2350663806acc341c6120862b0"
     },
     {
       "path": "resources/assets/shared-scripts/drawio_rules.md.enc",
@@ -575,8 +575,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/error_prevention.md",
-      "sizeBytes": 130796,
-      "sha256": "d73b0028e142fcb9a2fbb86211e340abf08fee6d6e2848cfaae37a137fc924ef"
+      "sizeBytes": 128477,
+      "sha256": "10f9af9f3ed6c5d6134e00f64b6dca9bf093e8871abc574dc2956c1dcdf04047"
     },
     {
       "path": "resources/assets/shared-scripts/error_prevention.md.enc",
@@ -585,18 +585,18 @@
     },
     {
       "path": "resources/assets/shared-scripts/example_flow.drawio",
-      "sizeBytes": 7883,
-      "sha256": "bc3364986323bd3b372b0271d05f7c71f52d9629a680e3357cf10ceabe9fa255"
+      "sizeBytes": 7811,
+      "sha256": "d1427f876ebb5be0e92284defe9774f6f8a4ab8626f1dbe5b2ac7b540404bb05"
     },
     {
       "path": "resources/assets/shared-scripts/example_roadmap_hex.drawio",
-      "sizeBytes": 21301,
-      "sha256": "b471780f02f8646a9a1129f9e8293737e224e2c7467419873aa743c420c441cf"
+      "sizeBytes": 21205,
+      "sha256": "599e4926a3be89761c2508a458b695f3fd5e27fd5238d9b979b69cf7b2319413"
     },
     {
       "path": "resources/assets/shared-scripts/example_roadmap_hex_cool.drawio",
-      "sizeBytes": 25515,
-      "sha256": "10a6316fafd1995b65c4a77d22bee7d0f69d89581606c27c114bbf53198fae33"
+      "sizeBytes": 25413,
+      "sha256": "7294a45e19c26a542c46b5be05026da4d542b6a01ad91d622db5db6fbce786a6"
     },
     {
       "path": "resources/assets/shared-scripts/example_roadmap_stats.drawio",
@@ -605,18 +605,18 @@
     },
     {
       "path": "resources/assets/shared-scripts/example_roadmap_stats_warm.drawio",
-      "sizeBytes": 17658,
-      "sha256": "770e4d8f1d97772386dc0526b8062817ab9ba181743c541aac3436f1a83f20d8"
+      "sizeBytes": 17592,
+      "sha256": "1a58ceab06db25157220f564e457eea42c532db03f4a0da03f0ef45f58edd625"
     },
     {
       "path": "resources/assets/shared-scripts/example_roadmap_stats_warm.drawio.bak",
-      "sizeBytes": 20024,
-      "sha256": "2b74480343a0d8c7b6c29564d02406b5deae30d40f4752617b4fb3f9363991d3"
+      "sizeBytes": 19950,
+      "sha256": "dd62899246dcbb88241a0892d9871034d6c5ddfeac497f606c4e5465fd7168ce"
     },
     {
       "path": "resources/assets/shared-scripts/facts_audit.py",
-      "sizeBytes": 43720,
-      "sha256": "52fe57dc8148584bae1f4c89a34dd535321c7038a82804a59c4f0b94ec6348a2"
+      "sizeBytes": 42671,
+      "sha256": "21420b67286a2e12620c185b005d360e65e3a5104f2d2cb2424507ab8d32eb6d"
     },
     {
       "path": "resources/assets/shared-scripts/facts_audit.py.enc",
@@ -660,8 +660,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_exemplars.md",
-      "sizeBytes": 41487,
-      "sha256": "8ee7963cba1ecbba60e40bf72205ddc9fb74d88084506723b95e5f22f07a4aac"
+      "sizeBytes": 40937,
+      "sha256": "cdf35eb68d35f2ef814cf856f338e0f4466fab89d3b5e2954cef6a3ce549add5"
     },
     {
       "path": "resources/assets/shared-scripts/figure_exemplars.md.enc",
@@ -670,8 +670,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_academic.md",
-      "sizeBytes": 41983,
-      "sha256": "a2c0aad7cc02217f7bd21a05395c785f0aaa4a028036315cc409f393f7475bf3"
+      "sizeBytes": 40969,
+      "sha256": "cc9d1db9381d59b7e2fc3507dfbc779d8a8638b998e35aa0bbfe554ad9f7d404"
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_academic.md.enc",
@@ -680,8 +680,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_advanced.md",
-      "sizeBytes": 135527,
-      "sha256": "8f40b075666eb7dabc70af48379de6c92e6bcdce717d7a909464703f3f8fdedf"
+      "sizeBytes": 132329,
+      "sha256": "64337b51c4286f8a1592566cd54d1210256db72560dcf6efaeb6bc0759ceb89a"
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_advanced.md.enc",
@@ -690,8 +690,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_basic.md",
-      "sizeBytes": 41282,
-      "sha256": "c64ca48cc6d91a549f09b78fd5a2884d94fdc24300891d89232842f2e513ca5e"
+      "sizeBytes": 40297,
+      "sha256": "29551c0ef8de795b4af9194eb1e9958f5b5686a2ea5f9d940f825e584f2a5544"
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_basic.md.enc",
@@ -700,8 +700,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_competition.md",
-      "sizeBytes": 81563,
-      "sha256": "cf3fcc0a5b36d02b09404fd986205536a869c05761bc0e7866f9c9fbfc183658"
+      "sizeBytes": 79745,
+      "sha256": "37bcac0ca89f0d335bb6a9f11e3a0a7f28053769f74c1a73496ea9ba146a9818"
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_competition.md.enc",
@@ -710,8 +710,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_empirical.md",
-      "sizeBytes": 70610,
-      "sha256": "64e408334731cc77bb2a347d8cdfd0171fcb73d2daa5bede7ee025f0b9300d5e"
+      "sizeBytes": 69106,
+      "sha256": "2f00adbd84fe51f7d358050720711e4f7d9ee6eb6cf38b66aaf82ad2ad4d5b9c"
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_empirical.md.enc",
@@ -730,8 +730,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/get_recipe.py",
-      "sizeBytes": 3702,
-      "sha256": "0a7dcab85630937976753c88e89345fc12feee766554a635c912dde9e1604663"
+      "sizeBytes": 3608,
+      "sha256": "3f715cdfcca7532fd5c3c68e79594ea6bd758e21cb9b0c7ea150b1df8afe4065"
     },
     {
       "path": "resources/assets/shared-scripts/get_recipe.py.enc",
@@ -900,8 +900,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/plot_utils.py",
-      "sizeBytes": 104561,
-      "sha256": "99b303f10006aa60fbb57399f204a0b8ca6069d48653dc51dbf343e79bd0b1da"
+      "sizeBytes": 102214,
+      "sha256": "8271b6ca0faf1f170c37291d7b79cb5763b0d1ad036482be70a9cf55a6371715"
     },
     {
       "path": "resources/assets/shared-scripts/plot_utils.py.enc",
@@ -920,8 +920,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/stats_utils.py",
-      "sizeBytes": 13059,
-      "sha256": "1f7fd87be546b2d0c51ee9ca7842c6582b3a32f6b12ec67323df05ab9e42a20b"
+      "sizeBytes": 12711,
+      "sha256": "e0eae398e1c7cda5b33c855e3c994c6378c1bfe0181b21f8f518e309333e6f7d"
     },
     {
       "path": "resources/assets/shared-scripts/stats_utils.py.enc",
@@ -950,8 +950,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/tikz_examples_extra.tex",
-      "sizeBytes": 18343,
-      "sha256": "b697eddecfe0b3d9d046dde785bf0fdb7a272a3f817c7ac02fef060339fc798f"
+      "sizeBytes": 18018,
+      "sha256": "d610abeee7d165517a96fb9330adb3d78aa44dfcf4acdfece7a1c950bd76160f"
     },
     {
       "path": "resources/assets/shared-scripts/tikz_examples_extra.tex.enc",
@@ -960,8 +960,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/tikz_rules.md",
-      "sizeBytes": 39684,
-      "sha256": "cb6d1875d64e25febc3b4b2aeb133559d09a5054629664caf976bb7bb5bc3805"
+      "sizeBytes": 39164,
+      "sha256": "7c81df131d4e98c06a95554733d926b786c5bf24a1fad89420cafc6b38018f9c"
     },
     {
       "path": "resources/assets/shared-scripts/tikz_rules.md.enc",
@@ -970,8 +970,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/writing_check.sh",
-      "sizeBytes": 34841,
-      "sha256": "61f47d8911c7907b4cb87f2aba3a4db3a0db3fea33840f70f561720c0b5dbd1b"
+      "sizeBytes": 34096,
+      "sha256": "cc433c8e5b2dc87595adcb65bef9343f4e786210dae60a52f897459dd518668c"
     },
     {
       "path": "resources/assets/shared-scripts/writing_check.sh.enc",
@@ -980,8 +980,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/writing_rules.md",
-      "sizeBytes": 58566,
-      "sha256": "7bfe37c0ae1bb3878c99972909decb38f9e42bacc3bb3f31a5730183e3897560"
+      "sizeBytes": 57916,
+      "sha256": "b133d5296f4b64ec07c60db4dc03b6110b0ecad6ce55e64b460f9e28e9c697e0"
     },
     {
       "path": "resources/assets/shared-scripts/writing_rules.md.enc",
@@ -994,39 +994,14 @@
       "sha256": "fd5ac4b0c7b727567861239de2921232974358373938ef4a2ac35cb3c376b774"
     },
     {
-      "path": "resources/assets/tools/data_fig_vision_check.pyc",
-      "sizeBytes": 11880,
-      "sha256": "ffc2dd706d4ae53da62430cfb48ccc23e341095cc36c0ddb7b91af11a404c898"
-    },
-    {
-      "path": "resources/assets/tools/drawio_vision_check.pyc",
-      "sizeBytes": 21003,
-      "sha256": "62f2a88a78151dc1c71740d81061904e07e16a3a04693a540f12253015354d72"
-    },
-    {
       "path": "resources/assets/tools/gpt_image.py",
-      "sizeBytes": 12213,
-      "sha256": "a888d4dcbfad265d7b6e753a5a9ae89056fd6f0e630d10ecd24511758760606e"
-    },
-    {
-      "path": "resources/assets/tools/gpt_image.pyc",
-      "sizeBytes": 15890,
-      "sha256": "0dabf7d860787b8615f0cbb645f67ee1791393d3e5b9bfb82482cb3c9cc02b8b"
-    },
-    {
-      "path": "resources/assets/tools/screenshot_capture.pyc",
-      "sizeBytes": 19859,
-      "sha256": "f1dc30052735de22284ee31f09c5fc748fb8251c9e2fad67a05a702041a741da"
+      "sizeBytes": 11895,
+      "sha256": "c1f6cd3a09db2f95baac5c163dc5f9ab0364405ec02211de39a2e254bb0faa63"
     },
     {
       "path": "resources/assets/tools/tikz_vision_check.py",
-      "sizeBytes": 12872,
-      "sha256": "3bcbf72bebcf8e32e6a5fbe0f9f214eea22b9565ac3cdede93c04bb8e2964fbf"
-    },
-    {
-      "path": "resources/assets/tools/tikz_vision_check.pyc",
-      "sizeBytes": 17063,
-      "sha256": "2ae39aecb980b97c7e4e4366bb40b48e3e73d47a8420eea875ca980a2b9d4955"
+      "sizeBytes": 12561,
+      "sha256": "d89886aa7b2d5d62543dda02c0dcf0ab9a2edb5dd9c32c9c1f0c291f079f3bd1"
     },
     {
       "path": "resources/references/mermaid-diagram.md",
@@ -1040,13 +1015,13 @@
     },
     {
       "path": "resources/references/paper-figure.md",
-      "sizeBytes": 85306,
-      "sha256": "7503f49f0e43e2323872b1547c744bc05a426df44533a095d0b076fe2619633d"
+      "sizeBytes": 83865,
+      "sha256": "329ecaa5c2f98cc5e71647b6898469b43f0b28ebb1565ab40bcecf1bbdd5b84f"
     },
     {
       "path": "resources/references/paper-illustration.md",
-      "sizeBytes": 25990,
-      "sha256": "8e8ece13d84f3c8ec2ebafbcdc3801b531673f6477806b7ae4ac371542c0d9ed"
+      "sizeBytes": 25486,
+      "sha256": "0e41a6895585dd66b26ff2e6f3c5685238bdbd3d6aabadec7b91c4ee454875c8"
     },
     {
       "path": "resources/references/paper-layout-gate.md",
@@ -1066,7 +1041,7 @@
     {
       "path": "resources/scripts/bootstrap.py",
       "sizeBytes": 4565,
-      "sha256": "841b5b95d56a4b8eba1dda75b0b1cfcdd20ea361082e2d5101c7c78d8f35d82a"
+      "sha256": "c799820d48aa66ce3c13f2a3c5ad3690e448efda1700d65330b77234d078286c"
     },
     {
       "path": "resources/scripts/drawio_check_compat.py",
@@ -1105,38 +1080,38 @@
     },
     {
       "path": "resources/workflows/mermaid-diagram.md",
-      "sizeBytes": 1224,
-      "sha256": "1b857e91d12a4a8a2cdbd27dd375a7698431f76f7356b0bb4d637bf1f3958152"
+      "sizeBytes": 1208,
+      "sha256": "d71e7cf5ebaf993d442308edc5e164a67d02ffc7fb827bdcd7a7e0cf464928f6"
     },
     {
       "path": "resources/workflows/paper-figure-html.md",
-      "sizeBytes": 1247,
-      "sha256": "2b80e2a7cb69e9e0a2b64411f174335b8a9ba600400d842a81c6b63987be1740"
+      "sizeBytes": 1231,
+      "sha256": "4a3e14803aec5f0100bedd309cc5f0eeffd1993db564d6d03522ed2c3d21a72c"
     },
     {
       "path": "resources/workflows/paper-figure.md",
-      "sizeBytes": 1053,
-      "sha256": "e6b8cdd2ad1154f5b65aadc2f5161c4e9462505ce7c8052801c842fb997d1c02"
+      "sizeBytes": 1040,
+      "sha256": "b1ba1a70da568313ab350769a7345a8ea5e5be426b794832d1d6ab7560e39fc2"
     },
     {
       "path": "resources/workflows/paper-illustration.md",
-      "sizeBytes": 1487,
-      "sha256": "3c9a2a49086a7f22388d415f0eaeaf4581320bc87fb309e713a8787675c343f1"
+      "sizeBytes": 1467,
+      "sha256": "a0b1797914de8d9e1c466fb81c5ea0881b51318205a415fb29b39ca80535c7a9"
     },
     {
       "path": "resources/workflows/paper-technical-diagram.md",
-      "sizeBytes": 1389,
-      "sha256": "bb5179347f785eaae237060c76d41123a0947c0caa743172c19fb02af2af8654"
+      "sizeBytes": 1375,
+      "sha256": "b560da4457f3e117e5753f9d3228daa30f5434c541c6dbb985c31530a8f0d59c"
     },
     {
       "path": "stage8-policy.md",
-      "sizeBytes": 2960,
-      "sha256": "6ec552dae61ac177e64dbf1cee05c359ecb69dc88c512e15fb26b4d29dbab86a"
+      "sizeBytes": 2950,
+      "sha256": "ddaa6f6ac333bb3a7bb8bad0730bfb5dea936a418778ccd028e0f4d7dccadf66"
     },
     {
       "path": "upstream-planning.md",
-      "sizeBytes": 6215,
-      "sha256": "0f3ac63c6bffe0f9e33834ec82698c3cb7292f9bb98b8ab3513235b3beb65d7c"
+      "sizeBytes": 6187,
+      "sha256": "bc6d9ea15ef2cac3e0ca5b53d17d95bd0472dc3144fad8159a76f289e3de07a7"
     }
   ],
   "omitted": [

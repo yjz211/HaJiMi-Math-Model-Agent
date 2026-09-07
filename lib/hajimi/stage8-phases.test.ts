@@ -4,11 +4,11 @@ import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { moveStage8, readStage8, assertStage8 } from './stage8-phases.ts';
-
 test('stage8 orders work, preserves figures, and allows only a targeted serious rollback',async()=>{
  const root=await mkdtemp(join(tmpdir(),'hajimi-stage8-'));
  try{
   for(const dir of ['.hajimi','figures','paper'])await mkdir(join(root,dir));
+  await writeFile(join(root,'.hajimi/state.json'), JSON.stringify({interaction:{executionPolicy:'strict'}}));
   await writeFile(join(root,'figures/a.pdf'),'original-a');await writeFile(join(root,'figures/b.pdf'),'original-b');
   await writeFile(join(root,'FIGURE_PLAN.json'),JSON.stringify({figures:[{outputs:['figures/a.pdf','figures/b.pdf']}]}));
   assert.equal((await readStage8(root)).phase,'figures');
@@ -30,6 +30,18 @@ test('stage8 orders work, preserves figures, and allows only a targeted serious 
   await writeFile(join(root,'paper/main.pdf'),'changed after review');
   await assert.rejects(assertStage8(root,['review']),/Stable artifact changed/);
  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('stage8 missing figures cannot be skipped but repair tools stay available', async () => {
+ const root = await mkdtemp(join(tmpdir(), 'hajimi-stage8-'));
+ try {
+  await mkdir(join(root, '.hajimi'));
+  await assert.rejects(moveStage8(root, 'review', 'draft already exists'), /FIGURE_PLAN/);
+  await assertStage8(root, ['writing']);
+  await moveStage8(root, 'figures', 'revise a label');
+  await assert.rejects(moveStage8(root, 'ready', 'model has checked the paper'), /FIGURE_PLAN/);
+  assert.equal((await readStage8(root)).phase, 'figures');
+ } finally { await rm(root, { recursive: true, force: true }); }
 });
 
 test('phase policy preserves template and balances expressive fusion and composite design',async()=>{

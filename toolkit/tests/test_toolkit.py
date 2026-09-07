@@ -278,3 +278,17 @@ def test_light_review_preserves_serious_errors():
     assert [item['severity'] for item in result] == ['warning', 'warning', 'error', 'error', 'error']
     assert all(not item['passed'] and item['detail'] == 'visible finding' for item in result)
     assert all(item['severity'] == 'error' for item in original)
+
+
+def test_equation_baseline_needs_no_experiment_or_freeze(tmp_path: Path, monkeypatch) -> None:
+    import hajimi_toolkit.stage8_validation as validation
+    baseline = _artifact(tmp_path, "work/equations.tex", r"\begin{equation}x=1\label{eq:one}\end{equation}")
+    (tmp_path / ".hajimi" / "artifacts.jsonl").write_text(json.dumps(baseline) + "\n", encoding="utf-8")
+    monkeypatch.setattr(validation, "_run", lambda name, *_args: dict(name=name, passed=True, severity="error", detail="checked"))
+    state = {"provenance": {"experiments": [], "evidence": [], "freezes": []}}
+    config = {"equationBaselineArtifactIds": [baseline["id"]]}
+    checks = validation._equation_checks(tmp_path, state, config, tmp_path / "paper/main.tex", tmp_path)
+    assert all(item["passed"] for item in checks)
+    (tmp_path / "work/equations.tex").write_text("changed", encoding="utf-8")
+    checks = validation._equation_checks(tmp_path, state, config, tmp_path / "paper/main.tex", tmp_path)
+    assert not checks[0]["passed"]
