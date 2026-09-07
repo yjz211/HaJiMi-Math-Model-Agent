@@ -10,6 +10,8 @@ const eslintConfig = [
       "release/**",
       "out/**",
       "coverage/**",
+      "bundled/**/resources/assets/tools/**",
+      "toolkit/legacy-modeling-plot-suite/**",
     ],
   },
   ...coreWebVitals,

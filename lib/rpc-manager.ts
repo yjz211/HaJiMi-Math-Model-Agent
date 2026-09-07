@@ -1,3 +1,5 @@
+import { readHajimiTask } from "./hajimi/task-state.ts";
+import { saveInteraction } from "./hajimi/interaction.ts";
 import { existsSync } from "fs";
 import { unlink } from "fs/promises";
 import { randomUUID } from "node:crypto";
@@ -32,8 +34,6 @@ import {
 import { FollowUpQueue, type FollowUpQueueSnapshot, type QueuedFollowUp } from "./follow-up-queue.ts";
 import { hajimiCoreInlineExtension, withHajimiTools } from "./hajimi/core-extension.ts";
 import { hajimiResourceLoaderOptions } from "./hajimi/resources.ts";
-import { readHajimiTask } from "./hajimi/task-state.ts";
-import { automaticRunLocked, AUTOMATIC_LOCK_MESSAGE } from "./hajimi/automatic-policy.ts";
 
 // ============================================================================
 // Constants
@@ -350,13 +350,6 @@ export class AgentSessionWrapper {
     this.resetIdleTimer();
     const type = command.type as string;
 
-    if (type !== "get_state" && type !== "get_tools") {
-      const cwd = this.inner.sessionManager?.getHeader?.()?.cwd;
-      if (cwd && automaticRunLocked((await readHajimiTask(cwd))?.state)) {
-        throw new Error(AUTOMATIC_LOCK_MESSAGE);
-      }
-    }
-
     switch (type) {
       case "prompt": {
         // Server-side backstop: the UI disables the send button while
@@ -378,6 +371,15 @@ export class AgentSessionWrapper {
 
       case "abort":
         this.suppressQueuedDispatchOnSettled = true;
+        // Persist user stop even if Pi emits no aborted assistant message.
+        try {
+          const cwd = this.inner.sessionManager?.getHeader?.()?.cwd;
+          const state = cwd ? (await readHajimiTask(cwd))?.state : undefined;
+          if (cwd && state?.interaction?.mode === "automatic") {
+            await saveInteraction(cwd, state, { ...state.interaction,
+              runtimeFailure: { message: "用户已停止运行，可补充指令后继续。", recordedAt: new Date().toISOString() } });
+          }
+        } catch { /* A metadata write failure must never prevent abort. */ }
         try {
           await this.inner.abort();
           return null;

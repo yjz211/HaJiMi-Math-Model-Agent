@@ -1,3 +1,4 @@
+import { translate } from "../i18n/index.ts";
 import { mkdir, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { join, resolve } from "node:path";
@@ -55,11 +56,11 @@ export async function acceptInterpretedReview(cwd: string, userInputId: string):
 
 export function reviewPrompt(state: HajimiWorkflowState): string {
   const pending = state.interaction?.pending;
-  if (pending?.kind === "mode") return "材料已核对。请在聊天中回复「全自动」或「半自动」：全自动连续推进至论文交付；半自动每阶段提交报告后等待你审查。两种模式均在论文交付后停止，等待人工验收。";
+  if (pending?.kind === "mode") return translate("zh-CN", state.interaction?.mode === "unselected" ? "hajimi.executionChoice" : "hajimi.workflowChoices");
   if (pending?.kind === "final") return "论文候选稿已交付，第 8 阶段已停止，等待人工验收。请审查论文与文件清单，直接提出问题或修改意见；完成审查后回复「验收通过」，随后进入第 9 阶段生成代码附录、AI使用说明和提交包。需要返工可回复「返工第 8 阶段：修改意见」，也可指定更早阶段。";
   if (!pending && state.interaction?.finalAccepted) return state.milestones.find(item => item.stage === 9)?.status === "satisfied"
     ? "提交材料已完成。需要修改已验收内容时请指定返工阶段。"
-    : "论文已人工验收。仅通过第9阶段专用生成工具整理提交材料，正文、代码和证据仍保持只读；如需修改请先返工。";
+    : "论文已人工验收。进入第9阶段整理代码附录、AI说明和提交包，可正常读取和处理辅助文件；如需修改已验收正文，请重新交付更新稿供用户审查。";
   if (pending?.kind === "gate") {
     const gate = state.openGates.find(item => item.gateId === pending.gateId);
     if (gate?.gate === "question_checkpoint") return "本问已停止，等待你审核本问结果、验证与待确认事项。通过请回复「同意继续」；需要修改请回复「返工：修改意见」。确认前不会进入下一问。";
@@ -106,7 +107,9 @@ export async function finishStage(cwd: string, state: HajimiWorkflowState, summa
   const stage = state.focus.stage;
   const interaction = interactionFor(state);
   delete interaction.reviewInput;
-  const kind = stage === 8 ? "final" : stage === 0 ? "mode" : stage === 7 || interaction.mode === "supervised" ? "stage" : null;
+  if (stage === 0) interaction.executionPolicy ??= "unselected";
+  const needsChoices = interaction.mode === "unselected" || interaction.executionPolicy === "unselected";
+  const kind = stage === 8 ? "final" : stage === 0 ? needsChoices ? "mode" : null : interaction.mode === "supervised" ? "stage" : null;
   interaction.pending = kind ? { kind, stage } : null;
   const report = await stageReport(cwd, { ...state, interaction }, summary, files);
   if (interaction.pending) interaction.pending.reportPath = report.path;
@@ -120,16 +123,21 @@ export async function handleReviewInput(cwd: string, text: string, interpretedIn
   let state = (await ensureHajimiTask(cwd)).state;
   let interaction = interactionFor(state);
   const value = text.trim().replace(/[。！!]+$/, "");
-  const mode = /^(?:选择|使用|切换到|切换为)?全自动(?:模式)?$/.test(value) ? "automatic"
-    : /^(?:选择|使用|切换到|切换为)?半自动(?:模式)?$/.test(value) ? "supervised" : null;
-  if (mode) {
-    interaction.mode = mode;
-    if (interaction.pending?.kind === "mode") {
+  const choice = value.replace(/^(?:选择|使用|切换到|切换为|切换)/, "").trim();
+  const modes: Record<string, "automatic" | "supervised"> = { "全自动": "automatic", "全自动模式": "automatic", "半自动": "supervised", "半自动模式": "supervised" };
+  const policies: Record<string, "strict" | "lean"> = { "严格清单门禁型": "strict", "严格清单": "strict", "严谨": "strict", "清爽快速运行型": "lean", "清爽快速": "lean", "快速": "lean" };
+  if (modes[choice] || policies[choice]) {
+    if (policies[choice] && interaction.mode === "unselected") return reviewPrompt(state);
+    if (modes[choice]) interaction.mode = modes[choice];
+    else interaction.executionPolicy = policies[choice];
+    if (interaction.pending?.kind === "mode" && interaction.mode !== "unselected"
+        && interaction.executionPolicy !== "unselected" && interaction.executionPolicy !== undefined) {
       interaction.reviewedStages.push(interaction.pending.stage);
       interaction.pending = null;
     }
-    await saveInteraction(cwd, state, interaction);
-    return mode === "automatic" ? "已选择全自动。请继续完成当前工作，至第 8 阶段交付论文后必须停止等待人工验收。" : "已选择半自动。每阶段完成后请交付报告和文件清单，停止并等待用户审查。";
+    const saved = await saveInteraction(cwd, state, interaction);
+    const confirmation = translate("zh-CN", "hajimi.choiceSaved", { choice });
+    return interaction.pending?.kind === "mode" ? `${confirmation}\n\n${reviewPrompt(saved)}` : confirmation;
   }
   const rework = /^(?:返工|修改)(?:第?\s*([0-8])\s*阶段)?\s*[:：]\s*([\s\S]+)$/.exec(value);
   if (rework) {

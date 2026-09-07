@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -11,7 +11,7 @@ import {
   createHajimiCoreFactory,
   deliveryValidationCommand,
 } from "./core-extension.ts";
-import { ensureHajimiTask, updateHajimiState } from "./task-state.ts";
+import { ensureHajimiTask, updateHajimiState, freezeHajimiInputs } from "./task-state.ts";
 import { mutateWorkflowState } from "./workflow-store.ts";
 import { interactionFor, saveInteraction } from "./interaction.ts";
 import { writeWorkflowStateAtomic } from "./workflow-store.ts";
@@ -34,7 +34,7 @@ test("stage 8 reuses unchanged integrated guidance and restores it after routing
     const first = (await project()).message!.content;
     assert.match(first, /modeling-paper-standard/);
     assert.match(first, /modeling-plot-suite/);
-    assert.match(first, /FORMAL-CONSUMPTION BLOCKED/);
+    assert.doesNotMatch(first, /FORMAL-CONSUMPTION BLOCKED/);
     assert.equal((await project()).message, undefined);
     state = (await ensureHajimiTask(cwd)).state;
     await updateHajimiState(cwd, state.revision, { currentObjective: "Prepare current paper section", microPlan: state.microPlan, nextAction: state.nextAction });
@@ -181,7 +181,7 @@ test("before_agent_start replaces the host cwd with task-relative WSL guidance",
     assert.equal(handlers.has("context"), false, "normal requests must never replace historical state messages");
     const contextResult = await handler({ systemPrompt: "Base prompt" } as never) as { message?: { content: string } };
     const live = contextResult.message;
-    assert.match(live?.content ?? "", /revision=1/);
+    assert.match(live?.content ?? "", /revisions are supplied by the runtime/);
     assert.match(live?.content ?? "", /objective=dynamic objective/);
     assert.match(live?.content ?? "", /guidance is unchanged/);
     assert.doesNotMatch(live?.content ?? "", /阶段 0：材料就绪/);
@@ -225,7 +225,7 @@ test("a persisted chat pause permits inspection, blocks mutation, and aborts the
   }
 });
 
-test("stage 9 exposes only the dedicated submission exception and still requires accepted inputs", async () => {
+test("stage 9 permits preparation tools and packaging still requires accepted inputs", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-submission-guard-"));
   const handlers = new Map<string, (...args: never[]) => Promise<unknown>>();
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<unknown> }>();
@@ -238,7 +238,7 @@ test("stage 9 exposes only the dedicated submission exception and still requires
     await writeWorkflowStateAtomic(cwd, state);
     createHajimiCoreFactory({ cwd, productRoot: process.cwd() })(pi);
     for (const name of ["bash", "write", "edit", "hajimi_set_requirement", "hajimi_set_milestone"]) {
-      assert.equal((await handlers.get("tool_call")!({ toolName: name } as never) as { block: boolean }).block, true);
+      assert.equal(await handlers.get("tool_call")!({ toolName: name } as never), undefined);
     }
     assert.equal(await handlers.get("tool_call")!({ toolName: "hajimi_generate_submission" } as never), undefined);
     assert.equal(tools.has("hajimi_complete_submission"), false);
@@ -287,6 +287,8 @@ test("concurrent tool batch cannot write after the milestone pauses", async () =
         ensure:async()=>(await ensureHajimiTask(cwd)).state});
     }
     createHajimiCoreFactory({cwd,productRoot:process.cwd()})(pi);
+    writeFileSync(join(cwd, "input/problem.txt"), "Problem statement");
+    await freezeHajimiInputs(cwd);
     const results = await Promise.allSettled([
       tools.get("hajimi_set_milestone")!.execute("end",{expectedRevision:state.revision,stage:0,status:"satisfied"}),
       tools.get("write")!.execute("write",{path:"output/forbidden.txt",content:"forbidden"}),

@@ -7,11 +7,14 @@ from pathlib import Path
 from .inputs import inspect_input
 from .provenance import validate_provenance
 from .validation import validate_delivery
+from .paper_quality import check_paper
 
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="hajimi-toolkit")
     subparsers = parser.add_subparsers(dest="command", required=True)
+    paper_parser = subparsers.add_parser("check-paper", help="Check actual paper completion without provenance gates")
+    paper_parser.add_argument("workspace", type=Path)
 
     inspect_parser = subparsers.add_parser("inspect-input", help="Inspect CSV, XLSX, PDF, DOCX, JSON, or text input")
     inspect_parser.add_argument("path", type=Path)
@@ -27,6 +30,10 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "check-paper":
+        report = check_paper(args.workspace)
+        print(json.dumps(report, ensure_ascii=False))
+        return 0 if report["passed"] else 2
     if args.command == "inspect-input":
         print(json.dumps(inspect_input(args.path), ensure_ascii=False, indent=2))
         return 0

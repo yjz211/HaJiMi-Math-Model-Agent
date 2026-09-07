@@ -156,11 +156,15 @@ test("input freezing is idempotent and rejects drift instead of accepting a new 
   }
 });
 
-test("unmet requirements and dependencies block milestone acceptance and a jump to stage 8", async () => {
+test("stage zero requires real frozen inputs before completion", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-transition-gate-"));
   try {
     const initial = await ensureHajimiTask(cwd);
-    await assert.rejects(setMilestone(cwd, initial.state.revision, 0, "satisfied"), /open requirements/);
+    await assert.rejects(setMilestone(cwd, initial.state.revision, 0, "satisfied"));
+    writeFileSync(join(cwd, "input/problem.txt"), "Problem statement");
+    await freezeHajimiInputs(cwd);
+    const completed = await setMilestone(cwd, initial.state.revision, 0, "satisfied");
+    assert.equal(completed.milestones[0].requirements[0].status, "satisfied");
     await assert.rejects(setWorkflowFocus(cwd, initial.state.revision, 8, null), /Cannot skip|dependencies are not satisfied/);
     assert.equal((await readHajimiTask(cwd))?.state.focus.stage, 0);
   } finally {

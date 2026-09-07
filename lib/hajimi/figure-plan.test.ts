@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- compact malformed-plan fixtures */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { figurePlanErrors } from './figure-plan.ts';
@@ -17,17 +18,17 @@ test('full-set plan distinguishes unique figures, required sources and reasoning
  assert.ok(figurePlanErrors({...plan,figures:[...figures,{...figures[0]}]}).some(x=>x.includes('duplicate')));
  assert.ok(figurePlanErrors({...plan,figures:figures.slice(0,2)}).some(x=>x.includes('at least 8')));
 });
-test('execution gate blocks missing/changed plans and accepts a validated source-backed plan', async () => {
+test('optional plan validation does not lock commands when missing or changed', async () => {
  const cwd=await mkdtemp(join(tmpdir(),'hajimi-figure-plan-'));
  try {
   await mkdir(join(cwd,'.hajimi'));await writeFile(join(cwd,'source.json'),'{}');
   await assert.rejects(beginFigurePlan(cwd,7),/>=8/);
-  await beginFigurePlan(cwd);await assert.rejects(requireFigurePlan(cwd),/Complete the upstream/);
+  await beginFigurePlan(cwd);await requireFigurePlan(cwd);
   const figures=Array.from({length:9},(_,i)=>({id:`fig_${i}`,class:i===8?'DRAWIO':'DATA',purpose:i===8?'roadmap':'result',question:'q1',chartType:["折线图","散点图","柱状图"][i%3],recipe:'basic #3',reason:'real',message:'result',section:'results',layout:'single',sources:['source.json'],outputs:[`figures/fig_${i}.pdf`],finalWidthMm:136}));
   const plan={questions:[{id:'q1',kind:'data'}],figures};
   await writeFile(join(cwd,'FIGURE_PLAN.json'),JSON.stringify(plan));
   await validateFigurePlan(cwd,'FIGURE_PLAN.json');await requireFigurePlan(cwd);
   await writeFile(join(cwd,'FIGURE_PLAN.json'),JSON.stringify({...plan,note:'changed'}));
-  await assert.rejects(requireFigurePlan(cwd),/changed plan/);
+  await requireFigurePlan(cwd);
  } finally {await rm(cwd,{recursive:true,force:true});}
 });

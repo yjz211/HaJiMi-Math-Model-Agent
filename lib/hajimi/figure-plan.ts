@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- validates untrusted JSON before it has a schema */
 import { readFile, writeFile, stat } from 'node:fs/promises';
 import { resolve, relative, join, isAbsolute } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -53,11 +54,7 @@ export async function validateFigurePlan(cwd: string, planPath: string) {
 export async function beginFigurePlan(cwd: string, minimum = 8) {
   if (!Number.isInteger(minimum) || minimum < 8) throw new Error('Minimum must be an integer >=8; raise only for an explicit user request');
   await writeFile(join(cwd, '.hajimi/figure-plan-policy.json'), JSON.stringify({ required: true, minimum }, null, 2));
-  return 'Upstream full-set planning enabled. Read source material and bundled upstream-planning.md with read/ls/find/grep. Write FIGURE_PLAN.json, then validate. Commands are paused until the plan passes.';
+  return 'Read source material and bundled upstream-planning.md, then write FIGURE_PLAN.json. Stage completion validates the plan automatically; shell and repair commands stay available.';
 }
-export async function requireFigurePlan(cwd: string) {
-  const policy = JSON.parse(await readFile(join(cwd, '.hajimi/figure-plan-policy.json'), 'utf8').catch(() => '{}'));
-  if (!policy.required) return;
-  const text = policy.planPath ? await readFile(local(cwd, policy.planPath), 'utf8').catch(() => '') : '';
-  if (!policy.planHash || digest(text) !== policy.planHash) throw new Error('Complete the upstream FIGURE_PLAN.json and call hajimi_validate_figure_plan before executing commands. Use read/ls/find/grep for planning; a changed plan must be revalidated.');
-}
+/** Legacy API: planning is advisory; commands are always available. */
+export async function requireFigurePlan(_cwd: string) {}

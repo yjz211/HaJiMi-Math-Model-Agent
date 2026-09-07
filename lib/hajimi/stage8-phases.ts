@@ -1,14 +1,48 @@
-import { readFile, writeFile, rename, realpath } from 'node:fs/promises';
-import { join, resolve, relative, isAbsolute } from 'node:path';
-import { createHash } from 'node:crypto';
-import { withTaskLock } from './workflow-store.ts';
+import { readFile, writeFile, rename, realpath } from "node:fs/promises";
+import { join, resolve, relative, isAbsolute } from "node:path";
+import { createHash } from "node:crypto";
+import { withTaskLock } from "./workflow-store.ts";
+import { validateFigurePlan } from "./figure-plan.ts";
+import { requireOutput } from "./completion-checks.ts";
 
-export type Stage8Phase = 'figures' | 'writing' | 'review' | 'ready';
-interface PhaseState { phase: Stage8Phase; figureHashes?: Record<string,string>; paperHashes?: Record<string,string>; repairPaths?: string[]; history: Array<{phase:Stage8Phase;note:string;at:string}> }
-const file = (cwd:string) => join(cwd,'.hajimi/stage8-phases.json');
-export async function readStage8(cwd:string):Promise<PhaseState> {
- try { const s=JSON.parse(await readFile(file(cwd),'utf8')); if(!['figures','writing','review','ready'].includes(s.phase)||!Array.isArray(s.history))throw new Error('Invalid stage8 phase state');return s; }
- catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT')return {phase:'figures',history:[]};throw e;}
+export type Stage8Phase = "figures" | "writing" | "review" | "ready";
+interface PhaseState { phase: Stage8Phase; figureHashes?: Record<string,string>; paperHashes?: Record<string,string>; repairPaths?: string[]; severeIssues?: string[]; history: Array<{ phase: Stage8Phase; note: string; at: string; severeIssues?: string[] }> }
+const file = (cwd: string) => join(cwd, ".hajimi/stage8-phases.json");
+export async function readStage8(cwd: string): Promise<PhaseState> {
+  try { return JSON.parse(await readFile(file(cwd), "utf8")); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return { phase: "figures", history: [] }; throw error; }
+}
+async function isStrict(cwd: string) {
+  try { return JSON.parse(await readFile(join(cwd, '.hajimi/state.json'), 'utf8')).interaction?.executionPolicy === 'strict'; }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error; }
+}
+export async function assertStage8(cwd: string, allowed: Stage8Phase[]) {
+  if (await isStrict(cwd)) await assertStrictStage8(cwd, allowed);
+}
+export async function moveStage8(cwd: string, phase: Stage8Phase, note: string,
+  _figurePaths?: string[], _severeIssues: string[] = [], _repairPaths: string[] = []) {
+  if (await isStrict(cwd)) return moveStrictStage8(cwd, phase, note, _figurePaths, _severeIssues, _repairPaths);
+  if (phase === "writing" || phase === "review" || phase === "ready") {
+    await validateFigurePlan(cwd, "FIGURE_PLAN.json");
+    const plan = JSON.parse(await readFile(join(cwd, "FIGURE_PLAN.json"), "utf8"));
+    for (const figure of plan.figures) for (const path of figure.outputs) await requireOutput(cwd, path);
+  }
+  if (phase === "review") {
+    const config = JSON.parse(await readFile(join(cwd, "paper/hajimi-paper-config.json"), "utf8"));
+    await requireOutput(cwd, config.mainTex ?? "paper/main.tex");
+    await requireOutput(cwd, config.finalPdf ?? "paper/main.pdf");
+  }
+  if (phase === "ready") {
+    const state = JSON.parse(await readFile(join(cwd, ".hajimi/state.json"), "utf8"));
+    if (_severeIssues.length || !state.milestones.some((m: { stage: number; status: string }) => m.stage === 8 && m.status === "satisfied")) throw new Error("Use hajimi_set_milestone with the actual outputs and page review to complete delivery checks before ready.");
+  }
+  return withTaskLock(cwd, async () => {
+    const state = await readStage8(cwd);
+    const next = { phase, severeIssues: _severeIssues, history: [...state.history, { phase, note, at: new Date().toISOString() }] };
+    await writeFile(file(cwd) + ".tmp", JSON.stringify(next));
+    await rename(file(cwd) + ".tmp", file(cwd));
+    return next;
+  });
 }
 async function hashes(cwd:string,paths:string[]) {
  const out:Record<string,string>={};const root=await realpath(cwd);
@@ -19,8 +53,8 @@ async function unchanged(cwd:string,expected:Record<string,string>={},except:str
  const names=Object.keys(expected).filter(p=>!except.includes(p)),actual=await hashes(cwd,names);
  for(const name of names)if(actual[name]!==expected[name])throw new Error(`Stable artifact changed: ${name}. Return only the affected work to its phase with a specific severe issue; do not silently redraw.`);
 }
-export async function assertStage8(cwd:string,allowed:Stage8Phase[]){const s=await readStage8(cwd);if(!allowed.includes(s.phase))throw new Error(`Stage 8 is ${s.phase}; requires ${allowed.join('/')}. Use hajimi_stage8_phase in order.`);if(s.phase!=='figures')await unchanged(cwd,s.figureHashes);if(s.phase==='review'||s.phase==='ready')await unchanged(cwd,s.paperHashes);}
-export async function moveStage8(cwd:string,next:Stage8Phase,note:string,figurePaths?:string[],severeIssues:string[]=[],repairPaths:string[]=[]){
+async function assertStrictStage8(cwd:string,allowed:Stage8Phase[]){const s=await readStage8(cwd);if(!allowed.includes(s.phase))throw new Error(`Stage 8 is ${s.phase}; requires ${allowed.join('/')}. Use hajimi_stage8_phase in order.`);if(s.phase!=='figures')await unchanged(cwd,s.figureHashes);if(s.phase==='review'||s.phase==='ready')await unchanged(cwd,s.paperHashes);}
+async function moveStrictStage8(cwd:string,next:Stage8Phase,note:string,figurePaths?:string[],severeIssues:string[]=[],repairPaths:string[]=[]){
  return withTaskLock(cwd,async()=>{
   const s=await readStage8(cwd);if(!note.trim())throw new Error('A short factual phase note is required');
   const order:Stage8Phase[]=['figures','writing','review','ready'];const a=order.indexOf(s.phase),b=order.indexOf(next);
@@ -35,7 +69,7 @@ export async function moveStage8(cwd:string,next:Stage8Phase,note:string,figureP
   else if(b!==a+1)throw new Error('Do not skip stage-8 phases');
   else if(next==='writing'){
    let paths=figurePaths;
-   try{const plan=JSON.parse(await readFile(join(cwd,'FIGURE_PLAN.json'),'utf8'));const planned=plan.figures.flatMap((f:any)=>f.outputs);paths=[...new Set<string>([...(paths??[]),...planned])];}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
+   try{const plan=JSON.parse(await readFile(join(cwd,'FIGURE_PLAN.json'),'utf8'));const planned=plan.figures.flatMap((f: { outputs: string[] })=>f.outputs);paths=[...new Set<string>([...(paths??[]),...planned])];}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
    if(!paths?.length)throw new Error('Provide the completed figure set before writing');
    await unchanged(cwd,s.figureHashes,s.repairPaths);s.figureHashes=await hashes(cwd,paths);delete s.repairPaths;
   }else if(next==='review'){
@@ -48,7 +82,7 @@ export async function moveStage8(cwd:string,next:Stage8Phase,note:string,figureP
    const report=JSON.parse(await readFile(join(cwd,'.hajimi/validation.json'),'utf8'));
    if(!report.passed||!report.strict)throw new Error('Run delivery validation in review before marking ready');
   }
-  s.phase=next;s.history.push({phase:next,note,severeIssues,at:new Date().toISOString()} as any);
+  s.phase=next;s.severeIssues=severeIssues;s.history.push({phase:next,note,severeIssues,at:new Date().toISOString()});
   await writeFile(file(cwd)+'.tmp',JSON.stringify(s,null,2));await rename(file(cwd)+'.tmp',file(cwd));return s;
  });
 }

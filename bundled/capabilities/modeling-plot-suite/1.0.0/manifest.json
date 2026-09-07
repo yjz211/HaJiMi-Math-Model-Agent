@@ -5,7 +5,7 @@
   "source": {
     "kind": "user-authorized-local-codex-skill",
     "logicalPath": "toolkit/legacy-modeling-plot-suite",
-    "entrypointSha256": "861c546140c778693229624e537d120578545991c1986c5363715510b1c0a128",
+    "entrypointSha256": "142b01fb2636373db1c2afbcc18527dfea5fa6cb9bded5e6239f9dd58a5a3120",
     "licenseStatus": "not-declared-in-source-snapshot",
     "redistributionScope": "HaJiMi local and packaged builds authorized by the user"
   },
@@ -994,39 +994,14 @@
       "sha256": "fd5ac4b0c7b727567861239de2921232974358373938ef4a2ac35cb3c376b774"
     },
     {
-      "path": "resources/assets/tools/data_fig_vision_check.pyc",
-      "sizeBytes": 11880,
-      "sha256": "ffc2dd706d4ae53da62430cfb48ccc23e341095cc36c0ddb7b91af11a404c898"
-    },
-    {
-      "path": "resources/assets/tools/drawio_vision_check.pyc",
-      "sizeBytes": 21003,
-      "sha256": "62f2a88a78151dc1c71740d81061904e07e16a3a04693a540f12253015354d72"
-    },
-    {
       "path": "resources/assets/tools/gpt_image.py",
       "sizeBytes": 12213,
       "sha256": "a888d4dcbfad265d7b6e753a5a9ae89056fd6f0e630d10ecd24511758760606e"
     },
     {
-      "path": "resources/assets/tools/gpt_image.pyc",
-      "sizeBytes": 15890,
-      "sha256": "0dabf7d860787b8615f0cbb645f67ee1791393d3e5b9bfb82482cb3c9cc02b8b"
-    },
-    {
-      "path": "resources/assets/tools/screenshot_capture.pyc",
-      "sizeBytes": 19859,
-      "sha256": "f1dc30052735de22284ee31f09c5fc748fb8251c9e2fad67a05a702041a741da"
-    },
-    {
       "path": "resources/assets/tools/tikz_vision_check.py",
       "sizeBytes": 12872,
       "sha256": "3bcbf72bebcf8e32e6a5fbe0f9f214eea22b9565ac3cdede93c04bb8e2964fbf"
-    },
-    {
-      "path": "resources/assets/tools/tikz_vision_check.pyc",
-      "sizeBytes": 17063,
-      "sha256": "2ae39aecb980b97c7e4e4366bb40b48e3e73d47a8420eea875ca980a2b9d4955"
     },
     {
       "path": "resources/references/mermaid-diagram.md",

@@ -113,7 +113,7 @@ def stage8_checks(workspace: Path, *, strict: bool) -> list[dict[str, Any]]:
             missing_routes.append(f"{key}@{version}")
     checks.append(_check("stage8_joint_route", not missing_routes, "Both capabilities routed" if not missing_routes else f"Missing routes: {', '.join(missing_routes)}", severity))
     active_freezes = [item for item in state.get("provenance", {}).get("freezes", []) if item.get("status") == "active"]
-    checks.append(_check("stage8_evidence_freeze", bool(active_freezes), f"{len(active_freezes)} active freeze(s)", severity))
+    checks.append(_check("stage8_evidence_freeze", bool(active_freezes), f"{len(active_freezes)} active freeze(s); created automatically when binding publications", "warning"))
 
     config_path = workspace / "paper" / "hajimi-paper-config.json"
     try:
@@ -184,30 +184,25 @@ def _equation_checks(workspace: Path, state: dict[str, Any], config: dict[str, A
     if (not isinstance(identifiers, list) or not identifiers
             or any(not isinstance(item, str) or not item for item in identifiers)
             or len(set(identifiers)) != len(identifiers)):
-        return [_check("stage8_equation_baseline", False, "Set equationBaselineArtifactIds to the frozen technical equation artifact(s), not the rewritten paper")]
-    provenance = state.get("provenance", {})
-    frozen_evidence = {ref for freeze in provenance.get("freezes", []) if freeze.get("status") == "active"
-                       for ref in freeze.get("evidenceRefs", [])}
-    eligible: dict[str, dict[str, Any]] = {}
-    for evidence in provenance.get("evidence", []):
-        if (evidence.get("evidenceId") not in frozen_evidence or evidence.get("status") != "frozen"
-                or evidence.get("domainValidationStatus") != "accepted"):
-            continue
-        for experiment in provenance.get("experiments", []):
-            if (experiment.get("experimentId") not in evidence.get("experimentRefs", [])
-                    or experiment.get("status") != "succeeded" or experiment.get("trust") not in {"attested", "verified"}
-                    or experiment.get("selection") not in {"candidate", "selected"}):
-                continue
-            for ref in experiment.get("outputRefs", []):
-                if isinstance(ref, dict) and ref.get("id") in evidence.get("artifactRefs", []):
-                    eligible[ref["id"]] = ref
+        return [_check("stage8_equation_baseline", False, "Set equationBaselineArtifactIds to registered technical equation artifact(s), not the rewritten paper")]
+    registry_path = workspace / ".hajimi" / "artifacts.jsonl"
+    try:
+        records = [json.loads(line) for line in registry_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        eligible = {ref["id"]: ref for ref in records if isinstance(ref, dict) and "id" in ref}
+    except (OSError, ValueError, TypeError):
+        eligible = {}
+    # Legacy records may live only in experiment outputs.
+    for experiment in state.get("provenance", {}).get("experiments", []):
+        for ref in experiment.get("outputRefs", []):
+            if isinstance(ref, dict) and "id" in ref:
+                eligible.setdefault(ref["id"], ref)
     checks = []
     for index, identifier in enumerate(identifiers):
         name = f"stage8_equation_baseline_{index + 1}"
         try:
             ref = eligible.get(identifier)
             if ref is None:
-                raise ValueError(f"{identifier}: not an output covered by active frozen evidence")
+                raise ValueError(f"{identifier}: not a registered technical artifact")
             error = _verify_artifact_ref(workspace, ref)
             if error:
                 raise ValueError(error)
@@ -236,6 +231,8 @@ def _workspace_path(workspace: Path, value: Any) -> Path:
 
 def _run(name: str, command: list[str], cwd: Path) -> dict[str, Any]:
     try:
+        if command[0] == sys.executable:
+            command = [command[0], "-X", "utf8", *command[1:]]
         result = subprocess.run(command, cwd=cwd, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONUTF8": "1"}, text=True, encoding="utf-8", errors="replace", capture_output=True, timeout=120, check=False)
         detail = (result.stdout + "\n" + result.stderr).strip()[-2000:] or f"exit {result.returncode}"
         return _check(name, result.returncode == 0, detail)

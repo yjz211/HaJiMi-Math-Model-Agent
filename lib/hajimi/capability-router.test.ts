@@ -31,7 +31,7 @@ test("stage 8 jointly routes the hashed paper and plot capability bundles", asyn
     const routed = await routeCapabilities({ productRoot: process.cwd(), state: initial.state, stage: 8, now: "2026-01-01T00:00:00.000Z" });
     assert.deepEqual(routed.decisions.map((item) => item.capabilityId), ["modeling-paper-standard", "modeling-plot-suite"]);
     assert.equal(routed.evidenceFreezeReady, false);
-    assert.match(routed.fragments.map((item) => item.text).join("\n"), /FORMAL-CONSUMPTION BLOCKED/);
+    assert.doesNotMatch(routed.fragments.map((item) => item.text).join("\n"), /FORMAL-CONSUMPTION BLOCKED/);
     assert.ok(routed.contextChars <= 7_000);
     const guidance = routed.fragments.map((item) => item.text).join("\n");
     assert.match(guidance, /modeling-plot-suite.*read .*SKILL\.md/);
@@ -102,5 +102,5 @@ test("active HaJiMi tools follow the governed stage policy", () => {
   assert.equal(hajimiToolsForStage(2).includes("hajimi_bind_publication"), false);
   assert.equal(hajimiToolsForStage(7).includes("hajimi_freeze_evidence"), true);
   assert.equal(hajimiToolsForStage(8).includes("hajimi_bind_publication"), true);
-  assert.equal(hajimiToolsForStage(8).includes("hajimi_run_managed_experiment"), false);
+  assert.equal(hajimiToolsForStage(8).includes("hajimi_run_managed_experiment"), true);
 });
