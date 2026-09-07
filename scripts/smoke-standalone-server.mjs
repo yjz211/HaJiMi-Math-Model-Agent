@@ -2,7 +2,6 @@ import { spawn, spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
-import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const STARTUP_TIMEOUT_MS = 30_000;
@@ -144,7 +143,7 @@ if (!existsSync(join(sourceProductRoot, "bundled", "workflows", "modeling-core",
   process.exit(1);
 }
 
-const isolatedRoot = mkdtempSync(join(tmpdir(), "pi-agent-standalone-smoke-"));
+const isolatedRoot = mkdtempSync(join(process.cwd(), ".pi-agent-standalone-smoke-"));
 let child = null;
 
 try {
