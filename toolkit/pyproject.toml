@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hajimi-toolkit"
+version = "0.1.0"
+description = "Deterministic import, artifact, and delivery validation for HaJiMi"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "numpy==2.5.2",
+  "pandas==3.0.5",
+  "scipy==1.18.1",
+  "scikit-learn==1.9.0",
+  "statsmodels==0.15.0",
+  "sympy==1.14.0",
+  "networkx==3.6.1",
+  "matplotlib==3.11.1",
+  "seaborn==0.13.2",
+  "pillow==12.3.0",
+  "openpyxl==3.1.5",
+  "pypdf==6.16.2",
+  "python-docx==1.2.0",
+]
+
+[project.scripts]
+hajimi-toolkit = "hajimi_toolkit.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hajimi_toolkit"]
+

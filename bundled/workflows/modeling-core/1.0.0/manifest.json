@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "hajimi.bundled-workflow-manifest.v1",
+  "id": "modeling-core",
+  "version": "1.0.0",
+  "protocolVersion": "hajimi.workflow-protocol.v1",
+  "source": {
+    "kind": "approved-local-snapshot",
+    "logicalId": "mathmodeling-ai-lab",
+    "manifestHash": "b7557fec2a9b9359929468a3b8f2953f1167cb0203081842dd289a83b1c238b5"
+  },
+  "entry": "definition.json",
+  "stageCards": "stage-cards/*.md"
+}

@@ -1,0 +1,157 @@
+appId: ai.hajimi.desktop
+productName: HaJiMi
+copyright: Copyright © 2026 Chasen
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - package.json
+  - build/icon.ico
+  - build/icon.icns
+  - electron/dist/**/*
+  - "!electron/**/*.ts"
+  - "!electron/tsconfig.json"
+
+extraResources:
+  - from: bundled
+    to: hajimi/bundled
+  - from: toolkit
+    to: hajimi/toolkit
+    filter:
+      - "pyproject.toml"
+      - "src/**/*"
+      - "!**/__pycache__"
+      - "!**/*.py[cod]"
+      - "!**/.pytest_cache"
+  - from: runtime
+    to: hajimi/runtime
+    filter:
+      - "wsl/**/*"
+      - "windows/bootstrap/job-host.exe"
+      - "windows/bootstrap/bootstrap.json"
+      - "windows/trust.json"
+      - "windows/release.json"
+      - "windows/provision-runtime.ps1"
+      - "windows/payloads/*.tar.gz"
+      - "windows/drawio/**/*"
+  - from: .next/standalone
+    to: standalone
+    filter:
+      - "**/*"
+      - "!node_modules"
+      - "!release"
+      - "!.git"
+      - "!docs{,/**/*}"
+      - "!scripts{,/**/*}"
+      - "!job-host.obj"
+      - "!tsconfig.tsbuildinfo"
+      - "!Launch-HaJiMi-*"
+      - "!NATIVE_TEST_README.md"
+      - "!**/*.test.ts"
+      - "!**/*.test.tsx"
+      - "!**/*.test.mjs"
+      - "!**/*.test.js"
+  - from: .next/standalone/node_modules
+    to: standalone/node_modules
+  - from: .next/static
+    to: standalone/.next/static
+    filter:
+      - "**/*"
+  - from: public
+    to: standalone/public
+    filter:
+      - "**/*"
+  - from: node_modules/electron-updater
+    to: app/node_modules/electron-updater
+  - from: node_modules/builder-util-runtime
+    to: app/node_modules/builder-util-runtime
+  - from: node_modules/fs-extra
+    to: app/node_modules/fs-extra
+  - from: node_modules/graceful-fs
+    to: app/node_modules/graceful-fs
+  - from: node_modules/jsonfile
+    to: app/node_modules/jsonfile
+  - from: node_modules/js-yaml
+    to: app/node_modules/js-yaml
+  - from: node_modules/lazy-val
+    to: app/node_modules/lazy-val
+  - from: node_modules/lodash.escaperegexp
+    to: app/node_modules/lodash.escaperegexp
+  - from: node_modules/lodash.isequal
+    to: app/node_modules/lodash.isequal
+  - from: node_modules/semver
+    to: app/node_modules/semver
+  - from: node_modules/tiny-typed-emitter
+    to: app/node_modules/tiny-typed-emitter
+  - from: node_modules/universalify
+    to: app/node_modules/universalify
+  - from: node_modules/debug
+    to: app/node_modules/debug
+  - from: node_modules/sax
+    to: app/node_modules/sax
+  - from: node_modules/argparse
+    to: app/node_modules/argparse
+  - from: node_modules/ms
+    to: app/node_modules/ms
+
+asar: true
+
+afterPack: scripts/prune-packaged-esbuild.mjs
+
+npmRebuild: true
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  signAndEditExecutable: true
+
+nsis:
+  perMachine: true
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: HaJiMi
+  uninstallDisplayName: HaJiMi
+  artifactName: "HaJiMi-Setup-${version}.${ext}"
+  include: build/installer.nsh
+
+linux:
+  executableName: hajimi
+  syncDesktopName: true
+  maintainer: "Chasen <Chasen-Liao@users.noreply.github.com>"
+  target:
+    - target: deb
+      arch:
+        - x64
+  icon: build/icon.png
+  category: Development
+  artifactName: "HaJiMi-${version}-linux-${arch}.${ext}"
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - universal
+    - target: zip
+      arch:
+        - universal
+  icon: build/icon.icns
+  category: public.app-category.developer-tools
+  darkModeSupport: true
+  # Standalone contains architecture-specific native packages side-by-side.
+  # They are identical in both intermediate apps and must not be lipo'd by
+  # @electron/universal; runtime package resolution selects the right arch.
+  # Brace includes standalone/.next: minimatch skips dotdirs unless named.
+  # NFT copies native addons under hashed pi-coding-agent there; both arch
+  # builds contain the same .node/.dylib and must not be lipo'd.
+  x64ArchFiles: "Contents/Resources/standalone{,/.next}/**/{@earendil-works/pi-tui/native/darwin/prebuilds/**,@mariozechner/clipboard-darwin-{arm64,x64}/**,@img/sharp-darwin-{arm64,x64}/**,@img/sharp-libvips-darwin-{arm64,x64}/**}"
+  artifactName: "HaJiMi-${version}-mac-${arch}.${ext}"
+
+dmg:
+  title: "HaJiMi ${version}"

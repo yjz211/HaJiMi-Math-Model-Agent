@@ -1,0 +1,40 @@
+run_id: replace_me
+started_at: replace_me
+finished_at: replace_me
+operator: replace_me
+stage: baseline_or_candidate_or_final
+
+command: replace_me
+entrypoint: replace_me
+exit_code: null
+duration_seconds: null
+
+environment:
+  os: replace_me
+  language_version: replace_me
+  dependencies_file: replace_me
+  git_commit: replace_me
+  git_dirty: null
+
+inputs:
+  - path: replace_me
+    sha256: replace_me
+
+config:
+  path: replace_me
+  random_seed: null
+  key_parameters: {}
+
+outputs:
+  - path: replace_me
+    sha256: replace_me
+    evidence_ids: []
+
+validation:
+  status: unverified
+  checks: []
+  cross_validation: []
+
+warnings: []
+conclusion_impact: replace_me
+

@@ -1,0 +1,61 @@
+import type { SessionManager, SettingsManager, AgentSessionEvent } from "@earendil-works/pi-coding-agent";
+
+export interface ContextUsage {
+  percent: number | null;
+  contextWindow: number;
+  tokens: number | null;
+}
+
+export interface ModelLike {
+  id: string;
+  provider: string;
+}
+
+export interface ToolInfo {
+  name: string;
+  description: string;
+}
+
+export interface NavigateTreeResult {
+  editorText?: string;
+  cancelled: boolean;
+  aborted?: boolean;
+}
+
+export interface AgentSessionLike {
+  readonly sessionId: string;
+  readonly sessionFile: string | undefined;
+  readonly isStreaming: boolean;
+  readonly isCompacting: boolean;
+  readonly autoCompactionEnabled: boolean;
+  readonly autoRetryEnabled: boolean;
+  readonly model: ModelLike | undefined;
+  /** Pi 0.82+: model lookup lives on modelRuntime (modelRegistry facade removed from AgentSession). */
+  readonly modelRuntime: {
+    getModel: (provider: string, modelId: string) => ModelLike | undefined;
+    refresh?: (options: { allowNetwork: boolean }) => Promise<unknown>;
+  };
+  readonly sessionManager: SessionManager;
+  readonly settingsManager: SettingsManager;
+  readonly agent: { state?: { systemPrompt?: string; thinkingLevel?: string } };
+
+  subscribe(listener: (event: AgentSessionEvent) => void): () => void;
+  prompt(text: string, options?: { images?: Array<{ type: "image"; data: string; mimeType: string }> }): Promise<void>;
+  abort(): Promise<void>;
+  setModel(model: ModelLike): Promise<void>;
+  navigateTree(targetId: string, options?: { summarize?: boolean }): Promise<NavigateTreeResult>;
+  setThinkingLevel(level: string): void;
+  compact(customInstructions?: string): Promise<unknown>;
+  setAutoCompactionEnabled(enabled: boolean): void;
+  setAutoRetryEnabled(enabled: boolean): void;
+  steer(text: string, images?: Array<{ type: "image"; data: string; mimeType: string }>): Promise<void>;
+  followUp(text: string, images?: Array<{ type: "image"; data: string; mimeType: string }>): Promise<void>;
+  getAllTools(): ToolInfo[];
+  getActiveToolNames(): string[];
+  setActiveToolsByName(names: string[]): void;
+  abortCompaction(): void;
+  getContextUsage(): ContextUsage | undefined;
+  /** Pi extension bindings (desktop UI bridge). Optional on stubs. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bindExtensions?(bindings: { uiContext?: any; mode?: string }): Promise<void>;
+}

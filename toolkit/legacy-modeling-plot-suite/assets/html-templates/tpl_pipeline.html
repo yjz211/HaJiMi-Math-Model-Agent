@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  数据流水线图模板 (pipeline) —— 横向多阶段数据流
+  ------------------------------------------------------------
+  产物文件名建议: fig_pipeline.html → fig_pipeline.pdf
+  适用: 数据处理 pipeline、方法流水线、端到端处理链
+
+  【怎么改】
+   1. ⛔ 配色不再"换主题预设"。下面 :root 的 hsl() 是示范值，实战按 SKILL《设计规范 B 节》
+      用 Step 1 算出的主色相 H0 推导（全篇共用同一 H0）。
+   2. 每个 .stage 是一个阶段: .stage-icon(可留数字/图标符)、.stage-title(阶段名)、
+      .stage-tool(该阶段方法/工具)。
+   3. 阶段间 .flow-arrow ▶ 自动生成。
+   4. 加/减阶段: 复制 .stage + 其后的 .flow-arrow。阶段多时会自动换行(wrap),
+      换行后仍靠 grid 对齐; 若想强制单行不换行, 把 .track 的 flex-wrap 改 nowrap。
+   5. ⛔ 图内不写标题。⛔ 横向过长会导致 PDF 过宽(宽高比告警), 阶段 >5 个建议换行。
+
+  【布局原理】flex 横向排列 + wrap 自动换行, 阶段等高, 无坐标错位。
+============================================================ -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* ⛔ 示范值：淡雅低饱和色板（示范 H0≈212 灰蓝）。实战按 SKILL B 节从 H0 用 HSL 推导。
+     ⛔ 深色只用于细边框/文字/箭头，不做大块实心填充。 */
+  :root {
+    --c-primary:   hsl(212, 38%, 54%);
+    --c-primary-d: hsl(212, 40%, 46%);
+    --c-secondary: hsl(212, 22%, 92%);
+    --c-accent:    hsl( 32, 34%, 52%);
+    --c-border:    hsl(212, 18%, 62%);
+    --c-node-bg:   hsl(212, 20%, 96%);
+    --c-focus-bg:  hsl(212, 28%, 84%);
+    --c-text:      hsl(212, 14%, 22%);
+    --c-muted:     hsl(212, 10%, 46%);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; width: fit-content; height: fit-content; background: transparent; }
+  body { font-family: "Microsoft YaHei","Noto Sans SC","PingFang SC",sans-serif; color: var(--c-text); }
+  .fig { display: inline-block; background: transparent; padding: 34px 40px; width: fit-content; height: fit-content; }
+
+  .track { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
+  /* 阶段卡: 浅底 + 细边（顶部略粗强调条用主色，非大块实心） */
+  .stage {
+    flex: 0 0 auto; width: 178px;
+    background: var(--c-node-bg); border: 1.25px solid var(--c-border);
+    border-top: 3px solid var(--c-primary); border-radius: 8px;
+    padding: 12px 12px 14px; text-align: center;
+  }
+  .stage-icon {
+    width: 36px; height: 36px; margin: 0 auto 8px; border-radius: 50%;
+    background: var(--c-focus-bg); color: var(--c-text);
+    border: 1.25px solid var(--c-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+  }
+  .stage-title { font-size: 15px; font-weight: 700; color: var(--c-primary-d); line-height: 1.4; }
+  .stage-tool {
+    margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--c-border);
+    font-size: 12.5px; color: var(--c-muted); line-height: 1.5;
+  }
+  /* 阶段间箭头 */
+  .flow-arrow { flex: 0 0 auto; color: var(--c-primary); font-size: 22px; line-height: 1; padding: 0 2px; }
+</style>
+</head>
+<body>
+<div class="fig">
+  <div class="track">
+
+    <!-- ▼ 阶段 1 ▼ -->
+    <div class="stage">
+      <div class="stage-icon">1</div>
+      <div class="stage-title">数据采集</div>
+      <div class="stage-tool">多源接入 · 传感器 / 数据库</div>
+    </div>
+    <div class="flow-arrow">▶</div>
+
+    <!-- ▼ 阶段 2 ▼ -->
+    <div class="stage">
+      <div class="stage-icon">2</div>
+      <div class="stage-title">数据清洗</div>
+      <div class="stage-tool">去噪 · 缺失填补 · 异常剔除</div>
+    </div>
+    <div class="flow-arrow">▶</div>
+
+    <!-- ▼ 阶段 3 ▼ -->
+    <div class="stage">
+      <div class="stage-icon">3</div>
+      <div class="stage-title">特征工程</div>
+      <div class="stage-tool">特征提取 · 降维 · 归一化</div>
+    </div>
+    <div class="flow-arrow">▶</div>
+
+    <!-- ▼ 阶段 4 ▼ -->
+    <div class="stage">
+      <div class="stage-icon">4</div>
+      <div class="stage-title">建模求解</div>
+      <div class="stage-tool">核心模型 · 训练 / 优化</div>
+    </div>
+    <div class="flow-arrow">▶</div>
+
+    <!-- ▼ 阶段 5 ▼ -->
+    <div class="stage">
+      <div class="stage-icon">5</div>
+      <div class="stage-title">结果输出</div>
+      <div class="stage-tool">预测 · 评估 · 可视化</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

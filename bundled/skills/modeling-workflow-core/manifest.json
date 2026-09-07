@@ -1,0 +1,236 @@
+{
+  "schema_version": "lab-capability-snapshot.v1",
+  "source": {
+    "logical_id": "mathmodeling-ai-lab",
+    "workspace_name": "MathModeling-AI-Lab"
+  },
+  "snapshot_version": "1.1.0",
+  "entries": [
+    {
+      "logical_id": "workflow-methodology",
+      "source_relative_path": "methodology/modeling_workflow.md",
+      "source_size_bytes": 14591,
+      "source_sha256": "8a6dbce54ea529e8a816f833234fb1d40966ea3ffa5a1fed6496acd826137962",
+      "kind": "methodology",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/methodology/modeling_workflow.md",
+      "snapshot_size_bytes": 14591,
+      "snapshot_sha256": "8a6dbce54ea529e8a816f833234fb1d40966ea3ffa5a1fed6496acd826137962"
+    },
+    {
+      "logical_id": "workflow-root-rules",
+      "source_relative_path": "AGENTS.md",
+      "source_size_bytes": 13518,
+      "source_sha256": "0998a9ef58a1856c1f0fbd20707590636a5872fc2b6c62a5cb230507b535b5d0",
+      "kind": "methodology",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/AGENTS.md",
+      "snapshot_size_bytes": 13518,
+      "snapshot_sha256": "0998a9ef58a1856c1f0fbd20707590636a5872fc2b6c62a5cb230507b535b5d0"
+    },
+    {
+      "logical_id": "validation-framework",
+      "source_relative_path": "methodology/validation_framework.md",
+      "source_size_bytes": 7077,
+      "source_sha256": "7fb9ec7efd41493ccc18a02683f786d013d24bb310a813d0b5c2a3687d8d1ded",
+      "kind": "methodology",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.1.0/methodology/validation_framework.md",
+      "snapshot_size_bytes": 7077,
+      "snapshot_sha256": "7fb9ec7efd41493ccc18a02683f786d013d24bb310a813d0b5c2a3687d8d1ded"
+    },
+    {
+      "logical_id": "workflow-training-prompt",
+      "source_relative_path": "templates/NEW_CASE_TRAINING_PROMPT.md",
+      "source_size_bytes": 16556,
+      "source_sha256": "5f20e49fc8b3896a76029060d5b5bdd70ae043e0a5317db82ca7f167104300f2",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/NEW_CASE_TRAINING_PROMPT.md",
+      "snapshot_size_bytes": 16556,
+      "snapshot_sha256": "5f20e49fc8b3896a76029060d5b5bdd70ae043e0a5317db82ca7f167104300f2"
+    },
+    {
+      "logical_id": "case-local-rules-template",
+      "source_relative_path": "templates/case-template/AGENTS.md",
+      "source_size_bytes": 2324,
+      "source_sha256": "b1fec698746457b57e87103d2db7bdf11f216578619bbb065cc2230264e1f280",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/AGENTS.md",
+      "snapshot_size_bytes": 2324,
+      "snapshot_sha256": "b1fec698746457b57e87103d2db7bdf11f216578619bbb065cc2230264e1f280"
+    },
+    {
+      "logical_id": "case-status-template",
+      "source_relative_path": "templates/case-template/STATUS.md",
+      "source_size_bytes": 1493,
+      "source_sha256": "f7d3a273f1bd55c568109525666f87c79792b9111e5a9d91e31fd0faba0c15c6",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/STATUS.md",
+      "snapshot_size_bytes": 1493,
+      "snapshot_sha256": "f7d3a273f1bd55c568109525666f87c79792b9111e5a9d91e31fd0faba0c15c6"
+    },
+    {
+      "logical_id": "case-tasks-template",
+      "source_relative_path": "templates/case-template/TASKS.md",
+      "source_size_bytes": 3525,
+      "source_sha256": "c04922b9486a8c1beb3ca49bae5ba73dff2f602ba5beb64cb6fb51dee3bafa52",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/TASKS.md",
+      "snapshot_size_bytes": 3525,
+      "snapshot_sha256": "c04922b9486a8c1beb3ca49bae5ba73dff2f602ba5beb64cb6fb51dee3bafa52"
+    },
+    {
+      "logical_id": "run-manifest-template",
+      "source_relative_path": "templates/case-template/experiments/run_manifest_template.yaml",
+      "source_size_bytes": 657,
+      "source_sha256": "647474c859402e639c14deb84a8ba97dce19d12d40590b5cba9d9cf38d319ac0",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/experiments/run_manifest_template.yaml",
+      "snapshot_size_bytes": 657,
+      "snapshot_sha256": "647474c859402e639c14deb84a8ba97dce19d12d40590b5cba9d9cf38d319ac0"
+    },
+    {
+      "logical_id": "model-review-template",
+      "source_relative_path": "templates/case-template/models/model_review.md",
+      "source_size_bytes": 234,
+      "source_sha256": "784bbb7b5d806b3e4b7d401e1fabbaedfc8625e60a04be94c29371d460676e0e",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/models/model_review.md",
+      "snapshot_size_bytes": 234,
+      "snapshot_sha256": "784bbb7b5d806b3e4b7d401e1fabbaedfc8625e60a04be94c29371d460676e0e"
+    },
+    {
+      "logical_id": "problem-spec-template",
+      "source_relative_path": "templates/case-template/problem/problem_spec.md",
+      "source_size_bytes": 508,
+      "source_sha256": "77821a6cf65a8301feb533c1ca266e37215cc4c347ebf7b84934e129df9af1c2",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/problem/problem_spec.md",
+      "snapshot_size_bytes": 508,
+      "snapshot_sha256": "77821a6cf65a8301feb533c1ca266e37215cc4c347ebf7b84934e129df9af1c2"
+    },
+    {
+      "logical_id": "pre-modeling-literature-template",
+      "source_relative_path": "templates/case-template/research/pre_modeling_literature_review.md",
+      "source_size_bytes": 1282,
+      "source_sha256": "2e2016931f558926844ebbfa5f1675c5f61df93dd15569639ff3a03343b6a211",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/research/pre_modeling_literature_review.md",
+      "snapshot_size_bytes": 1282,
+      "snapshot_sha256": "2e2016931f558926844ebbfa5f1675c5f61df93dd15569639ff3a03343b6a211"
+    },
+    {
+      "logical_id": "source-registry-template",
+      "source_relative_path": "templates/case-template/research/source_registry.md",
+      "source_size_bytes": 489,
+      "source_sha256": "43a53104b401923c761d7cc5b5e8893abf013e332a7948cd5c004bccbf05875c",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/research/source_registry.md",
+      "snapshot_size_bytes": 489,
+      "snapshot_sha256": "43a53104b401923c761d7cc5b5e8893abf013e332a7948cd5c004bccbf05875c"
+    },
+    {
+      "logical_id": "evidence-manifest-template",
+      "source_relative_path": "templates/case-template/results/evidence_manifest.md",
+      "source_size_bytes": 949,
+      "source_sha256": "4ea93795652c8de630cce67c5e57c31c8d668a4d3793a2e954ab30eb089a6c43",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/results/evidence_manifest.md",
+      "snapshot_size_bytes": 949,
+      "snapshot_sha256": "4ea93795652c8de630cce67c5e57c31c8d668a4d3793a2e954ab30eb089a6c43"
+    },
+    {
+      "logical_id": "paper-figure-qa-template",
+      "source_relative_path": "templates/case-template/review/PAPER_FIGURE_QA_TEMPLATE.md",
+      "source_size_bytes": 4367,
+      "source_sha256": "29cd57b7d2a44bd95bcd1267b5360b49b80406d78091464fb24261e27cdd4233",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/review/PAPER_FIGURE_QA_TEMPLATE.md",
+      "snapshot_size_bytes": 4367,
+      "snapshot_sha256": "29cd57b7d2a44bd95bcd1267b5360b49b80406d78091464fb24261e27cdd4233"
+    },
+    {
+      "logical_id": "question-checkpoint-template",
+      "source_relative_path": "templates/case-template/review/question_checkpoints/QUESTION_CHECKPOINT_TEMPLATE.md",
+      "source_size_bytes": 1987,
+      "source_sha256": "852047c7b4aca97be117bafb5dd998f3ae7c872ca5a34c17efc083b8b4198bcc",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/review/question_checkpoints/QUESTION_CHECKPOINT_TEMPLATE.md",
+      "snapshot_size_bytes": 1987,
+      "snapshot_sha256": "852047c7b4aca97be117bafb5dd998f3ae7c872ca5a34c17efc083b8b4198bcc"
+    },
+    {
+      "logical_id": "retrospective-template",
+      "source_relative_path": "templates/case-template/review/retrospective.md",
+      "source_size_bytes": 362,
+      "source_sha256": "ed835473053d328c943707c05e4873347b78e7d961b3f79d53417a7d189148f3",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/review/retrospective.md",
+      "snapshot_size_bytes": 362,
+      "snapshot_sha256": "ed835473053d328c943707c05e4873347b78e7d961b3f79d53417a7d189148f3"
+    },
+    {
+      "logical_id": "assignment-template",
+      "source_relative_path": "templates/case-template/workstreams/ASSIGNMENT_TEMPLATE.md",
+      "source_size_bytes": 1273,
+      "source_sha256": "8667ce0affd46e084b2548d768bbd2f3c1d978633d38aa6267bcb18290ef8ab4",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/workstreams/ASSIGNMENT_TEMPLATE.md",
+      "snapshot_size_bytes": 1273,
+      "snapshot_sha256": "8667ce0affd46e084b2548d768bbd2f3c1d978633d38aa6267bcb18290ef8ab4"
+    },
+    {
+      "logical_id": "handoff-template",
+      "source_relative_path": "templates/case-template/workstreams/HANDOFF_TEMPLATE.md",
+      "source_size_bytes": 927,
+      "source_sha256": "441f7ebcdc4f56f8de6a6abcee67b734474f4ff1a70199337b5d1865c6e8bc65",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/workstreams/HANDOFF_TEMPLATE.md",
+      "snapshot_size_bytes": 927,
+      "snapshot_sha256": "441f7ebcdc4f56f8de6a6abcee67b734474f4ff1a70199337b5d1865c6e8bc65"
+    },
+    {
+      "logical_id": "independent-review-template",
+      "source_relative_path": "templates/case-template/workstreams/REVIEW_TEMPLATE.md",
+      "source_size_bytes": 1132,
+      "source_sha256": "bbadf39c99c169f0a2d42e569ba6f3bfb2fca18f7f2bf8c7cc412d1633daa602",
+      "kind": "template",
+      "use_status": "approved_snapshot",
+      "snapshot_relative_path": "snapshots/modeling-workflow-core/1.0.0/templates/case-template/workstreams/REVIEW_TEMPLATE.md",
+      "snapshot_size_bytes": 1132,
+      "snapshot_sha256": "bbadf39c99c169f0a2d42e569ba6f3bfb2fca18f7f2bf8c7cc412d1633daa602"
+    },
+    {
+      "logical_id": "modeling-paper-standard-entrypoint",
+      "source_relative_path": ".codex/skills/modeling-paper-standard/SKILL.md",
+      "source_size_bytes": 14344,
+      "source_sha256": "18969d5fa0e9d3d54c4731c59d0aa049521302d0d656c4e1ce8128c6d2f8579a",
+      "kind": "skill",
+      "use_status": "reference_only"
+    },
+    {
+      "logical_id": "modeling-plot-suite-entrypoint",
+      "source_relative_path": ".codex/skills/modeling-plot-suite/SKILL.md",
+      "source_size_bytes": 2901,
+      "source_sha256": "1ed440994129d698c9985a7e2fdd16cb543df9c4376af4b39aca7a088c1825dc",
+      "kind": "skill",
+      "use_status": "reference_only"
+    }
+  ],
+  "manifest_sha256": "108dda9393c7f327356b0992ef2adce25bbea334d2c9427631466bedaf2e9dae"
+}

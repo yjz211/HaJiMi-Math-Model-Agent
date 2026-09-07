@@ -1,0 +1,307 @@
+{
+  "schemaVersion": "hajimi.capability-manifest.v1",
+  "id": "modeling-paper-standard",
+  "version": "1.0.0",
+  "source": {
+    "kind": "user-authorized-local-codex-skill",
+    "logicalPath": ".codex/skills/modeling-paper-standard",
+    "entrypointSha256": "1dac5d5927e2db3c2f14861c41979b26709d71310ff38da5c8837a660b6e04e7",
+    "licenseStatus": "not-declared-in-source-snapshot",
+    "redistributionScope": "HaJiMi local and packaged builds authorized by the user"
+  },
+  "allowedStages": [
+    8
+  ],
+  "requiredInputs": [
+    "active_evidence_freeze"
+  ],
+  "toolScopes": [
+    "hajimi_bind_publication",
+    "hajimi_validate_delivery",
+    "bash:bundled-paper-checkers"
+  ],
+  "contextFragments": [
+    {
+      "id": "paper-stage-8-core",
+      "path": "fragments/stage-8-core.md",
+      "priority": 100,
+      "stages": [
+        8
+      ]
+    },
+    {
+      "id": "paper-data-route",
+      "path": "fragments/data-route.md",
+      "priority": 70,
+      "stages": [
+        8
+      ],
+      "tags": [
+        "data",
+        "statistics",
+        "machine-learning"
+      ]
+    },
+    {
+      "id": "paper-optimization-route",
+      "path": "fragments/optimization-route.md",
+      "priority": 70,
+      "stages": [
+        8
+      ],
+      "tags": [
+        "optimization",
+        "planning",
+        "scheduling",
+        "routing"
+      ]
+    },
+    {
+      "id": "paper-graph-network-route",
+      "path": "fragments/graph-network-route.md",
+      "priority": 70,
+      "stages": [
+        8
+      ],
+      "tags": [
+        "graph",
+        "network"
+      ]
+    },
+    {
+      "id": "paper-review-gates",
+      "path": "fragments/review-gates.md",
+      "priority": 60,
+      "stages": [
+        8
+      ]
+    }
+  ],
+  "activation": {
+    "stages": [
+      8
+    ],
+    "requiresActiveEvidenceFreeze": true,
+    "persistRoute": true
+  },
+  "fragments": [
+    {
+      "id": "paper-stage-8-core",
+      "path": "fragments/stage-8-core.md",
+      "priority": 100,
+      "stages": [
+        8
+      ]
+    },
+    {
+      "id": "paper-data-route",
+      "path": "fragments/data-route.md",
+      "priority": 70,
+      "stages": [
+        8
+      ],
+      "tags": [
+        "data",
+        "statistics",
+        "machine-learning"
+      ]
+    },
+    {
+      "id": "paper-optimization-route",
+      "path": "fragments/optimization-route.md",
+      "priority": 70,
+      "stages": [
+        8
+      ],
+      "tags": [
+        "optimization",
+        "planning",
+        "scheduling",
+        "routing"
+      ]
+    },
+    {
+      "id": "paper-graph-network-route",
+      "path": "fragments/graph-network-route.md",
+      "priority": 70,
+      "stages": [
+        8
+      ],
+      "tags": [
+        "graph",
+        "network"
+      ]
+    },
+    {
+      "id": "paper-review-gates",
+      "path": "fragments/review-gates.md",
+      "priority": 60,
+      "stages": [
+        8
+      ]
+    }
+  ],
+  "commands": [
+    "python3 {capabilityRoot}/resources/scripts/check_latex_structure.py",
+    "python3 {capabilityRoot}/resources/scripts/check_latex_language.py",
+    "python3 {capabilityRoot}/resources/scripts/check_latex_layout_risks.py",
+    "python3 {capabilityRoot}/resources/scripts/check_pdf_page_gate.py",
+    "python3 {capabilityRoot}/resources/scripts/check_pdf_large_float.py",
+    "python3 {capabilityRoot}/resources/scripts/check_pdf_page_flow.py"
+  ],
+  "files": [
+    {
+      "path": "CAPABILITY.md",
+      "sizeBytes": 632,
+      "sha256": "dd21a155999c53f8b16405ae119b1f6fc8d1cedb6eb1eb1e24e3df1a8dbfdb10"
+    },
+    {
+      "path": "fragments/data-route.md",
+      "sizeBytes": 584,
+      "sha256": "99e6219218e4b54f53fc9661ec15d5ac69e61fa75ccb7cbf7204d2f4a5db061b"
+    },
+    {
+      "path": "fragments/graph-network-route.md",
+      "sizeBytes": 496,
+      "sha256": "e0cb9c6ce654e11e64cd2632b1183cfe25ee89aa8c727da3c55aecd5211606fc"
+    },
+    {
+      "path": "fragments/optimization-route.md",
+      "sizeBytes": 665,
+      "sha256": "a8e4b9945e12df54dc402684984e7065cafe6c191262cbcf3ad6b8bb4d8ec96b"
+    },
+    {
+      "path": "fragments/review-gates.md",
+      "sizeBytes": 475,
+      "sha256": "7ade28abd6df3c0b162a31445475e8433355747188c3dbab0d5a5b89ac60b036"
+    },
+    {
+      "path": "fragments/stage-8-core.md",
+      "sizeBytes": 1584,
+      "sha256": "dc3edc32e595be0337b0a945ccac5b631444b06a0997477fb737baa8f5c0f9bc"
+    },
+    {
+      "path": "resources/references/data-analysis-paper-route.md",
+      "sizeBytes": 5602,
+      "sha256": "987e5a7f2faefd6b80039ad386599cc7783b81d966c7009bc079545312b22316"
+    },
+    {
+      "path": "resources/references/direct-competition-language.md",
+      "sizeBytes": 6645,
+      "sha256": "b7ce840c76a1375ec31c526be02953bcbab53a8c0435a51f517bcffe5d74ab03"
+    },
+    {
+      "path": "resources/references/language-contract.md",
+      "sizeBytes": 5411,
+      "sha256": "c4061be6bde9d2730d2109c2c72d2302199d34a06b79deeffbf94953480a02ec"
+    },
+    {
+      "path": "resources/references/layout-contract.md",
+      "sizeBytes": 5004,
+      "sha256": "61231f6d0842e7bce7fde6a81ab905c38342997d3598bd3e15afc57f9cb1df60"
+    },
+    {
+      "path": "resources/references/optimization-paper-route.md",
+      "sizeBytes": 11423,
+      "sha256": "a89dbc7d442a4b3607b1b273fca95274d012c0665bde3b687fb4304eabf4a651"
+    },
+    {
+      "path": "resources/references/plain-competition-language.md",
+      "sizeBytes": 7334,
+      "sha256": "0cf381a4477131e626e9eef3ce6465949e0434dd53a848f82d1bfadfd7d2ad7e"
+    },
+    {
+      "path": "resources/references/requirements-contract.md",
+      "sizeBytes": 12102,
+      "sha256": "1cdb239678ee979a42be80778a77db4e50c71a6be71e4778bcbcd084ddbee929"
+    },
+    {
+      "path": "resources/references/review-contract.md",
+      "sizeBytes": 10007,
+      "sha256": "a6a59399cfeabfecaf6abeceee2ef4b810e521814d36b31ebca6607438f47a52"
+    },
+    {
+      "path": "resources/references/structure-contract.md",
+      "sizeBytes": 7920,
+      "sha256": "74f2ce3fb5d7068301e145110e41895aea9e0f77f38eba011fbe93e8448ed288"
+    },
+    {
+      "path": "resources/references/video-language-playbook.md",
+      "sizeBytes": 13401,
+      "sha256": "8a8112fc5381993223840d81b0843b2d2f726b206279a144025dda18b518d470"
+    },
+    {
+      "path": "resources/references/writing-patterns.md",
+      "sizeBytes": 18750,
+      "sha256": "bcb261e1788ea24ce95ffc4489ea49ea33bcd0e54ba8aef3875b7e6b0af54619"
+    },
+    {
+      "path": "resources/scripts/check_latex_equation_drift.py",
+      "sizeBytes": 6007,
+      "sha256": "9f36acfb31d30996b153e8c5ebbe10af147232d5a3a7548ee8c0f53c2b872d5e"
+    },
+    {
+      "path": "resources/scripts/check_latex_language.py",
+      "sizeBytes": 14373,
+      "sha256": "9e4b8f9af14c460607768dd92aa0d3de14af95389982c9c64a43795ede112515"
+    },
+    {
+      "path": "resources/scripts/check_latex_layout_risks.py",
+      "sizeBytes": 4031,
+      "sha256": "eec78a88efdb061983af5d941fe61fe01fd3f385896fb223c5c9a4aec823f0f6"
+    },
+    {
+      "path": "resources/scripts/check_latex_structure.py",
+      "sizeBytes": 23963,
+      "sha256": "6a4636fc8da416f5e2ed402c0b07dddb8aad2d276d97aa899b669421afdbe091"
+    },
+    {
+      "path": "resources/scripts/check_pdf_large_float.py",
+      "sizeBytes": 3483,
+      "sha256": "9f53e28cbb9a7a11a33948ef8a200b5259b73884448089194c467bd15214b0d1"
+    },
+    {
+      "path": "resources/scripts/check_pdf_page_flow.py",
+      "sizeBytes": 2251,
+      "sha256": "51909f752cfd5f2250b1c44e1ac8dd5ba1e70f7f31cfeb2cb5359d6f22e354a7"
+    },
+    {
+      "path": "resources/scripts/check_pdf_page_gate.py",
+      "sizeBytes": 2298,
+      "sha256": "a80726456aec67c796819cf28656895cbf8d5022e9ffef351eeb7569278ca8d7"
+    },
+    {
+      "path": "resources/scripts/check_pdf_typography.py",
+      "sizeBytes": 2869,
+      "sha256": "cce7d6551e90c9f630ec044e03cde1bdf1d77419f044e91942683c0446601e52"
+    },
+    {
+      "path": "resources/scripts/check_section_balance.py",
+      "sizeBytes": 2867,
+      "sha256": "c00326442b646875bc80af94a24d9965d97b23537141ad8394260b3e963f5763"
+    },
+    {
+      "path": "resources/scripts/create_paper_skeleton.py",
+      "sizeBytes": 4911,
+      "sha256": "dba70afb5bc985825e61cf5b449dd5d2b904eb58567d49399888031e3b2fba19"
+    },
+    {
+      "path": "resources/SKILL.md",
+      "sizeBytes": 11847,
+      "sha256": "a8fd10829061941c455adf2bfdb05df80bd43148934c5ec9b67a678033eb53dd"
+    },
+    {
+      "path": "stage8-policy.md",
+      "sizeBytes": 2960,
+      "sha256": "6ec552dae61ac177e64dbf1cee05c359ecb69dc88c512e15fb26b4d29dbab86a"
+    }
+  ],
+  "omitted": [
+    "assets/reference.doc",
+    "assets/reference.docx",
+    "assets/reference-preview.png",
+    "references/evolution-protocol.md",
+    "tests",
+    "__pycache__"
+  ]
+}

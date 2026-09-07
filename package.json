@@ -1,0 +1,87 @@
+{
+  "name": "@hajimi/desktop",
+  "version": "0.1.0",
+  "description": "HaJiMi — a Pi-powered mathematical modeling agent",
+  "license": "MIT",
+  "author": "Chasen",
+  "desktopName": "hajimi",
+  "main": "electron/dist/main.js",
+  "bin": {
+    "hajimi-web": "bin/pi-web.js"
+  },
+  "files": [
+    "bin",
+    "bundled",
+    "toolkit",
+    "runtime",
+    ".next",
+    "!.next/cache",
+    "!.next/dev",
+    "!.next/**/*.js.map",
+    "public",
+    "next.config.ts",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "next dev -p 30141",
+    "build": "npm run build:standalone",
+    "build:standalone": "npm run check:capabilities && next build && node scripts/ensure-standalone-next-runtimes.mjs && node scripts/ensure-standalone-pi-runtime.mjs && node scripts/ensure-standalone-macos-universal-runtimes.mjs && node scripts/dereference-standalone-symlinks.mjs && node scripts/smoke-standalone-server.mjs",
+    "start": "next start -p 30141",
+    "lint": "eslint .",
+    "check:electron-deps": "node lib/electron-updater-runtime-deps.mjs --check",
+    "test": "node --test --test-force-exit \"lib/**/*.test.ts\" \"lib/**/*.test.mjs\" \"electron/**/*.test.ts\" \"app/**/*.test.ts\" \"app/api/sessions/[[]id]/routes.test.ts\" \"hooks/**/*.test.ts\" \"components/**/*.test.ts\" \"scripts/**/*.test.mjs\" \"package.test.ts\" \"middleware.test.ts\"",
+    "test:windows": "node --test --test-force-exit \"electron/**/*.test.ts\" \"lib/file-paths.test.ts\" \"lib/path-policy.test.ts\" \"lib/session-lock.test.ts\" \"lib/session-path-cache.test.ts\" \"lib/file-browser.test.ts\" \"lib/custom-path-selection.test.ts\" \"lib/git-worktree.test.ts\" \"app/api/sessions/[[]id]/routes.test.ts\" \"lib/electron-*.test.mjs\" \"lib/installer-script.test.mjs\" \"lib/electron-builder-config.test.mjs\" \"package.test.ts\"",
+    "test:macos": "node --test --test-force-exit \"electron/**/*.test.ts\" \"lib/file-paths.test.ts\" \"lib/path-policy.test.ts\" \"lib/session-lock.test.ts\" \"lib/session-path-cache.test.ts\" \"lib/file-browser.test.ts\" \"lib/custom-path-selection.test.ts\" \"lib/git-worktree.test.ts\" \"app/api/sessions/[[]id]/routes.test.ts\" \"lib/electron-*.test.mjs\" \"lib/electron-builder-config.test.mjs\" \"scripts/ensure-standalone-macos-universal-runtimes.test.mjs\" \"package.test.ts\"",
+    "release": "npm version patch --no-git-tag-version && npm run build:standalone && npm publish --access public",
+    "build:electron": "tsc -p electron/tsconfig.json && node -e \"const fs=require('fs'); fs.copyFileSync('electron/startup.html', 'electron/dist/startup.html'); fs.copyFileSync('electron/startup.js', 'electron/dist/startup.js')\"",
+    "build:windows-bootstrap": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-windows-bootstrap.ps1",
+    "check:windows-runtime": "node scripts/check-windows-runtime.mjs",
+    "test:managed-runtime": "node --test --test-force-exit lib/hajimi/runtime-*.test.mjs lib/hajimi/windows-workspace-backend.test.mjs",
+    "dev:electron": "npm run build:electron && npx electron .",
+    "sync:capabilities": "node scripts/sync-hajimi-capabilities.mjs",
+    "check:capabilities": "node scripts/check-hajimi-capabilities.mjs",
+    "pack": "npm run check:windows-runtime && npm run build:standalone && npm run build:electron && npx electron-builder --dir && node scripts/smoke-packaged-standalone.mjs",
+    "pack:mac": "npm run build:standalone && npm run build:electron && npx electron-builder --mac --universal --dir && node scripts/smoke-packaged-standalone.mjs",
+    "dist": "npm run check:windows-runtime && npm run build:standalone && npm run build:electron && npx electron-builder --publish never && node scripts/smoke-packaged-standalone.mjs",
+    "dist:mac": "npm run build:standalone && npm run build:electron && npx electron-builder --mac --universal --publish never && node scripts/smoke-packaged-standalone.mjs"
+  },
+  "build": {
+    "extends": "electron-builder.yml"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-ai": "0.85.0",
+    "@earendil-works/pi-coding-agent": "0.85.0",
+    "@earendil-works/pi-server": "0.85.0",
+    "@electron/packager": "^20.3.0",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@lobehub/icons": "^5.6.0",
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@webgpu/types": "^0.1.72",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.2",
+    "fs-extra": "^8.1.0",
+    "minimatch": "^10.2.5",
+    "next": "16.3.2",
+    "postcss": "^8",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
+    "remark-gfm": "^4.0.1",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5"
+  },
+  "allowScripts": {
+    "electron@43.4.1": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "hajimi.workflow-definition.v1",
+  "id": "modeling-core",
+  "version": "1.0.0",
+  "protocolVersion": "hajimi.workflow-protocol.v1",
+  "sourceManifestHash": "b7557fec2a9b9359929468a3b8f2953f1167cb0203081842dd289a83b1c238b5",
+  "stages": [
+    { "id": 0, "title": "材料就绪", "summary": "核验原题与附件是否完整、真实且可读取。", "dependencies": [], "stageCard": "stage-cards/0.md", "requirements": [{ "id": "input_manifest", "summary": "关键题目材料已清点、冻结并可读取。", "evaluator": "input_manifest", "severity": "required" }] },
+    { "id": 1, "title": "问题定义", "summary": "逐问提取事实、输出、变量、单位、目标、约束和歧义。", "dependencies": [0], "stageCard": "stage-cards/1.md", "requirements": [{ "id": "problem_contract", "summary": "事实、假设、待确认项与逐问输出已分开。", "evaluator": "human", "severity": "required" }] },
+    { "id": 2, "title": "数据审计与文献预研", "summary": "审计数据口径、质量和泄漏，并登记可靠方法来源。", "dependencies": [1], "stageCard": "stage-cards/2.md", "requirements": [{ "id": "data_and_sources", "summary": "数据变换与外部来源均可追溯。", "evaluator": "human", "severity": "required" }] },
+    { "id": 3, "title": "简单基线", "summary": "运行最简单的可解释基线并固定评价口径。", "dependencies": [2], "stageCard": "stage-cards/3.md", "requirements": [{ "id": "baseline_run", "summary": "基线已实际运行并保存失败案例。", "evaluator": "provenance_freeze", "severity": "required" }] },
+    { "id": 4, "title": "逐问建模与代码求解", "summary": "按依赖顺序完成每个小问的候选比较、实现和局部验证。", "dependencies": [3], "stageCard": "stage-cards/4.md", "requirements": [{ "id": "question_packets", "summary": "全部逐问工作包闭环并通过检查点。", "evaluator": "question_packets", "severity": "required" }] },
+    { "id": 5, "title": "整题集成与联合审查", "summary": "检查跨问合同并从冻结输入端到端运行。", "dependencies": [4], "stageCard": "stage-cards/5.md", "requirements": [{ "id": "integrated_run", "summary": "逐问覆盖完整且整题入口运行通过。", "evaluator": "provenance_freeze", "severity": "required" }] },
+    { "id": 6, "title": "结果验证", "summary": "用适配任务的独立方法检查结论、稳健性和现实边界。", "dependencies": [5], "stageCard": "stage-cards/6.md", "requirements": [{ "id": "independent_validation", "summary": "每个关键结论至少有一种独立检查。", "evaluator": "provenance_freeze", "severity": "required" }] },
+    { "id": 7, "title": "证据与展示结果整理", "summary": "冻结实验、证据和主张，建立机器结果到展示项的映射。", "dependencies": [6], "stageCard": "stage-cards/7.md", "requirements": [{ "id": "evidence_freeze", "summary": "正式主张均由冻结证据支持。", "evaluator": "provenance_freeze", "severity": "required" }] },
+    { "id": 8, "title": "论文与图表制作", "summary": "从冻结主张和证据生成图表、LaTeX 论文与 PDF 候选稿。", "dependencies": [7], "stageCard": "stage-cards/8.md", "requirements": [{ "id": "delivery_candidate", "summary": "图表和论文只消费冻结证据并通过技术验收。", "evaluator": "delivery_validation", "severity": "required" }] },
+    { "id": 9, "title": "提交材料与打包", "summary": "人工验收正文后生成代码附录、AI使用说明和提交包。", "dependencies": [8], "stageCard": "stage-cards/9.md", "requirements": [{ "id": "human_final_review", "summary": "用户审查结论与所有高优先级问题均已记录。", "evaluator": "human", "severity": "required" }, { "id": "submission_package", "summary": "两版论文、代码和AI说明已生成并打包为ZIP。", "evaluator": "delivery_validation", "severity": "required" }] }
+  ]
+}
