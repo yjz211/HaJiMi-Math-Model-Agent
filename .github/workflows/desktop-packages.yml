@@ -63,7 +63,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Download managed Windows runtime
+        if: matrix.pack_id == 'windows'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download runtime-windows-1.0.0 --pattern "hajimi-runtime-1.0.0-local-test.20260905-win32-x64.tar.gz" --dir runtime/windows/payloads
+
       - name: Build installer
+        env:
+          HAJIMI_OFFLINE_RUNTIME: ${{ matrix.pack_id == 'windows' && '1' || '0' }}
         run: npm run ${{ matrix.dist_script }}
 
       - name: Verify Linux deb
@@ -87,8 +96,8 @@ jobs:
           name: desktop-windows
           if-no-files-found: error
           path: |
-            release/Pi-Agent-Desktop-Setup-*.exe
-            release/Pi-Agent-Desktop-Setup-*.exe.blockmap
+            release/HaJiMi-Setup-*.exe
+            release/HaJiMi-Setup-*.exe.blockmap
             release/latest.yml
 
       - name: Upload Linux artifacts
@@ -141,15 +150,15 @@ jobs:
           notes="docs/releases/${tag}.md"
           shopt -s nullglob
           assets=(
-            dist-artifacts/Pi-Agent-Desktop-Setup-*.exe
-            dist-artifacts/Pi-Agent-Desktop-Setup-*.exe.blockmap
+            dist-artifacts/HaJiMi-Setup-*.exe
+            dist-artifacts/HaJiMi-Setup-*.exe.blockmap
             dist-artifacts/latest.yml
-            dist-artifacts/Pi-Agent-Desktop-*-linux-*.deb
+            dist-artifacts/HaJiMi-*-linux-*.deb
             dist-artifacts/latest-linux.yml
-            dist-artifacts/Pi-Agent-Desktop-*-mac-universal.dmg
-            dist-artifacts/Pi-Agent-Desktop-*-mac-universal.dmg.blockmap
-            dist-artifacts/Pi-Agent-Desktop-*-mac-universal.zip
-            dist-artifacts/Pi-Agent-Desktop-*-mac-universal.zip.blockmap
+            dist-artifacts/HaJiMi-*-mac-universal.dmg
+            dist-artifacts/HaJiMi-*-mac-universal.dmg.blockmap
+            dist-artifacts/HaJiMi-*-mac-universal.zip
+            dist-artifacts/HaJiMi-*-mac-universal.zip.blockmap
             dist-artifacts/latest-mac.yml
           )
           if [ "${#assets[@]}" -ne 10 ]; then
@@ -161,9 +170,9 @@ jobs:
           if gh release view "$tag" >/dev/null 2>&1; then
             echo "Release ${tag} already exists"
           elif [ -f "$notes" ]; then
-            gh release create "$tag" --title "Pi Agent Desktop ${tag}" --notes-file "$notes" --verify-tag
+            gh release create "$tag" --title "HaJiMi ${tag}" --notes-file "$notes" --verify-tag
           else
-            gh release create "$tag" --title "Pi Agent Desktop ${tag}" --generate-notes --verify-tag
+            gh release create "$tag" --title "HaJiMi ${tag}" --generate-notes --verify-tag
           fi
           gh release upload "$tag" "${assets[@]}" --clobber
           gh release edit "$tag" --draft=false
