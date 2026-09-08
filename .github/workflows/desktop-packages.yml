@@ -84,7 +84,7 @@ jobs:
         run: |
           hdiutil verify release/*.dmg
           unzip -t release/*-mac-universal.zip
-          archs="$(lipo -archs "release/mac-universal/Pi Agent Desktop.app/Contents/MacOS/Pi Agent Desktop")"
+          archs="$(lipo -archs "release/mac-universal/HaJiMi.app/Contents/MacOS/HaJiMi")"
           echo "lipo archs: ${archs}"
           echo "${archs}" | grep -q "x86_64"
           echo "${archs}" | grep -q "arm64"
@@ -107,7 +107,7 @@ jobs:
           name: desktop-linux
           if-no-files-found: error
           path: |
-            release/Pi-Agent-Desktop-*-linux-*.deb
+            release/HaJiMi-*-linux-*.deb
             release/latest-linux.yml
 
       - name: Upload macOS artifacts
@@ -117,10 +117,10 @@ jobs:
           name: desktop-macos
           if-no-files-found: error
           path: |
-            release/Pi-Agent-Desktop-*-mac-universal.dmg
-            release/Pi-Agent-Desktop-*-mac-universal.dmg.blockmap
-            release/Pi-Agent-Desktop-*-mac-universal.zip
-            release/Pi-Agent-Desktop-*-mac-universal.zip.blockmap
+            release/HaJiMi-*-mac-universal.dmg
+            release/HaJiMi-*-mac-universal.dmg.blockmap
+            release/HaJiMi-*-mac-universal.zip
+            release/HaJiMi-*-mac-universal.zip.blockmap
             release/latest-mac.yml
 
   publish:

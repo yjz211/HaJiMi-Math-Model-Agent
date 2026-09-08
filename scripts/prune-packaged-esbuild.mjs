@@ -1,8 +1,15 @@
 import { readdir, realpath, readFile, stat, rm } from 'node:fs/promises';
 import { join, relative, isAbsolute, basename } from 'node:path';
 
+import { dereferenceSymlinks } from './dereference-standalone-symlinks.mjs';
+
 // Only trim the assembled Windows x64 app; never change development dependencies.
 export default async function prunePackagedEsbuild(context) {
+  if (context.electronPlatformName === 'darwin') {
+    const root = join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`, 'Contents', 'Resources', 'standalone');
+    console.log('Materialized packaged macOS links:', dereferenceSymlinks(root));
+    return;
+  }
   if (context.electronPlatformName !== 'win32' || context.arch !== 1) return; // electron-builder Arch.x64 = 1
   const root = await realpath(join(context.appOutDir, 'resources', 'standalone'));
   const scopes = [];
