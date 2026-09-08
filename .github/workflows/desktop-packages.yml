@@ -24,16 +24,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - pack_id: windows
-            runner: windows-latest
-            dist_script: dist
-          - pack_id: linux
-            runner: ubuntu-latest
-            dist_script: dist
-          - pack_id: macos
-            runner: macos-latest
-            dist_script: dist:mac
+        # Official releases currently support the Windows modeling backend.
+        # Manual runs retain cross-platform packaging diagnostics.
+        include: ${{ fromJSON(github.event_name == 'push' && '[{"pack_id":"windows","runner":"windows-latest","dist_script":"dist"}]' || '[{"pack_id":"windows","runner":"windows-latest","dist_script":"dist"},{"pack_id":"linux","runner":"ubuntu-latest","dist_script":"dist"},{"pack_id":"macos","runner":"macos-latest","dist_script":"dist:mac"}]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -150,7 +143,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: desktop-*
+          pattern: desktop-windows
           path: dist-artifacts
           merge-multiple: true
 
@@ -166,16 +159,9 @@ jobs:
             dist-artifacts/HaJiMi-Setup-*.exe
             dist-artifacts/HaJiMi-Setup-*.exe.blockmap
             dist-artifacts/latest.yml
-            dist-artifacts/HaJiMi-*-linux-*.deb
-            dist-artifacts/latest-linux.yml
-            dist-artifacts/HaJiMi-*-mac-universal.dmg
-            dist-artifacts/HaJiMi-*-mac-universal.dmg.blockmap
-            dist-artifacts/HaJiMi-*-mac-universal.zip
-            dist-artifacts/HaJiMi-*-mac-universal.zip.blockmap
-            dist-artifacts/latest-mac.yml
           )
-          if [ "${#assets[@]}" -ne 10 ]; then
-            echo "expected 10 release assets, found ${#assets[@]}:"
+          if [ "${#assets[@]}" -ne 3 ]; then
+            echo "expected 3 Windows release assets, found ${#assets[@]}:"
             printf '%s\n' "${assets[@]}"
             ls -la dist-artifacts
             exit 1
