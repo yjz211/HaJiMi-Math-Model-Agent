@@ -70,6 +70,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh release download runtime-windows-1.0.0 --pattern "hajimi-runtime-1.0.0-local-test.20260905-win32-x64.tar.gz" --dir runtime/windows/payloads
 
+      - name: Download bundled draw.io
+        if: matrix.pack_id == 'windows'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v28.2.5 --repo jgraph/drawio-desktop --pattern "draw.io-28.2.5-windows.zip" --dir runtime/windows
+          if ($LASTEXITCODE -ne 0) { throw "draw.io download failed" }
+          $archive = "runtime/windows/draw.io-28.2.5-windows.zip"
+          if ((Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne "9e40f32765f87c443fce9259e9d0c51eb555b6a733aa929bc5a22b7e1ead4aee") { throw "draw.io checksum mismatch" }
+          Expand-Archive -LiteralPath $archive -DestinationPath runtime/windows/drawio
+          if (!(Test-Path runtime/windows/drawio/draw.io.exe)) { throw "draw.io executable missing" }
+
       - name: Build installer
         env:
           HAJIMI_OFFLINE_RUNTIME: ${{ matrix.pack_id == 'windows' && '1' || '0' }}

@@ -155,3 +155,8 @@ mac:
 
 dmg:
   title: "HaJiMi ${version}"
+
+publish:
+  provider: github
+  owner: yjz211
+  repo: HaJiMi-Math-Model-Agent

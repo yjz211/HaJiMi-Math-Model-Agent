@@ -68,6 +68,15 @@ const parity = spawnSync(
   [join(scriptsDir, "check-hajimi-resource-parity.mjs"), projectRoot, packagedOutput.productRoot],
   { cwd: projectRoot, stdio: "inherit", windowsHide: true },
 );
+if (process.platform === "win32") {
+  if (!existsSync(join(packagedOutput.productRoot, "runtime", "windows", "drawio", "draw.io.exe"))) {
+    throw new Error("Packaged draw.io executable missing");
+  }
+  const runtime = spawnSync(process.execPath, [join(scriptsDir, "check-windows-runtime.mjs"), "--product-root", packagedOutput.productRoot], {
+    cwd: projectRoot, stdio: "inherit", windowsHide: true,
+  });
+  if (runtime.error || runtime.status !== 0) throw new Error("Packaged Windows runtime verification failed");
+}
 if (parity.error || parity.status !== 0) {
   console.error(`smoke-packaged-standalone: resource parity failed${parity.error ? `: ${parity.error.message}` : ""}`);
   process.exit(1);
