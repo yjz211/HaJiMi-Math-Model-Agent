@@ -16,7 +16,7 @@ test('Windows x64 packaging retains native esbuild in both dependency layouts', 
       await writeFile(join(dir, 'esbuild.exe'), 'fixture');
     }
     const context = { appOutDir: root, electronPlatformName: 'win32', arch: 1 };
-    await prune({ ...context, electronPlatformName: 'darwin' });
+    await prune({ ...context, electronPlatformName: 'darwin', packager: { appInfo: { productFilename: 'HaJiMi' } } });
     await prune({ ...context, arch: 3 });
     assert.equal((await readdir(join(root, 'resources/standalone', scopes[0]))).length, 3);
     await prune(context);
