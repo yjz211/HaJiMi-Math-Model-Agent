@@ -311,8 +311,7 @@ for i, ax in enumerate(axes.flat):
 ```
 
 > **⛔ tight_layout 的 pad 值必须 ≤ 0.5。**
-> `pad=2.0` 在 SciencePlots 样式下会导致子图被压缩到极小（因为 SciencePlots 设置了紧凑的 subplot margins，
-> 大 pad 值会进一步挤压子图空间）。推荐值：`pad=0.5`（默认）、`pad=0.3`（紧凑多面板）。
+> 大 pad 值会挤压子图空间。推荐值：`pad=0.5`（默认）、`pad=0.3`（紧凑多面板）。
 > 如果需要子图间距更大，用 `hspace`/`wspace` 参数而不是增大 pad。
 
 > **⛔ 子图标注必须用 `ax.set_title()` 而不是 `ax.text(transAxes)`。**
@@ -728,18 +727,6 @@ from adjustText import adjust_text
 texts = [ax.text(x[i], y[i], labels[i], fontsize=8) for i in range(len(x))]
 adjust_text(texts, arrowprops=dict(arrowstyle='->', color='gray', lw=0.5))
 ```
-
-## SciencePlots 库（可选）
-
-如果环境中安装了 `SciencePlots`，可以一行代码切换到 Nature/IEEE 风格：
-```python
-# pip install SciencePlots
-import scienceplots
-plt.style.use(['science', 'no-latex'])  # 不依赖 LaTeX 的科学风格
-# plt.style.use(['science', 'ieee'])    # IEEE 风格
-# plt.style.use(['science', 'nature'])  # Nature 风格（需要 LaTeX）
-```
-注意：SciencePlots 的 `science` 和 `nature` 风格默认需要 LaTeX，用 `no-latex` 可以避免依赖。
 
 ## TikZ 技术路线图/架构图模板
 

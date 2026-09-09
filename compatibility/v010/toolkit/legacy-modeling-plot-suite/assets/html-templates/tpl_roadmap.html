@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  技术路线图模板 (roadmap) —— 阶段推进 / 时间轴
+  ------------------------------------------------------------
+  产物文件名建议: fig_roadmap.html → fig_roadmap.pdf
+  适用: 论文整体技术路线、研究阶段推进、方法演进时间轴
+
+  【怎么改】
+   1. ⛔ 配色不再"换主题预设"。下面 :root 的 hsl() 是【示范值】，实战按
+      SKILL《设计规范 B 节》用 Step 1 算出的主色相 H0 推导（全篇共用同一 H0）。
+   2. 每个 .stage 是一个阶段卡片: 改 .stage-no(序号)、.stage-title(阶段名)、
+      .stage-body 里的 li(该阶段做的事)。
+   3. 右侧 .method 是该阶段用到的方法/工具标注(与阶段同一行, 靠位置对应, 不连线)。
+      不需要就删掉整个 .method。
+   4. 加/减阶段: 复制一整个 <div class="row">...</div> 块。
+   5. ⛔ 图内不写标题(论文标题交给 LaTeX \caption)。
+   6. 阶段之间的向下箭头由 .arrow 自动生成, 不用手画。
+
+  【布局原理】flex 纵向排列, 每行 = 序号圆 + 内容卡 + 方法标注, 自动对齐,
+   不用绝对坐标, 增删阶段不会错位。
+============================================================ -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* ⛔ 示范值：淡雅低饱和色板（示范 H0≈212 灰蓝）。实战按 SKILL B 节从 H0 用 HSL 推导。
+     ⛔ 深色(--c-primary/--c-primary-d)只用于细边框/文字/箭头，不做大块实心填充。 */
+  :root {
+    --c-primary:   hsl(212, 38%, 54%);
+    --c-primary-d: hsl(212, 40%, 46%);
+    --c-secondary: hsl(212, 22%, 92%);
+    --c-accent:    hsl( 32, 34%, 52%);
+    --c-border:    hsl(212, 18%, 62%);
+    --c-node-bg:   hsl(212, 20%, 96%);
+    --c-focus-bg:  hsl(212, 28%, 84%);
+    --c-text:      hsl(212, 14%, 22%);
+    --c-muted:     hsl(212, 10%, 46%);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; width: fit-content; height: fit-content; background: transparent; }
+  body { font-family: "Microsoft YaHei","Noto Sans SC","PingFang SC",sans-serif; color: var(--c-text); }
+
+  /* .fig = 出图容器: inline-block + fit-content 让 body 恰好包裹, printToPDF 无白边; ⛔ 画布透明不铺底 */
+  .fig {
+    display: inline-block;
+    background: transparent;
+    padding: 34px 40px;
+    width: fit-content; height: fit-content;
+  }
+
+  .row { display: flex; align-items: stretch; gap: 18px; }
+  /* 序号圆: 浅填充 + 深字 + 细边（⛔ 不用实心深色+白字） */
+  .stage-no {
+    flex: 0 0 52px; width: 52px; height: 52px; border-radius: 50%;
+    background: var(--c-focus-bg); color: var(--c-text);
+    border: 1.5px solid var(--c-primary);
+    font-size: 22px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    align-self: flex-start; margin-top: 6px;
+  }
+  /* 内容卡 */
+  .stage {
+    flex: 1 1 auto;
+    background: var(--c-node-bg); border: 1.25px solid var(--c-border);
+    border-left: 4px solid var(--c-primary); border-radius: 8px;
+    padding: 12px 18px;
+  }
+  .stage-title { font-size: 18px; font-weight: 700; color: var(--c-primary-d); margin-bottom: 6px; }
+  .stage-body { font-size: 14.5px; line-height: 1.7; }
+  .stage-body ul { list-style: none; }
+  .stage-body li { padding-left: 16px; position: relative; }
+  .stage-body li::before { content: "▪"; color: var(--c-primary); position: absolute; left: 0; }
+  /* 右侧方法标注(与阶段同一行, 靠位置对应, 不连线) */
+  .method {
+    flex: 0 0 220px; align-self: center;
+    background: var(--c-secondary); border: 1px dashed var(--c-border);
+    border-radius: 6px; padding: 8px 12px;
+    font-size: 13px; color: var(--c-primary-d); line-height: 1.6;
+  }
+  .method b { display: block; color: var(--c-text); margin-bottom: 3px; font-size: 12.5px; }
+  /* 向下箭头(阶段间主流程) */
+  .arrow {
+    width: 52px; display: flex; justify-content: center;
+    color: var(--c-primary); font-size: 22px; line-height: 1;
+    padding: 4px 0;
+  }
+</style>
+</head>
+<body>
+<div class="fig">
+
+  <!-- ▼▼ 阶段 1 ▼▼ -->
+  <div class="row">
+    <div class="stage-no">1</div>
+    <div class="stage">
+      <div class="stage-title">问题建模与数据准备</div>
+      <div class="stage-body"><ul>
+        <li>明确研究目标与约束条件，定义决策变量</li>
+        <li>采集/清洗原始数据，构建标准化数据集</li>
+      </ul></div>
+    </div>
+    <div class="method"><b>方法 / 工具</b>数据清洗 · 描述性统计 · 特征工程</div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <!-- ▼▼ 阶段 2 ▼▼ -->
+  <div class="row">
+    <div class="stage-no">2</div>
+    <div class="stage">
+      <div class="stage-title">模型构建与求解</div>
+      <div class="stage-body"><ul>
+        <li>建立核心数学模型（此处填论文真实模型名）</li>
+        <li>设计求解算法，实现数值/优化求解</li>
+      </ul></div>
+    </div>
+    <div class="method"><b>方法 / 工具</b>优化算法 · 数值仿真 · 参数估计</div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <!-- ▼▼ 阶段 3 ▼▼ -->
+  <div class="row">
+    <div class="stage-no">3</div>
+    <div class="stage">
+      <div class="stage-title">结果分析与验证</div>
+      <div class="stage-body"><ul>
+        <li>灵敏度分析、稳健性检验</li>
+        <li>与基准方法对比，评估模型性能</li>
+      </ul></div>
+    </div>
+    <div class="method"><b>方法 / 工具</b>灵敏度分析 · 交叉验证 · 误差评估</div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <!-- ▼▼ 阶段 4（结论，一般不配方法标注）▼▼ -->
+  <div class="row">
+    <div class="stage-no">4</div>
+    <div class="stage">
+      <div class="stage-title">结论与推广</div>
+      <div class="stage-body"><ul>
+        <li>总结核心结论，讨论适用范围与局限</li>
+        <li>提出改进方向与实际应用建议</li>
+      </ul></div>
+    </div>
+    <div class="method" style="visibility:hidden">占位保持对齐</div>
+  </div>
+
+</div>
+</body>
+</html>

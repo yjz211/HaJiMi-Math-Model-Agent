@@ -73,3 +73,8 @@ nul
 bun.lock
 
 /runtime/windows/drawio/
+
+# Bundled compatibility binaries are restored by release CI.
+/compatibility/v010/runtime/windows/payloads/
+/compatibility/v010/runtime/windows/drawio/
+/artifacts-*.log

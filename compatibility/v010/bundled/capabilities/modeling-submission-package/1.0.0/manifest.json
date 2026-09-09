@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "hajimi.capability-manifest.v1",
+  "id": "modeling-submission-package",
+  "version": "1.0.0",
+  "source": {
+    "kind": "user-authorized-local-codex-skill",
+    "logicalPath": "MathModeling-AI-Lab/.codex/skills/modeling-submission-package",
+    "entrypointSha256": "4b985b7ce9b2b1df74491182e48dba716a09ffd02d8e94c94b6ad3a800bf8f9b",
+    "licenseStatus": "not-declared-in-source-snapshot",
+    "redistributionScope": "User-authorized HaJiMi local and packaged builds"
+  },
+  "allowedStages": [
+    9
+  ],
+  "requiredInputs": [
+    "active_evidence_freeze",
+    "human_accepted_paper"
+  ],
+  "toolScopes": [
+    "hajimi_task_status",
+    "hajimi_generate_submission"
+  ],
+  "contextFragments": [
+    {
+      "id": "submission-stage-9-core",
+      "path": "fragments/stage-9-core.md",
+      "priority": 100,
+      "stages": [
+        9
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "id": "submission-stage-9-core",
+      "path": "fragments/stage-9-core.md",
+      "priority": 100,
+      "stages": [
+        9
+      ]
+    }
+  ],
+  "activation": {
+    "stages": [
+      9
+    ],
+    "requiresActiveEvidenceFreeze": true,
+    "persistRoute": true
+  },
+  "commands": [
+    "python3 {capabilityRoot}/resources/scripts/build_submission_package.py",
+    "python3 {capabilityRoot}/resources/scripts/render_ai_usage_report.py"
+  ],
+  "files": [
+    {
+      "path": "fragments/stage-9-core.md",
+      "sizeBytes": 549,
+      "sha256": "4d41b1091810146bde7d81c67dfe4f694b19f0fbcdeb41e858fd889d665eea95"
+    },
+    {
+      "path": "resources/assets/ai-usage-config.example.json",
+      "sizeBytes": 1369,
+      "sha256": "26ed4334f574c7796dc2de8f6b0e24c5b1f10910af6c7fab3025e5ec2d1c3ff4"
+    },
+    {
+      "path": "resources/assets/submission-config.example.json",
+      "sizeBytes": 1144,
+      "sha256": "63d71193d2d1c7533fb6e433b1b62243b17e145aab6439b64fa5e02c1bdb42e8"
+    },
+    {
+      "path": "resources/references/ai-usage-report.md",
+      "sizeBytes": 5651,
+      "sha256": "6ccb4a1e40f7d26ec83da28950b8a81b730a6359068345d016dc0c4501456222"
+    },
+    {
+      "path": "resources/references/package-contract.md",
+      "sizeBytes": 3127,
+      "sha256": "cab4930f23e4223aad280375784b754150124d0d5847bad242eadc7a00be6beb"
+    },
+    {
+      "path": "resources/scripts/build_code_appendix.py",
+      "sizeBytes": 6303,
+      "sha256": "806f125fff3960b02bc3cf69ad073afdceb63705b200a6c104d223851f9bb9c8"
+    },
+    {
+      "path": "resources/scripts/build_submission_package.py",
+      "sizeBytes": 12066,
+      "sha256": "a5854dd5c9e3f003605c799c31c2cb499115b82332bd7316beea5f77f084747f"
+    },
+    {
+      "path": "resources/scripts/export_ai_report_pdf.py",
+      "sizeBytes": 6225,
+      "sha256": "121c8d4ea39a32116bad5da2e2032aa32aa485a868551ec7338d9ae594da8f00"
+    },
+    {
+      "path": "resources/scripts/render_ai_usage_report.py",
+      "sizeBytes": 24380,
+      "sha256": "f9194932c1e23ee13618c89c78595e0a37fe39c1c7992eba746595e8c7c1de10"
+    },
+    {
+      "path": "resources/SKILL.md",
+      "sizeBytes": 7162,
+      "sha256": "da08f60ab4aa6ccbd4069fab4ccf65f6509fa8b7a25f1bdcf9fd3e48948ae838"
+    }
+  ],
+  "omitted": [
+    "agents/openai.yaml"
+  ]
+}

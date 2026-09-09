@@ -15,6 +15,13 @@ files:
   - "!electron/tsconfig.json"
 
 extraResources:
+  - from: compatibility/v010
+    to: hajimi/compatibility/v010
+    filter:
+      - "bundled/**/*"
+      - "toolkit/**/*"
+      - "runtime/**/*"
+      - "!**/__pycache__/**/*"
   - from: bundled
     to: hajimi/bundled
   - from: toolkit

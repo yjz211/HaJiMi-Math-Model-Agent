@@ -260,8 +260,8 @@
     },
     {
       "path": "fragments/layout-gate.md",
-      "sizeBytes": 401,
-      "sha256": "35173af0874fa6891f719a334c2816b81ce0fbd2feceadf2eae036431986fb5f"
+      "sizeBytes": 416,
+      "sha256": "99562582ec2c9476fde38749a9f44630c8842612af7beffa821af03cda4da364"
     },
     {
       "path": "fragments/optimization-figures.md",
@@ -295,13 +295,13 @@
     },
     {
       "path": "profiles/expressive.md",
-      "sizeBytes": 2864,
-      "sha256": "a7718ea450936914a76eba1828073a1503ebc299ef9515ff7e91178880e6ec85"
+      "sizeBytes": 3522,
+      "sha256": "25386dbbeca62c968678b42cf7ab2b4280d95bf4945cc5ea3bd826816145d486"
     },
     {
       "path": "profiles/restrained.md",
-      "sizeBytes": 1648,
-      "sha256": "24b0efc1b1dff1693b568235573abf1a8331d6a49787771eca65b71bff9e7b44"
+      "sizeBytes": 1669,
+      "sha256": "cd7f65ec45399800e26d9931bf6c61604fc1e646383ea148ff4899d7190334e3"
     },
     {
       "path": "resources/PACKAGE_MANIFEST.md",
@@ -690,8 +690,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_basic.md",
-      "sizeBytes": 40297,
-      "sha256": "29551c0ef8de795b4af9194eb1e9958f5b5686a2ea5f9d940f825e584f2a5544"
+      "sizeBytes": 40296,
+      "sha256": "b0658ac4755889920f7721cbebffd072ba0bf04f80a3bfaaede92c0f776dae6a"
     },
     {
       "path": "resources/assets/shared-scripts/figure_recipes_basic.md.enc",
@@ -720,8 +720,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_style_guide.md",
-      "sizeBytes": 79755,
-      "sha256": "66ea67795d4b7af8622ffea5e2183bf6078217ff911b68e6d32cba1a199c94d4"
+      "sizeBytes": 79109,
+      "sha256": "3dd47915c22557dbe59d5c3af76332ab81468c78fe4e0b6fdf702155f28268e7"
     },
     {
       "path": "resources/assets/shared-scripts/figure_style_guide.md.enc",
@@ -900,8 +900,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/plot_utils.py",
-      "sizeBytes": 102214,
-      "sha256": "8271b6ca0faf1f170c37291d7b79cb5763b0d1ad036482be70a9cf55a6371715"
+      "sizeBytes": 100103,
+      "sha256": "4fe20ca0f1439a218e5c5ccdb959f8bc295b9e45e107673562b3e3779afcff49"
     },
     {
       "path": "resources/assets/shared-scripts/plot_utils.py.enc",
@@ -1015,8 +1015,8 @@
     },
     {
       "path": "resources/references/paper-figure.md",
-      "sizeBytes": 83865,
-      "sha256": "329ecaa5c2f98cc5e71647b6898469b43f0b28ebb1565ab40bcecf1bbdd5b84f"
+      "sizeBytes": 83394,
+      "sha256": "2b5a4f0dc8752902c5476e2cd23b0f234a39db41e6992b23a08cdc784d8687b7"
     },
     {
       "path": "resources/references/paper-illustration.md",
@@ -1105,13 +1105,13 @@
     },
     {
       "path": "stage8-policy.md",
-      "sizeBytes": 2950,
-      "sha256": "ddaa6f6ac333bb3a7bb8bad0730bfb5dea936a418778ccd028e0f4d7dccadf66"
+      "sizeBytes": 3004,
+      "sha256": "cce638d77f43e01a9b807e1031e705706015dc7dfa09636f6c186484735696f3"
     },
     {
       "path": "upstream-planning.md",
-      "sizeBytes": 6187,
-      "sha256": "bc6d9ea15ef2cac3e0ca5b53d17d95bd0472dc3144fad8159a76f289e3de07a7"
+      "sizeBytes": 6891,
+      "sha256": "413dce7dbd23cee3128c11ba65d5df4349b98befddc276abfe93f4011a6c6fe8"
     }
   ],
   "omitted": [

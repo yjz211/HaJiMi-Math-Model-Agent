@@ -1,2 +1,6 @@
+* text=auto eol=lf
 /bundled/capabilities/** text=auto eol=lf
 /toolkit/legacy-modeling-plot-suite/** text=auto eol=lf
+
+# Preserve the frozen compatibility baseline byte for byte.
+/compatibility/v010/** -text

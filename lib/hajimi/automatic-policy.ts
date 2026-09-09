@@ -1,5 +1,9 @@
-/** Automatic execution never removes the user's controls. */
-export function automaticRunLocked(_state: unknown): boolean { void _state; return false; }
+import { automaticRunLocked as originalAutomaticRunLocked } from "../../compatibility/v010/lib/hajimi/automatic-policy.ts";
+
+export function automaticRunLocked(state: Parameters<typeof originalAutomaticRunLocked>[0]): boolean {
+  return !!state && (state.focus.stage === 8 || (state.interaction as { executionPolicy?: string } | undefined)?.executionPolicy === "strict")
+    && originalAutomaticRunLocked(state);
+}
 
 export function automaticRunActive(state: {
   focus: { stage: number };

@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "sourceFiles": 28,
+  "originalResources": 431,
+  "leanResources": 419,
+  "stage8Shared": true,
+  "originalCorePromptsUnchanged": true,
+  "leanRuntimeUnchangedExceptStageScheduling": true,
+  "stageSchedulingOnly": true,
+  "verifiedAt": "2026-09-09T06:23:09.548Z"
+}

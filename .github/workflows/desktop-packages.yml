@@ -61,7 +61,7 @@ jobs:
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download runtime-windows-1.0.0 --pattern "hajimi-runtime-1.0.0-local-test.20260905-win32-x64.tar.gz" --dir runtime/windows/payloads
+        run: gh release download runtime-windows-1.0.0-adjusttext --pattern "hajimi-runtime-1.0.0-local-test.20260909-adjusttext-win32-x64.tar.gz" --dir runtime/windows/payloads
 
       - name: Download bundled draw.io
         if: matrix.pack_id == 'windows'
@@ -75,6 +75,13 @@ jobs:
           if ((Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne "9e40f32765f87c443fce9259e9d0c51eb555b6a733aa929bc5a22b7e1ead4aee") { throw "draw.io checksum mismatch" }
           Expand-Archive -LiteralPath $archive -DestinationPath runtime/windows/drawio
           if (!(Test-Path runtime/windows/drawio/draw.io.exe)) { throw "draw.io executable missing" }
+
+      - name: Populate original workflow runtime binaries
+        if: matrix.pack_id == 'windows'
+        shell: pwsh
+        run: |
+          Copy-Item -LiteralPath runtime/windows/payloads -Destination compatibility/v010/runtime/windows -Recurse -Force
+          Copy-Item -LiteralPath runtime/windows/drawio -Destination compatibility/v010/runtime/windows -Recurse -Force
 
       - name: Build installer
         env:

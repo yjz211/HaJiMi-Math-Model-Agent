@@ -1,0 +1,61 @@
+{
+  "reason": "User explicitly requested removal of SciencePlots",
+  "changes": {
+    "bundled/capabilities/modeling-plot-suite/1.0.0/resources/assets/shared-scripts/plot_utils.py": {
+      "before": "8271b6ca0faf1f170c37291d7b79cb5763b0d1ad036482be70a9cf55a6371715",
+      "after": "4fe20ca0f1439a218e5c5ccdb959f8bc295b9e45e107673562b3e3779afcff49"
+    },
+    "bundled/capabilities/modeling-plot-suite/1.0.0/resources/assets/shared-scripts/figure_style_guide.md": {
+      "before": "66ea67795d4b7af8622ffea5e2183bf6078217ff911b68e6d32cba1a199c94d4",
+      "after": "3dd47915c22557dbe59d5c3af76332ab81468c78fe4e0b6fdf702155f28268e7"
+    },
+    "bundled/capabilities/modeling-plot-suite/1.0.0/resources/assets/shared-scripts/figure_recipes_basic.md": {
+      "before": "29551c0ef8de795b4af9194eb1e9958f5b5686a2ea5f9d940f825e584f2a5544",
+      "after": "b0658ac4755889920f7721cbebffd072ba0bf04f80a3bfaaede92c0f776dae6a"
+    },
+    "toolkit/legacy-modeling-plot-suite/assets/shared-scripts/plot_utils.py": {
+      "before": "8399c469450a2b8c33c9ce70b19c04db93bf5c3b3c94f00f83423670e3d713d1",
+      "after": "f8bd00832d65a4982f12510a2f097dbabd03b851102a7c6db6fbb3a3d8c2af4f"
+    },
+    "toolkit/legacy-modeling-plot-suite/assets/shared-scripts/figure_style_guide.md": {
+      "before": "66ea67795d4b7af8622ffea5e2183bf6078217ff911b68e6d32cba1a199c94d4",
+      "after": "3dd47915c22557dbe59d5c3af76332ab81468c78fe4e0b6fdf702155f28268e7"
+    },
+    "toolkit/legacy-modeling-plot-suite/assets/shared-scripts/figure_recipes_basic.md": {
+      "before": "29551c0ef8de795b4af9194eb1e9958f5b5686a2ea5f9d940f825e584f2a5544",
+      "after": "b0658ac4755889920f7721cbebffd072ba0bf04f80a3bfaaede92c0f776dae6a"
+    },
+    "compatibility/v010/bundled/capabilities/modeling-plot-suite/1.0.0/resources/assets/shared-scripts/plot_utils.py": {
+      "before": "99b303f10006aa60fbb57399f204a0b8ca6069d48653dc51dbf343e79bd0b1da",
+      "after": "9f47314d5045aad5dfa0863d836b86124aacf5cb90e93cc3c808324bf469aad7"
+    },
+    "compatibility/v010/bundled/capabilities/modeling-plot-suite/1.0.0/resources/assets/shared-scripts/figure_style_guide.md": {
+      "before": "66ea67795d4b7af8622ffea5e2183bf6078217ff911b68e6d32cba1a199c94d4",
+      "after": "3dd47915c22557dbe59d5c3af76332ab81468c78fe4e0b6fdf702155f28268e7"
+    },
+    "compatibility/v010/bundled/capabilities/modeling-plot-suite/1.0.0/resources/assets/shared-scripts/figure_recipes_basic.md": {
+      "before": "c64ca48cc6d91a549f09b78fd5a2884d94fdc24300891d89232842f2e513ca5e",
+      "after": "607831cb30adf2b9b10da32516019423be1ba985b01bd8a1d74b62e8bbaacbfc"
+    },
+    "compatibility/v010/toolkit/legacy-modeling-plot-suite/assets/shared-scripts/plot_utils.py": {
+      "before": "63ad0791b7262e562a28e1500ba8f15005ca66e815f6230df1951197beb89a25",
+      "after": "7350bbb79a7e32a57af864f9182ce5bb936c259a39f7180771e83cda6a572b94"
+    },
+    "compatibility/v010/toolkit/legacy-modeling-plot-suite/assets/shared-scripts/figure_style_guide.md": {
+      "before": "66ea67795d4b7af8622ffea5e2183bf6078217ff911b68e6d32cba1a199c94d4",
+      "after": "3dd47915c22557dbe59d5c3af76332ab81468c78fe4e0b6fdf702155f28268e7"
+    },
+    "compatibility/v010/toolkit/legacy-modeling-plot-suite/assets/shared-scripts/figure_recipes_basic.md": {
+      "before": "c64ca48cc6d91a549f09b78fd5a2884d94fdc24300891d89232842f2e513ca5e",
+      "after": "607831cb30adf2b9b10da32516019423be1ba985b01bd8a1d74b62e8bbaacbfc"
+    },
+    "bundled/capabilities/modeling-plot-suite/1.0.0/manifest.json": {
+      "before": "5292a17ba64fb94686c7f9672f16ce6de8afb3ca58da8ddadee74631d39de4ab",
+      "after": "35032a7a4d03a142a11510fc22bb0f1201d04b3a79aa149aba80e8fed3ff5e3b"
+    },
+    "compatibility/v010/bundled/capabilities/modeling-plot-suite/1.0.0/manifest.json": {
+      "before": "eb116f4e314d6d72571dd122d3334e07943bccbba9fc04883a7b613d6fb43706",
+      "after": "d979fba161826db9df569e2ec6512646a32ab8a07736bcf68bd595ab8e78e03b"
+    }
+  }
+}

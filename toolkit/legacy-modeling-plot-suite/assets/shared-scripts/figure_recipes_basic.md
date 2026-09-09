@@ -979,7 +979,7 @@ save_fig(fig, 'figures/fig_subplots.pdf')
 # 1. 子图标签 (a)(b)(c)(d) 用 ax.set_title(loc='left', pad=3) 紧贴子图顶部
 #    ⛔ 不要用 ax.text(transAxes) — set_aspect('equal') 时标注会远离子图
 # 2. tight_layout(pad=0.5)：紧凑布局，子图不会被压缩
-#    ⛔ 不要用 pad=2.0 — SciencePlots 下会导致子图极小
+#    ⛔ 不要用 pad=2.0 — 紧凑布局下会导致子图极小
 # 3. 每个子图的图例放在各自内部：不要用全局图例
 # 4. 统一 fontsize：标题 10pt，标签 8pt，刻度 8pt
 # 5. 统一配色：所有子图使用相同的 PALETTE 序列

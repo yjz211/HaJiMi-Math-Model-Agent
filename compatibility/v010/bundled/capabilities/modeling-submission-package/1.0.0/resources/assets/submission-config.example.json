@@ -1,0 +1,31 @@
+{
+  "package_title": "某题数学建模提交包",
+  "output_dir": "../deliverables",
+  "staging_name": "某题_提交材料",
+  "zip_name": "某题_论文与代码.zip",
+  "papers": {
+    "with_code": "../paper/candidate/论文_含代码.pdf",
+    "without_code": "../paper/candidate/论文_正文版.pdf"
+  },
+  "ai_report_pdf": "../deliverables/AI工具使用详情.pdf",
+  "code_files": [
+    {
+      "source": "../src/reconstruct.m",
+      "target": "代码/B1_01_重构原始数据.m",
+      "appendix": "B1",
+      "purpose": "从题目附件建立分析数据",
+      "required": true
+    },
+    {
+      "source": "../src/model_q1.py",
+      "target": "代码/B2_01_求解问题一.py",
+      "appendix": "B2",
+      "purpose": "运行问题一模型并输出结果",
+      "required": true
+    }
+  ],
+  "extra_files": [],
+  "data_instructions": "将题目附件放到 problem/original/，具体名称见代码复现说明。",
+  "run_steps": ["运行 B1 数据整理程序", "按 B2、B3……顺序运行各问程序"],
+  "excluded_patterns": ["*.mat", "**/__pycache__/**", "**/.pytest_cache/**", "*.aux", "*.log", "*.synctex.gz"]
+}

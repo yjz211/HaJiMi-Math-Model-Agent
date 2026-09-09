@@ -1,3 +1,4 @@
+import { markWorkflowTestWorkspace } from "./workflow-test-workspace.ts";
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -84,6 +85,7 @@ async function createFreezableChain(cwd: string) {
 
 test("supervised question checkpoint stops queued work until actual user acceptance", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-question-chat-review-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<unknown> }>();
   const messages: Array<{ content: string }> = [];
   const pi = { registerTool(tool: { name: string; execute: (id: string, args: unknown) => Promise<unknown> }) { tools.set(tool.name, tool); },
@@ -237,7 +239,7 @@ test("stage 8 always stops and final acceptance revalidates the exact paper with
       summary: { passed: 12, failed: 1 },
     }));
     await assert.rejects(sealDeliveryValidation(cwd, await deliveryFingerprint(cwd)), /passing strict validation/);
-    await assert.rejects(setMilestone(cwd, state.revision, 8, "satisfied", ["paper/main.pdf"]), /FIGURE_PLAN/);
+    await assert.rejects(setMilestone(cwd, state.revision, 8, "satisfied", ["paper/main.pdf"]), /requires ready/);
     // Advisory failures stay visible but must allow delivery and human acceptance.
     writeFileSync(join(cwd, ".hajimi", "validation.json"), JSON.stringify({
       schema_version: "hajimi.validation.v1", validated_at: new Date().toISOString(), strict: true, passed: true,
@@ -652,7 +654,7 @@ test("stage seven rework can refreeze reusable evidence without rerunning experi
 });
 
 
-test("optional batch binds sixteen publications with one snapshot and no hand-authored sidecar", async () => {
+test("0.11 batch binding implementation remains available outside the original stage8 runtime", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-batch-publications-"));
   const tools = new Map<string, { execute(id: string, args: unknown): Promise<unknown> }>();
   const pi = { registerTool(tool: { name: string; execute(id: string, args: unknown): Promise<unknown> }) { tools.set(tool.name, tool); }, on() {} } as unknown as ExtensionAPI;
@@ -661,7 +663,7 @@ test("optional batch binds sixteen publications with one snapshot and no hand-au
     const state = chain.claim.state;
     state.focus.stage = 8;
     await writeWorkflowStateAtomic(cwd, state);
-    createHajimiCoreFactory({ cwd, productRoot: process.cwd() })(pi);
+    (await import("./core-extension-v011.ts")).createHajimiCoreFactory({ cwd, productRoot: process.cwd() })(pi);
     const publications = Array.from({ length: 16 }, (_, i) => ({ kind: i === 15 ? "paper" : "figure", artifactPath: `output/item-${i}.txt` }));
     for (const item of publications) writeFileSync(join(cwd, item.artifactPath), "Computed value 42");
     const response = await tools.get("hajimi_bind_publications")!.execute("batch", {
