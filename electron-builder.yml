@@ -21,6 +21,7 @@ extraResources:
       - "bundled/**/*"
       - "toolkit/**/*"
       - "runtime/**/*"
+      - "!runtime/windows/payloads/**/*"
       - "!**/__pycache__/**/*"
   - from: bundled
     to: hajimi/bundled
