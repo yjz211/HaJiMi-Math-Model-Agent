@@ -1,3 +1,4 @@
+import { markWorkflowTestWorkspace } from "./workflow-test-workspace.ts";
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -84,6 +85,7 @@ async function createFreezableChain(cwd: string) {
 
 test("supervised question checkpoint stops queued work until actual user acceptance", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-question-chat-review-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<unknown> }>();
   const messages: Array<{ content: string }> = [];
   const pi = { registerTool(tool: { name: string; execute: (id: string, args: unknown) => Promise<unknown> }) { tools.set(tool.name, tool); },

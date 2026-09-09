@@ -1,3 +1,4 @@
+import { markWorkflowTestWorkspace } from "./workflow-test-workspace.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
@@ -12,6 +13,7 @@ import { MODELING_START_PROMPT } from "./modeling-project.ts";
 
 test("lean reports require actual outputs and cannot silently waive incomplete modeling", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "hajimi-lean-journey-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute(id: string, args: unknown): Promise<unknown> }>();
   const pi = { registerTool(tool: { name: string; execute(id: string, args: unknown): Promise<unknown> }) { tools.set(tool.name, tool); }, on() {}, sendMessage() {} } as unknown as ExtensionAPI;
   const call = (name: string, args: Record<string, unknown>) => tools.get(name)!.execute("test", { expectedRevision: 0, ...args });
@@ -46,6 +48,7 @@ test("lean reports require actual outputs and cannot silently waive incomplete m
 
 test("independent tools use runtime revisions while waivers remain unavailable", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "hajimi-lean-tools-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute(id: string, args: unknown): Promise<unknown> }>();
   const pi = { registerTool(tool: { name: string; execute(id: string, args: unknown): Promise<unknown> }) { tools.set(tool.name, tool); }, on() {} } as unknown as ExtensionAPI;
   try {

@@ -1,3 +1,4 @@
+import { markWorkflowTestWorkspace } from "./workflow-test-workspace.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtemp, readFile, writeFile, rm } from "node:fs/promises";
@@ -15,6 +16,7 @@ import { checkStageCompletion } from "./completion-checks.ts";
 
 for (const policy of ["lean", "strict"] as const) test(`${policy}: plotting is deferred until stage8 without changing the planning tool`, async () => {
  const cwd=await mkdtemp(join(tmpdir(),'hajimi-plot-stage-'));
+  markWorkflowTestWorkspace(cwd);
  const tools=new Map<string,{execute(id:string,args:unknown):Promise<unknown>}>();
  const pi={registerTool(tool:{name:string;execute(id:string,args:unknown):Promise<unknown>}){tools.set(tool.name,tool);},on(){}} as unknown as ExtensionAPI;
  try {

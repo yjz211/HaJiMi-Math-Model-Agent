@@ -1,3 +1,4 @@
+import { markWorkflowTestWorkspace } from "./workflow-test-workspace.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -13,6 +14,7 @@ import { AgentSessionWrapper } from "../rpc-manager.ts";
 
 test("automatic runtime continues normal stops, unlocks terminal failures, and stops at delivery", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-autonomy-"));
+  markWorkflowTestWorkspace(cwd);
   const handlers = new Map<string, (...args: unknown[]) => unknown>();
   const sent: Array<{ message: Record<string, unknown>; options: Record<string, unknown> }> = [];
   const pi = { registerTool() {}, on(name: string, handler: (...args: unknown[]) => unknown) { handlers.set(name, handler); },
@@ -56,6 +58,7 @@ test("automatic runtime continues normal stops, unlocks terminal failures, and s
 
 test("automatic RPC accepts user prompts and aborts", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-auto-rpc-"));
+  markWorkflowTestWorkspace(cwd);
   let calls = 0;
   const wrapper = new AgentSessionWrapper({ sessionManager: { getHeader: () => ({ cwd }) },
     abort: async () => {}, dispose: () => {}, getAllTools: () => [], getActiveToolNames: () => [],
@@ -75,6 +78,7 @@ test("automatic RPC accepts user prompts and aborts", async () => {
 
 for (const blocked of [true, false]) test(`automatic stops ${blocked ? "blocked stage" : "idle continuation loop"}`, async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-no-loop-"));
+  markWorkflowTestWorkspace(cwd);
   const handlers = new Map<string, (...args: unknown[]) => unknown>();
   let continuations = 0;
   const pi = { registerTool() {}, on(name: string, handler: (...args: unknown[]) => unknown) { handlers.set(name, handler); },

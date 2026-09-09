@@ -1,3 +1,4 @@
+import { markWorkflowTestWorkspace } from "./workflow-test-workspace.ts";
 import assert from "node:assert/strict";
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -18,6 +19,7 @@ import { writeWorkflowStateAtomic } from "./workflow-store.ts";
 
 test("stage 8 reuses unchanged integrated guidance and restores it after routing or context changes", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-paper-guidance-"));
+  markWorkflowTestWorkspace(cwd);
   const handlers = new Map<string, (...args: never[]) => Promise<unknown>>();
   const notices: Array<{ content: string }> = [];
   const pi = {
@@ -56,6 +58,7 @@ test("stage 8 reuses unchanged integrated guidance and restores it after routing
 
 test("status defaults to concise state and paginates complete historical records", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-concise-status-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<{ content: Array<{ text: string }> }> }>();
   const pi = { registerTool(tool: { name: string; execute: (id: string, args: unknown) => Promise<{ content: Array<{ text: string }> }> }) { tools.set(tool.name, tool); }, on() {} } as unknown as ExtensionAPI;
   try {
@@ -78,6 +81,7 @@ test("status defaults to concise state and paginates complete historical records
 
 test("bundled Lab methodology references resolve on their first read", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-skill-reference-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<{ content: Array<{ text: string }> }> }>();
   const pi = { registerTool(tool: { name: string; execute: (id: string, args: unknown) => Promise<{ content: Array<{ text: string }> }> }) { tools.set(tool.name, tool); }, on() {} } as unknown as ExtensionAPI;
   try {
@@ -103,6 +107,7 @@ test("delivery validation targets the routed task cwd instead of a nonexistent W
 
 test("entering each stage emits visible guidance, including revisiting stage zero", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-stage-guide-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<unknown> }>();
   const notices: Array<{ content: string; display: boolean }> = [];
   const pi = {
@@ -147,6 +152,7 @@ test("HaJiMi tool output is bounded without splitting UTF-8 text", () => {
 
 test("before_agent_start replaces the host cwd with task-relative WSL guidance", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-prompt-"));
+  markWorkflowTestWorkspace(cwd);
   const handlers = new Map<string, (...args: never[]) => Promise<unknown>>();
   const pi = {
     registerTool() {},
@@ -192,6 +198,7 @@ test("before_agent_start replaces the host cwd with task-relative WSL guidance",
 
 test("a persisted chat pause permits inspection, blocks mutation, and aborts the tool turn", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-chat-pause-"));
+  markWorkflowTestWorkspace(cwd);
   const handlers = new Map<string, (...args: never[]) => Promise<unknown>>();
   const pi = {
     registerTool() {},
@@ -227,6 +234,7 @@ test("a persisted chat pause permits inspection, blocks mutation, and aborts the
 
 test("stage 9 permits preparation tools and packaging still requires accepted inputs", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-submission-guard-"));
+  markWorkflowTestWorkspace(cwd);
   const handlers = new Map<string, (...args: never[]) => Promise<unknown>>();
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<unknown> }>();
   const pi = { registerTool(tool: { name: string; execute: (id: string, args: unknown) => Promise<unknown> }) { tools.set(tool.name, tool); },
@@ -251,6 +259,7 @@ test("stage 9 permits preparation tools and packaging still requires accepted in
 
 test("submission history reads only the matching session branch without reasoning or binary content", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-session-evidence-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute: (...args: never[]) => Promise<{ content: Array<{ text: string }> }> }>();
   const pi = { registerTool(tool: { name: string; execute: (...args: never[]) => Promise<{ content: Array<{ text: string }> }> }) { tools.set(tool.name, tool); }, on() {}, sendMessage() {} } as unknown as ExtensionAPI;
   try {
@@ -273,6 +282,7 @@ test("submission history reads only the matching session branch without reasonin
 
 test("concurrent tool batch cannot write after the milestone pauses", async () => {
   const cwd = mkdtempSync(join(tmpdir(), "hajimi-batch-pause-"));
+  markWorkflowTestWorkspace(cwd);
   const tools = new Map<string, { execute: (id: string, args: unknown) => Promise<unknown> }>();
   const pi = {
     registerTool(tool: { name: string; execute: (id: string, args: unknown) => Promise<unknown> }) { tools.set(tool.name, tool); },

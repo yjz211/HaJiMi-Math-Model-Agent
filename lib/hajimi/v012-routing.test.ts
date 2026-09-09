@@ -1,3 +1,4 @@
+import { markWorkflowTestWorkspace } from "./workflow-test-workspace.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
@@ -13,16 +14,17 @@ import { HAJIMI_IDENTITY_KERNEL as leanIdentity } from "./context-projector.ts";
 import { hajimiToolsForStage } from "../../compatibility/v010/lib/hajimi/core-extension.ts";
 import { readStage8 } from "./stage8-phases.ts";
 import { hajimiResourceLoaderOptions } from "./resources.ts";
-import { markNewWindowsWorkspace } from "./workspace-backend-factory.ts";
+
 
 test("runtime selects intact 0.10 for strict and for both stage eights, in the same session", async () => {
  const cwd=await mkdtemp(join(tmpdir(),'hajimi-v012-route-'));
+  markWorkflowTestWorkspace(cwd);
  const handlers=new Map<string,(...args: unknown[])=>unknown>();
  const tools=new Map<string,{description:string;execute(id:string,args:unknown):Promise<unknown>}>();
  const pi={registerTool(tool: {name:string;description:string;execute(id:string,args:unknown):Promise<unknown>}){tools.set(tool.name,tool);},
   on(name:string,handler:(...args:unknown[])=>unknown){handlers.set(name,handler);},sendMessage(){}} as unknown as ExtensionAPI;
  try {
-  await markNewWindowsWorkspace(cwd);
+
   let state=(await ensureHajimiTask(cwd)).state;
   state.interaction={...interactionFor(state),mode:'supervised',executionPolicy:'lean'};
   state.focus.stage=2;await writeWorkflowStateAtomic(cwd,state);
@@ -58,6 +60,7 @@ test("runtime selects intact 0.10 for strict and for both stage eights, in the s
 
 for(const policy of ['lean','strict'] as const)test(`${policy} stage8 tool reopens review for missing prerequisites and cannot skip forward`,async()=>{
  const cwd=await mkdtemp(join(tmpdir(),'hajimi-v012-repair-'));
+  markWorkflowTestWorkspace(cwd);
  const tools=new Map<string,{execute(id:string,args:unknown):Promise<unknown>}>();
  const pi={registerTool(tool:{name:string;execute(id:string,args:unknown):Promise<unknown>}){tools.set(tool.name,tool);},on(){}} as unknown as ExtensionAPI;
  try {
