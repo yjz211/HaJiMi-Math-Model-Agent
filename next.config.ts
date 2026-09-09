@@ -27,6 +27,8 @@ const nextConfig: NextConfig = {
       // Electron ships the signed archive once under resources/hajimi/runtime.
       'runtime/windows/payloads/**/*',
       'runtime/windows/drawio/**/*',
+      'compatibility/v010/runtime/windows/payloads/**/*',
+      'compatibility/v010/runtime/windows/drawio/**/*',
       '**/*.test.ts',
       '**/*.test.tsx',
       '**/*.test.mjs',

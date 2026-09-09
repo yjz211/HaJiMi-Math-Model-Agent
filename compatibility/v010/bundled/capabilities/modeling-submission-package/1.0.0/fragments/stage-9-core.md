@@ -1,0 +1,2 @@
+# Stage 9 submission package
+Read resources/SKILL.md and both submission contracts. Consume the human-accepted stage-8 body and active frozen evidence. Produce separate body-only and code-appendix PDFs, necessary reproducible code copies, anonymous evidence-based AI usage Word/PDF, SHA-256 inventory and ZIP. Never alter accepted mathematics or claim invented human review. Preserve draft-only status when facts or official rules are missing. A successful package action completes stage 9; do not create validation, page-preview, or review chains.

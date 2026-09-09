@@ -75,10 +75,12 @@ test("capability routing is stage-aware, tag-specific, and conservative while un
     assert.match(stage9.decisions[0].activationReason, /human_accepted_paper/);
     assert.match(stage9.fragments.map(item => item.text).join('\n'), /SUBMISSION BLOCKED/);
     const stage7 = await routeCapabilities({ productRoot: process.cwd(), state: initial.state, stage: 7 });
-    assert.deepEqual(stage7.decisions.map((item) => item.capabilityId), ["modeling-plot-suite"]);
-    assert.match(stage7.fragments.map((item) => item.text).join("\n"), /SKILL\.md/);
-    assert.match(stage7.fragments.map((item) => item.text).join("\n"), /references\/paper-figure\.md completely/);
-    assert.match(stage7.fragments.map((item) => item.text).join("\n"), /动手写 `figsize` 前先算/);
+    assert.deepEqual(stage7.decisions, []);
+    assert.deepEqual(stage7.fragments, []);
+    const stage8 = await routeCapabilities({ productRoot: process.cwd(), state: initial.state, stage: 8 });
+    assert.match(stage8.fragments.map((item) => item.text).join("\n"), /SKILL\.md/);
+    assert.match(stage8.fragments.map((item) => item.text).join("\n"), /references\/paper-figure\.md completely/);
+    assert.match(stage8.fragments.map((item) => item.text).join("\n"), /动手写 `figsize` 前先算/);
     const routes = new Map<string, string[]>();
     for (const tag of ["statistics", "optimization", "network"]) {
       const state = structuredClone(initial.state);

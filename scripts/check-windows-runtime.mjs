@@ -9,7 +9,7 @@ const base = join(root, 'runtime', 'windows');
 const trust = JSON.parse(await readFile(join(base, 'trust.json'), 'utf8'));
 const { manifest } = decodeRelease(JSON.parse(await readFile(join(base, 'release.json'), 'utf8')), trust);
 await checkedHelper(root);
-if (process.env.HAJIMI_OFFLINE_RUNTIME === '1') {
+if (process.env.HAJIMI_OFFLINE_RUNTIME === '1' || !manifest.archive.url) {
   const path = join(base, 'payloads', manifest.archive.file);
   if ((await stat(path)).size !== manifest.archive.size || await hashFile(path) !== manifest.archive.sha256) throw new Error('Offline payload mismatch');
 } else if (!manifest.archive.url) throw new Error('Online installer requires a published archive URL');

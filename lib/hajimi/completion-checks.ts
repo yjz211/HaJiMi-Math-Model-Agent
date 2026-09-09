@@ -42,7 +42,7 @@ export async function checkStageCompletion(cwd: string, state: HajimiWorkflowSta
     if (!outputs.some(path => /\.(py|r|m|jl|js|ts|ipynb|sh)$/i.test(path))
         || !outputs.some(path => /\.(json|csv|xlsx|txt|log)$/i.test(path))) throw new Error(`Stage ${stage}: include the computation/checking code and its saved results among the output files.`);
   }
-  if (stage === 7 || stage === 8) {
+  if (stage === 8) {
     await validateFigurePlan(cwd, "FIGURE_PLAN.json");
     const plan = JSON.parse(await readFile(resolve(cwd, "FIGURE_PLAN.json"), "utf8"));
     const ids = state.questions.map(q => q.questionId).sort();

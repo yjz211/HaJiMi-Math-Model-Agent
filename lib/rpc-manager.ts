@@ -1,4 +1,6 @@
 import { readHajimiTask } from "./hajimi/task-state.ts";
+import { automaticRunLocked } from "./hajimi/automatic-policy.ts";
+import { AUTOMATIC_LOCK_MESSAGE as ORIGINAL_AUTOMATIC_LOCK_MESSAGE } from "../compatibility/v010/lib/hajimi/automatic-policy.ts";
 import { saveInteraction } from "./hajimi/interaction.ts";
 import { existsSync } from "fs";
 import { unlink } from "fs/promises";
@@ -349,6 +351,13 @@ export class AgentSessionWrapper {
   async send(command: Record<string, unknown>): Promise<unknown> {
     this.resetIdleTimer();
     const type = command.type as string;
+
+    if (type !== "get_state" && type !== "get_tools") {
+      const cwd = this.inner.sessionManager?.getHeader?.()?.cwd;
+      if (cwd && automaticRunLocked((await readHajimiTask(cwd))?.state)) {
+        throw new Error(ORIGINAL_AUTOMATIC_LOCK_MESSAGE);
+      }
+    }
 
     switch (type) {
       case "prompt": {

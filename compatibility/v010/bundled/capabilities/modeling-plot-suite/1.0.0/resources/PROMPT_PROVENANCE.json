@@ -1,0 +1,37 @@
+{
+  "profile": "modeling-competition",
+  "suite": "modeling-plot-suite",
+  "workflows": {
+    "paper-figure": {
+      "component": "modeling-paper-figure",
+      "source_prompt": "C:\\Users\\hhhh\\Desktop\\try 1\\codex-plotting-modeling-competition\\modeling-paper-figure\\references\\original.md",
+      "loaded_prompt": "references\\paper-figure.md",
+      "active_prompt_sha256": "7503f49f0e43e2323872b1547c744bc05a426df44533a095d0b076fe2619633d"
+    },
+    "paper-figure-html": {
+      "component": "modeling-paper-figure-html",
+      "source_prompt": "C:\\Users\\hhhh\\Desktop\\try 1\\codex-plotting-modeling-competition\\modeling-paper-figure-html\\references\\original.md",
+      "loaded_prompt": "references\\paper-figure-html.md",
+      "active_prompt_sha256": "af23491c2a524ef799c59ed7452e2228e42153f2a3b9bfea252ad6f836959b04"
+    },
+    "paper-technical-diagram": {
+      "component": "modeling-paper-figure-drawio",
+      "source_prompt": "C:\\Users\\hhhh\\Desktop\\try 1\\codex-plotting-modeling-competition\\modeling-paper-figure-drawio\\references\\original.md",
+      "loaded_prompt": "references\\paper-technical-diagram.md",
+      "active_prompt_sha256": "450b5b42899e2bb04eeadd6b160a43cfd5596c3f03a3157e1a0b58dab0371c5c"
+    },
+    "paper-illustration": {
+      "component": "modeling-paper-illustration",
+      "source_prompt": "C:\\Users\\hhhh\\Desktop\\try 1\\codex-plotting-modeling-competition\\modeling-paper-illustration\\references\\original.md",
+      "loaded_prompt": "references\\paper-illustration.md",
+      "active_prompt_sha256": "8e8ece13d84f3c8ec2ebafbcdc3801b531673f6477806b7ae4ac371542c0d9ed",
+      "provider_adapter": "codex-built-in-imagegen"
+    },
+    "mermaid-diagram": {
+      "component": "modeling-mermaid-diagram",
+      "source_prompt": "C:\\Users\\hhhh\\Desktop\\try 1\\codex-plotting-modeling-competition\\modeling-mermaid-diagram\\references\\original.md",
+      "loaded_prompt": "references\\mermaid-diagram.md",
+      "active_prompt_sha256": "8655dca39759d40546aff5c23b0b7036684741fd6469f7b30d41e6b2901f4f7e"
+    }
+  }
+}

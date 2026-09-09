@@ -584,39 +584,28 @@ done
 
 ### Step 2: Figure type decisions
 
-Browse the recipe library (97 total across 5 files) and the `<figure_selection_guide>` decision table from the style guide. For each planned figure:
+Read the approved `FIGURE_PLAN` and its derived `FIGURE_MANIFEST`. For each planned figure:
 
-1. Identify the data characteristic (e.g., "3 methods × 4 metrics comparison")
-2. Browse ALL available recipe types — don't default to the same few charts every time
-3. Pick the type that best fits the data AND looks visually distinct from other figures in this paper
-4. Ensure visual variety: do not use the same chart type more than 2 times in one paper. Mix basic, advanced, competition, and empirical recipes
-5. Read the full code example from the matched recipe file
-6. Select the color palette based on paper domain
+1. Confirm the actual data characteristic and the planned claim, chart type, recipe, source, and layout.
+2. Implement the planned chart type and recipe directly; execution is not a second figure-selection pass.
+3. Reusing the same chart type is appropriate when the figures answer the same kind of reader question. Change type only when another encoding adds real information or materially improves comparison.
+4. If the actual data cannot support the planned encoding, return to `FIGURE_PLAN`, revise it, and validate again before drawing. Do not silently substitute a more decorative type in the script.
+5. Read the full code example from the selected recipe file.
+6. Select the color palette based on paper domain.
 
-**⛔ Do NOT always default to grouped bar / lollipop / line chart.** The recipe library has 97 chart types — use the variety. For any data shape, there are usually 3-5 suitable types. Pick the one that's most visually interesting AND hasn't been used yet in this paper.
+Grouped bars, lines, scatter plots, heatmaps, and other basic charts are valid when they are the clearest expression at final paper size. Visual variety alone is not a reason to replace them.
 
-Reference `_utils/figure_exemplars.md` for figure distribution examples by paper type. Decide count and placement autonomously.
+Use `_utils/figure_exemplars.md` only as background guidance; do not reopen the approved figure count or placement during execution.
 
-### Step 2.5: Detailed figure type planning (variety check)
+### Step 2.5: Plan adherence check
 
-For each planned figure, create a Figure Type Audit Table. The "Chosen Type" should be your autonomous choice from the full recipe library — the examples below are just illustrations, not fixed recommendations:
-
-```
-| # | Data Description | Chosen Type | Why | Recipe Ref |
-|---|-----------------|-------------|-----|------------|
-| 1 | 4 methods × 3 metrics | (your choice from library) | (your reasoning) | (recipe #) |
-| 2 | ablation results | (your choice) | | |
-| 3 | feature importance | (your choice) | | |
-| ... | ... | ... | ... | ... |
-```
-
-**Variety check**: count unique chart types in the table. If < 4 unique types for a paper with ≥6 figures, go back and swap some for alternatives from the recipe library. Browse recipe headings again if needed.
+Before generating scripts, confirm that every DATA item still uses the approved chart type, recipe, claim, source, and layout. Any necessary change goes back into `FIGURE_PLAN` and is validated there; no chart-type diversity quota applies.
 
 ### Step 3: Generate figure scripts
 
 One `gen_fig_xxx.py` script per figure, executed from workspace root. Each script starts with `_utils` initialization and `setup_style()` call.
 
-**MANDATORY**: Before writing each script, you MUST extract the matched recipe code using `get_recipe.py`. Copy the recipe code as the starting point, then adapt it to the actual data. Do NOT write figure scripts from scratch — the recipes contain critical styling details (gradient fills, KDE backgrounds, annotation boxes, layered visuals) that you will miss if you write from memory.
+**MANDATORY**: Before writing each non-custom DATA script, extract the matched recipe code using `get_recipe.py`. Use its layout, proportions, labels, and style structure as the starting point, then adapt it to the actual data. Gradient fills, KDE backgrounds, annotation boxes, and layered effects are optional: retain them only when they encode information or improve legibility.
 
 **⛔ Subfigure 组合图实现（当 FIGURE_MANIFEST 标了 `[2-panel]` / `[4-panel]`）**：
 
@@ -1181,8 +1170,7 @@ For each fig_xxx.pdf, answer:
 1. [Type match] Is this chart type the best choice for this data?
    - Method comparison (≤4 methods) → Grouped bar, not lollipop
    - Single-dim ranking/count → Horizontal bar (sorted + gradient color) or Pareto. Do NOT use vertical multi-color bars (random color per bar without grouping = visual noise, looks amateurish)
-   - Method ranking (≥5 methods) → Horizontal bar preferred; Lollipop OK but must have gradient bg + highlight row + reference line
-   - ⛔ Lollipop: if only plain stem+dot with no decoration, visual effect is poor — must follow adv #1 recipe with gradient bg + #1 highlight + median reference line
+   - Method ranking (≥5 methods) → Horizontal bar preferred; Lollipop is acceptable when point positions make comparison clearer
    - Time series trend → Line chart, not bar chart
    - Distribution comparison → Rain Cloud or box plot, not bar chart
    - Correlation matrix → Heatmap, not scatter matrix
@@ -1192,7 +1180,7 @@ For each fig_xxx.pdf, answer:
 2. [Visual quality] Does the figure look professional and clear?
    - Enough spacing between data points/bars? (not crammed together)
    - Uses PALETTE colors, not matplotlib default blue?
-   - Has light-fill + solid-border premium look? (not plain solid blocks + white edges)
+   - Are fills, borders, and emphasis coherent and useful for reading the data?
    - Annotation text readable? (no overlap, not too small)
    - Heatmap: text color auto-adapts to background? (white on dark cells, black on light cells)
 
@@ -1205,13 +1193,14 @@ For each fig_xxx.pdf, answer:
    - Colorbar overlapping the plot area? → adjust pad/shrink parameters
    - For multi-panel figures: subplot titles overlapping adjacent subplot content? → increase hspace/wspace
 
-3. [Recipe usage] Is each figure based on recipe code?
+3. [Recipe usage] Does each non-custom DATA figure preserve the useful structure of its approved recipe?
    - Does the script call setup_style() + PALETTE?
-   - Has premium elements from recipe? (gradient fills, KDE backgrounds, annotation boxes, smart_labels, etc.)
-   - If plain matplotlib default style (blue bars, no annotations, no fills), must rewrite using recipe
+   - Are layout, proportions, labeling, and semantic color roles adapted correctly?
+   - Gradient fills, KDE backgrounds, annotation boxes, and other decorative layers are not required unless they carry real information or improve legibility.
+   - A clear basic chart does not fail merely because it uses fewer decorative elements.
 
 4. [Information value] Does the figure convey meaningful information?
-   - Has reference lines / annotation boxes / significance markers?
+   - Are reference lines, annotations, or significance markers included when the claim and data require them?
    - Are data differences visible? (if all bars are nearly the same height, the figure has no information value)
    - Is there a "so what" — what conclusion can the reader draw?
 

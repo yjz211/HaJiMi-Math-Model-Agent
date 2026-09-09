@@ -1,0 +1,33 @@
+{
+  "document_status": "draft",
+  "output_docx": "../deliverables/AI工具使用详情.docx",
+  "output_pdf": "../deliverables/AI工具使用详情.pdf",
+  "tools": [
+    {
+      "name": "【待补充】",
+      "version": "【待补充；未知时写：使用期间平台默认模型，界面未显示具体版本】",
+      "provider": "【待补充】",
+      "use_method": "【网页端/客户端/API/插件】",
+      "date_range": "【待补充】",
+      "notes": ""
+    }
+  ],
+  "records": [
+    {
+      "id": "1",
+      "tool": "【待补充】",
+      "stage": "【待补充】",
+      "purpose": "【待补充具体任务】",
+      "provided_materials": "【待补充真实输入】",
+      "prompt_summary": "【待补充真实提示词或忠实摘要】",
+      "process": "【待补充实际交互过程】",
+      "ai_output": "【待补充AI主要输出】",
+      "paper_location": "【待补充论文章节、图表或代码位置】",
+      "adoption": "【未采纳/部分采纳/采纳】",
+      "human_modification": "【待补充实际修改】",
+      "verification": "【待补充可复核的核验动作与结果】"
+    }
+  ],
+  "examples": [],
+  "responsibility_statement": "AI输出作为辅助建议使用。参赛队对采用的文字、图表、模型、数据、程序和结果进行人工核验，并对最终提交材料负责。"
+}

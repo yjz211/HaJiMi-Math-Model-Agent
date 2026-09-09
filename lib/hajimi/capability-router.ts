@@ -110,7 +110,8 @@ export async function routeCapabilities(input: {
   const maxChars = input.maxChars ?? 7_000;
   const registry = await loadCapabilityRegistry(input.productRoot);
   const activeFreeze = input.state.provenance.freezes.some(f => f.status === "active");
-  const selected = registry.filter((capability) => capability.manifest.allowedStages.includes(stage));
+  const selected = registry.filter((capability) => capability.manifest.allowedStages.includes(stage)
+    && (capability.manifest.id !== "modeling-plot-suite" || stage >= 8));
   const eligibleFragments = selected.flatMap((capability) => capability.manifest.contextFragments
     .filter((fragment) => fragment.stages.includes(stage))
     .filter((fragment) => !fragment.tags || fragment.tags.some((tag) => input.state.problemTags.includes(tag)))

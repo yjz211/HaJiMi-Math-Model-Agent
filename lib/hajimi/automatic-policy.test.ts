@@ -81,9 +81,9 @@ for (const blocked of [true, false]) test(`automatic stops ${blocked ? "blocked 
     sendMessage(_message: unknown, options: { triggerTurn?: boolean }) { if (options.triggerTurn) continuations++; } } as unknown as ExtensionAPI;
   try {
     const state = (await ensureHajimiTask(cwd)).state;
-    state.focus.stage = 8;
+    state.focus.stage = 6;
     state.interaction = { ...interactionFor(state), mode: "automatic" };
-    if (blocked) state.milestones[8].status = "blocked";
+    if (blocked) state.milestones[6].status = "blocked";
     await writeWorkflowStateAtomic(cwd, state);
     createHajimiCoreFactory({ cwd, productRoot: process.cwd() })(pi);
     for (let run = 0; run < 6; run++) {

@@ -124,7 +124,7 @@ def main():
     probe = subprocess.run([str(python), '-I', '-c', 'import sys; print(".".join(map(str,sys.version_info[:3])))'], env=env, capture_output=True, text=True, check=True)
     if probe.stdout.strip() != lock['pythonVersion']: raise ValueError('Python archive version mismatch')
     project = tomllib.loads((args.project/'toolkit/pyproject.toml').read_text(encoding='utf-8'))
-    requirements = [*project['project']['dependencies'], lock['pymupdfRequirement'], *lock.get('extraRequirements', [])]
+    requirements = [*project['project']['dependencies'], lock['pymupdfRequirement'], *lock.get('extraRequirements', []), 'adjustText==1.4.0']
     if any(not re.fullmatch(r'[A-Za-z0-9_.-]+==[A-Za-z0-9_.+-]+', r) for r in requirements): raise ValueError('Build flavor requires exact package pins, no URLs/ranges/editables')
     if args.resolve_wheels:
         if args.wheels.exists(): raise ValueError('Wheel capture directory must be new')

@@ -53,7 +53,7 @@ PALETTES = {
     # NEJM — 柔和优雅，适合统计/医学类
     'nejm': ['#BC3C29', '#0072B5', '#E18727', '#20854E', '#7876B1', '#6F99AD', '#FFDC91', '#EE4C97'],
 
-    # SciencePlots — 经典学术，适合 IEEE/ACM/工程类论文
+    # 经典学术，适合 IEEE/ACM/工程类论文
     'science': ['#0C5DA5', '#00B945', '#FF9500', '#FF2C00', '#845B97', '#474747', '#9e9e9e'],
 
     # 色盲友好 (Wong 2011, Nature Methods) — 无障碍首选
@@ -347,7 +347,7 @@ def setup_style(palette='auto'):
             'tableau' — Tableau 10 现代清新，适合多组对比
             'npg' — Nature 鲜明对比，适合自然科学
             'nejm' — 柔和优雅，适合统计/医学
-            'science' — SciencePlots 经典，适合工程类
+            'science' — 经典学术配色，适合工程类
             'colorblind' — 色盲友好（备选）
             或直接传一个颜色列表 ['#xxx', '#yyy', ...]
     """
@@ -409,52 +409,12 @@ def setup_style(palette='auto'):
     COLORS['down'] = colors[1] if len(colors) > 1 else '#ED7D7D'     # 下降 = secondary 色
     COLORS['highlight'] = colors[4] if len(colors) > 4 else colors[0]  # 高亮
 
-    # 尝试使用 SciencePlots（如果未安装则自动安装）
-    # ★ 随机模式【跳过】SciencePlots：它默认 xtick.top/ytick.right + 朝内刻度（=上/右黑点点根源），
-    #   且会整体覆盖我们的风格族样式。随机模式下版式完全交给 STYLE_FAMILIES 控制。
-    #   非随机（显式指定配色，如 nature）保持原有 SciencePlots 行为，向后兼容。
-    _has_scienceplots = False
-    if not _random_mode:
-        try:
-            import scienceplots
-            _has_scienceplots = True
-        except ImportError:
-            try:
-                import subprocess
-                subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'SciencePlots', '-q'],
-                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                import scienceplots
-                _has_scienceplots = True
-            except Exception:
-                pass
-        if _has_scienceplots:
-            try:
-                plt.style.use(['science', 'no-latex'])
-            except OSError:
-                _has_scienceplots = False
-
-    # ★ SciencePlots 会设置很小的 figure.figsize 和紧凑的 subplot margins
-    # 这里强制重置，防止用户手动指定的 figsize 被 subplot 参数压缩子图
-    if _has_scienceplots:
-        matplotlib.rcParams.update({
-            'figure.figsize': (8, 5),           # 恢复合理默认尺寸
-            'figure.subplot.left': 0.1,
-            'figure.subplot.right': 0.95,
-            'figure.subplot.top': 0.92,
-            'figure.subplot.bottom': 0.12,
-            'figure.subplot.hspace': 0.3,
-            'figure.subplot.wspace': 0.3,
-            'figure.constrained_layout.use': False,  # 避免与 tight_layout 冲突
-        })
-
-    # ★ 关闭 savefig.bbox='tight' — 无条件生效（不管 SciencePlots 装没装）
-    # 否则 ax.text(transAxes, y<0 or y>1) 这种 axes 外标注会让 tight 包围盒爆炸，
-    # PDF mediabox 被撑到几十英寸高 → PNG 转换后变成"1496×23966"超长条
+    # 保持既有导出边界设置。
     matplotlib.rcParams['savefig.bbox'] = 'standard'
     matplotlib.rcParams['savefig.pad_inches'] = 0.1
 
-    # 用 seaborn 主题（如果可用且没有 SciencePlots）
-    if sns and not _has_scienceplots:
+    # 用 seaborn 主题（如果可用）
+    if sns:
         sns.set_theme(style='ticks', font_scale=1.0, rc={
             'axes.edgecolor': '#333333',
             'axes.linewidth': 0.8,
@@ -1263,7 +1223,7 @@ def _ensure_ticklabels_visible(fig):
 def _guard_subplot_size(fig):
     """防护：检测子图是否被压缩得过小，如果是则强制修复布局。
     
-    常见原因：SciencePlots 的 subplot margins 过紧、tight_layout(pad) 过大、
+    常见原因：subplot margins 过紧、tight_layout(pad) 过大、
     ax.text(transAxes) 标签被算入空间分配。
     
     强制修复策略：检测到问题 → 重置 margins → 重新 tight_layout(pad=0.3) → 再验证。

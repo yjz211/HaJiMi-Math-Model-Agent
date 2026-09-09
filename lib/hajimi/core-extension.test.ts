@@ -34,7 +34,7 @@ test("stage 8 reuses unchanged integrated guidance and restores it after routing
     const first = (await project()).message!.content;
     assert.match(first, /modeling-paper-standard/);
     assert.match(first, /modeling-plot-suite/);
-    assert.doesNotMatch(first, /FORMAL-CONSUMPTION BLOCKED/);
+    assert.match(first, /FORMAL-CONSUMPTION BLOCKED/);
     assert.equal((await project()).message, undefined);
     state = (await ensureHajimiTask(cwd)).state;
     await updateHajimiState(cwd, state.revision, { currentObjective: "Prepare current paper section", microPlan: state.microPlan, nextAction: state.nextAction });

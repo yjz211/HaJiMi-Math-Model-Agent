@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  框架矩阵图模板 (framework) —— 方法对比 / 多维框架
+  ------------------------------------------------------------
+  产物文件名建议: fig_framework.html → fig_framework.pdf
+  适用: 方法对比矩阵、理论框架多维展示、维度×方案交叉表
+
+  两种用法(模板同时给出, 保留需要的那块, 删掉另一块):
+   A. 矩阵表(.matrix): 行=维度/指标, 列=方法/方案, 单元格填对比内容或 ●◐○ 强弱。
+   B. 分组框架(.groups): 若干并列的模块组, 每组内列条目, 适合理论框架分块。
+
+  【怎么改】
+   1. ⛔ 配色不再"换主题预设"。下面 :root 的 hsl() 是示范值，实战按 SKILL《设计规范 B 节》
+      用 Step 1 算出的主色相 H0 推导（全篇共用同一 H0）。
+   2. 矩阵: 改 <th>(表头) 和 <td>(单元格)。强弱用 <span class="dot full/half/none">。
+   3. 分组: 每个 .group 是一块, .group-head 组名, .group-body li 条目。
+   4. ⛔ 图内不写标题。
+
+  【布局原理】table 自动等分列宽 / grid 自动等分组宽, 增删行列自动重排。
+============================================================ -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* ⛔ 示范值：淡雅低饱和色板（示范 H0≈212 灰蓝）。实战按 SKILL B 节从 H0 用 HSL 推导。
+     ⛔ 深色只用于细边框/文字/数据点，不做大块实心填充（表头也用浅底深字）。 */
+  :root {
+    --c-primary:   hsl(212, 38%, 54%);
+    --c-primary-d: hsl(212, 40%, 46%);
+    --c-secondary: hsl(212, 22%, 92%);
+    --c-accent:    hsl( 32, 34%, 52%);
+    --c-border:    hsl(212, 18%, 62%);
+    --c-node-bg:   hsl(212, 20%, 96%);
+    --c-focus-bg:  hsl(212, 28%, 84%);
+    --c-text:      hsl(212, 14%, 22%);
+    --c-muted:     hsl(212, 10%, 46%);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; width: fit-content; height: fit-content; background: transparent; }
+  body { font-family: "Microsoft YaHei","Noto Sans SC","PingFang SC",sans-serif; color: var(--c-text); }
+  .fig { display: inline-block; background: transparent; padding: 32px 38px; width: fit-content; height: fit-content; }
+
+  /* —— A. 矩阵表 —— */
+  .matrix { border-collapse: separate; border-spacing: 0; }
+  .matrix th, .matrix td {
+    border: 1px solid var(--c-border); padding: 10px 12px;
+    font-size: 14px; text-align: center; line-height: 1.5;
+  }
+  /* 表头: 浅填充深字（⛔ 不用实心深色+白字），靠略深浅底 + 加粗区分层级 */
+  .matrix thead th { background: var(--c-focus-bg); color: var(--c-text); font-size: 15px; font-weight: 700; }
+  .matrix tbody th { background: var(--c-secondary); color: var(--c-primary-d); text-align: left; font-weight: 700; }
+  .matrix tbody tr:nth-child(even) td { background: var(--c-node-bg); }
+  .matrix tbody tr:nth-child(odd) td { background: #fff; }
+  /* 强弱圆点(小面积数据符号，用主色区分强弱) */
+  .dot { display: inline-block; width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid var(--c-primary); vertical-align: middle; }
+  .dot.full { background: var(--c-primary); }
+  .dot.half { background: linear-gradient(90deg, var(--c-primary) 50%, #fff 50%); }
+  .dot.none { background: #fff; }
+
+  /* —— B. 分组框架(与矩阵二选一) —— */
+  .groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .group { border: 1.25px solid var(--c-border); border-radius: 8px; overflow: hidden; }
+  /* 组头: 浅填充深字（⛔ 不用实心深色+白字） */
+  .group-head { background: var(--c-focus-bg); color: var(--c-text); padding: 10px 14px; font-size: 15px; font-weight: 700; text-align: center; border-bottom: 1px solid var(--c-border); }
+  .group-body { padding: 12px 14px; background: var(--c-node-bg); font-size: 14px; line-height: 1.8; }
+  .group-body ul { list-style: none; }
+  .group-body li { padding-left: 15px; position: relative; }
+  .group-body li::before { content: "▪"; color: var(--c-primary); position: absolute; left: 0; }
+</style>
+</head>
+<body>
+<div class="fig">
+
+  <!-- ============ A. 矩阵表（方法对比）============ -->
+  <!-- 不用矩阵就删掉这个 <table> -->
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th style="width:150px">评价维度 \ 方法</th>
+        <th>方法 A（本文）</th>
+        <th>方法 B（基准1）</th>
+        <th>方法 C（基准2）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>求解精度</th>
+        <td><span class="dot full"></span></td>
+        <td><span class="dot half"></span></td>
+        <td><span class="dot none"></span></td>
+      </tr>
+      <tr>
+        <th>计算效率</th>
+        <td><span class="dot full"></span></td>
+        <td><span class="dot none"></span></td>
+        <td><span class="dot half"></span></td>
+      </tr>
+      <tr>
+        <th>鲁棒性</th>
+        <td><span class="dot full"></span></td>
+        <td><span class="dot half"></span></td>
+        <td><span class="dot half"></span></td>
+      </tr>
+      <tr>
+        <th>适用范围</th>
+        <td>通用</td>
+        <td>受限</td>
+        <td>特定场景</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============ B. 分组框架（可选，与上面矩阵二选一）============
+  <div class="groups">
+    <div class="group">
+      <div class="group-head">理论基础</div>
+      <div class="group-body"><ul><li>核心假设一</li><li>核心假设二</li></ul></div>
+    </div>
+    <div class="group">
+      <div class="group-head">方法模块</div>
+      <div class="group-body"><ul><li>建模方法</li><li>求解算法</li></ul></div>
+    </div>
+    <div class="group">
+      <div class="group-head">应用验证</div>
+      <div class="group-body"><ul><li>案例分析</li><li>对比实验</li></ul></div>
+    </div>
+  </div>
+  ============ -->
+
+</div>
+</body>
+</html>

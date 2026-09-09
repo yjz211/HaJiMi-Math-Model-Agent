@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  求解流程图模板 (flow) —— 极端兜底参考，正常流程请按 SKILL《设计规范》从零设计
+  ------------------------------------------------------------
+  产物文件名建议: fig_flow.html / fig_flow_q1.html → fig_flow_q1.pdf
+  适用: 子问题求解流程、算法执行流程（节点内可含数学公式）
+
+  【怎么改】
+   1. ⛔ 配色不再"换主题预设"。下面 :root 的 hsl() 是【示范值】，实际必须按
+      SKILL《设计规范 B 节》用 Step 1 算出的主色相 H0 推导整套变量（全篇共用同一 H0）。
+   2. 普通步骤 = <div class="node">文字</div>
+      输入输出 = class="node io"(平行四边形观感)
+      数据源  = class="node data"(圆柱观感)
+      起止    = class="node term"(胶囊)
+      唯一焦点 = class="node focus"(柔和浅填充+深字+稍粗边，⛔ 不用实心深块+白字)
+      判断    = <div class="decision">条件?</div>
+   3. 判断分支: .branch 横排两条路, 各自 .branch-label 标"是/否"。
+   4. 循环反馈: 用 .loop-note 文字提示"不满足→返回步骤 X"(HTML 相对布局不便画
+      折回箭头, 用带 ↺ 的回流卡表达循环, 学术上同样清晰)。
+   5. 竖直箭头 .arrow 是纯 CSS 画的"竖杆+三角头"，元素留空 <div class="arrow"></div>
+      即可（不要再往里塞 ▼ 字符，会和三角叠加）。
+   6. 公式：节点/判断/回流卡内直接写 \( ... \)（行内）或 \[ ... \]（独立行），
+      如 \(\theta_0(t)\)、\(\lVert p_i-p_j\rVert^2=L^2\)。
+      ⛔ 出图命令必须带 --render-math，KaTeX 才会把它们渲染成真公式（见 SKILL Step 3）。
+      ⛔ 节点文字里除 \(...\)/\[...\] 公式外，禁止出现 \scriptsize/\bfseries 等任何
+         LaTeX 排版命令（会原样显示成乱字）；字号用 CSS font-size（见 SKILL 0 节第 9 条）。
+   7. ⛔ 图内不写标题（交给 LaTeX \caption）。结构服从该图真实逻辑，线性就画线性，
+      不强凑判断/循环/双行（旧"三件套"要求已废除，见 SKILL A 节）。
+
+  【布局原理】flex 纵向主干 + 局部横向分支, 自动居中, 无坐标错位, 宽度 fit-content 收缩。
+============================================================ -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* ⛔ 示范值：淡雅低饱和色板（此处示范 H0≈212 灰蓝）。实战按 SKILL B 节从 H0 用 HSL 推导。 */
+  :root {
+    --primary:      hsl(212, 38%, 54%);  /* 主节点边框/强调（细线，不做大块实心） */
+    --primary-dark: hsl(212, 40%, 46%);  /* 标题文字/主箭头/焦点字 */
+    --secondary:    hsl(242, 26%, 56%);  /* 次级节点 */
+    --accent:       hsl( 32, 34%, 52%);  /* 仅关键判断/结果，用量 ≤10% */
+    --node-bg:      hsl(212, 20%, 96%);  /* 普通节点浅填充 */
+    --node-bg-2:    hsl(212, 22%, 92%);  /* 分区/表头填充 */
+    --focus-bg:     hsl(212, 28%, 84%);  /* 唯一焦点柔和浅填充（替代实心深块） */
+    --text:         hsl(212, 14%, 22%);  /* 节点文字（非纯黑） */
+    --muted:        hsl(212, 10%, 46%);  /* 注释/副标题 */
+    --line:         hsl(212, 18%, 62%);  /* 箭头/连线/次要边框 */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; width: fit-content; height: fit-content; background: transparent; }
+  body { font-family: "Microsoft YaHei","Noto Sans SC","PingFang SC",sans-serif; color: var(--text); }
+  .fig {
+    display: inline-block; background: transparent;
+    padding: 34px 46px; width: fit-content; height: fit-content;
+  }
+  .col { display: flex; flex-direction: column; align-items: center; }
+
+  /* 普通步骤节点：浅底 + 细边框（不用粗黑边、不用深实心） */
+  .node {
+    background: var(--node-bg); border: 1.25px solid var(--primary);
+    border-radius: 8px; padding: 11px 20px; min-width: 220px;
+    text-align: center; font-size: 15px; line-height: 1.5; font-weight: 600;
+    color: var(--primary-dark);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .node .sub { display: block; margin-top: 3px; font-size: 11px; font-weight: 400; color: var(--muted); }
+  /* 输入输出(平行四边形观感) */
+  .node.io { transform: skewX(-12deg); background: var(--node-bg-2); border-color: var(--line); }
+  .node.io > span { display: inline-block; transform: skewX(12deg); }
+  /* 数据源(圆柱观感) */
+  .node.data { border-radius: 40px / 12px; background: var(--node-bg-2); border-color: var(--line); }
+  /* 起止节点(胶囊)：浅底描边，不用实心深块 */
+  .node.term { border-radius: 24px; background: var(--node-bg-2); color: var(--primary-dark); border-color: var(--line); min-width: 90px; }
+  /* 唯一焦点：柔和浅填充 + 深字 + 稍粗边（⛔ 不用实心深色+白字） */
+  .node.focus { background: var(--focus-bg); border: 1.5px solid var(--primary); color: var(--text); font-weight: 700; }
+
+  /* 判断菱形：浅底描边，深字（不用实心 accent + 白字） */
+  .decision {
+    width: 150px; height: 150px; margin: 4px 0;
+    background: var(--node-bg); transform: rotate(45deg);
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--accent);
+  }
+  .decision > span {
+    transform: rotate(-45deg); text-align: center; color: var(--primary-dark);
+    font-size: 14px; font-weight: 700; width: 130px; line-height: 1.4;
+  }
+
+  /* 竖直连接箭头：竖杆 + 三角头（纯 CSS 画，不用 ▼ 字符，避免孤立三角对不齐） */
+  .arrow {
+    width: 2px; height: 26px; background: var(--line);
+    position: relative; margin: 1px 0; flex: none;
+  }
+  .arrow::after {
+    content: ''; position: absolute; left: 50%; bottom: -1px;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 8px solid var(--line);
+  }
+
+  /* 判断分支: 横排两条路 */
+  .branch { display: flex; gap: 60px; align-items: flex-start; justify-content: center; width: 100%; margin-top: 2px; }
+  .branch-col { display: flex; flex-direction: column; align-items: center; }
+  .branch-label {
+    font-size: 13px; font-weight: 700; color: var(--primary-dark);
+    background: var(--node-bg); border: 1px solid var(--line);
+    border-radius: 10px; padding: 1px 10px; margin-bottom: 2px;
+  }
+  /* 循环回流提示卡 */
+  .loop-note {
+    background: var(--node-bg); border: 1.5px dashed var(--accent);
+    border-radius: 8px; padding: 8px 16px; font-size: 13.5px;
+    color: var(--accent); font-weight: 600; text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="fig">
+ <div class="col">
+
+  <!-- 起点 -->
+  <div class="node term">开始</div>
+  <div class="arrow"></div>
+
+  <!-- 输入(平行四边形) -->
+  <div class="node io"><span>输入：问题数据 / 参数</span></div>
+  <div class="arrow"></div>
+
+  <!-- 普通步骤(主标题 + .sub 副标题写方法细节) -->
+  <div class="node">数据预处理<span class="sub">清洗 · 归一化 · 缺失值填补</span></div>
+  <div class="arrow"></div>
+
+  <!-- 核心处理：节点内可写公式，用 \( ... \) 包裹（出图时加 --render-math 由 KaTeX 渲染） -->
+  <div class="node">牛顿法反解初值 \(\theta_0(t)\)<span class="sub">约束 \(\lVert p_i(\theta_{i+1})-p_i\rVert^2 - L_i^2 = 0\)</span></div>
+  <div class="arrow"></div>
+
+  <!-- 判断分支 -->
+  <div class="decision"><span>是否收敛 / 满足精度？</span></div>
+  <div class="branch">
+    <!-- 否：循环回流 -->
+    <div class="branch-col">
+      <div class="branch-label">否</div>
+      <div class="arrow"></div>
+      <div class="loop-note">↺ 更新参数<br>返回「构建模型」重算</div>
+    </div>
+    <!-- 是：继续，输出为唯一焦点 -->
+    <div class="branch-col">
+      <div class="branch-label">是</div>
+      <div class="arrow"></div>
+      <div class="node focus">输出最优解 \(\theta^\ast\)</div>
+      <div class="arrow"></div>
+      <div class="node io"><span>结果：解 / 指标</span></div>
+      <div class="arrow"></div>
+      <div class="node term">结束</div>
+    </div>
+  </div>
+
+ </div>
+</div>
+</body>
+</html>
