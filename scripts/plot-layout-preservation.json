@@ -1,0 +1,14 @@
+[
+  {
+    "before": "    _hook_savefig(plt)",
+    "after": "    # Preserve author layout: do not install automatic savefig mutation hooks."
+  },
+  {
+    "before": "    \"\"\"保存图表到指定路径。savefig hook 会自动检测并修复文字重叠。\n\n    PNG 输出强制 350 DPI（与 docx_export PDF→PNG 兜底链路一致），防止 Word 嵌入时中文标签糊。\n    PDF/SVG 矢量输出不受 DPI 影响。\n    \"\"\"\n    # ★ 子图尺寸防护：检测子图是否被压缩得过小，如果是则修复\n    _guard_subplot_size(fig)\n    # ★ 无条件拉回 ax.text(transAxes, y<0 or y>1) 反模式（防 bbox=tight mediabox 爆炸）\n    _pull_back_outside_transaxes_text(fig)\n    # ★ 3D 轴不做 tight_layout：matplotlib 官方不支持，会把 3D 曲面挤塌\n    if not _has_3d_axes(fig):\n        try:\n            fig.tight_layout(pad=0.5)\n        except Exception:\n            pass\n    # ★ tight_layout 后再检查一次，防止 tight_layout 把子图压小\n    _guard_subplot_size(fig)\n    # ★ axes 内容占比检测：若所有 axes 占 figure 面积 < 50%，自动收缩 figsize\n    # 防止 \"figsize=(10, 12) 但只画了上面 2 个小 panel，下面 8 寸全白\" 这种产物\n    _auto_shrink_figsize_if_sparse(fig)\n",
+    "after": "    \"\"\"Save without changing author layout, labels, axes, or canvas size.\"\"\"\n"
+  },
+  {
+    "before": "    # 改用 figsize 等大输出 + _auto_shrink_figsize_if_sparse 把 axes 推到撑满 figure 80%，\n    # 既保证 axes label 不被截，又避免 mediabox 爆炸。",
+    "after": "    # Preserve the requested canvas size; layout is owned by the generator."
+  }
+]

@@ -14,7 +14,7 @@ import { Type } from "typebox";
 
 import { HAJIMI_IDENTITY_KERNEL, projectWorkflowContext } from "./context-projector.ts";
 import { installCacheDiagnostics } from "./cache-diagnostics.ts";
-import { automaticRunLocked, AUTOMATIC_LOCK_MESSAGE } from "./automatic-policy.ts";
+import { automaticRunLocked } from "./automatic-policy.ts";
 import { routeCapabilities } from "./capability-router.ts";
 import { readStage8, moveStage8, assertStage8 } from './stage8-phases.ts';
 import { beginFigurePlan, requireFigurePlan, validateFigurePlan } from './figure-plan.ts';
@@ -253,10 +253,6 @@ export function createHajimiCoreFactory(options: HajimiCoreOptions) {
     pi.on("input", async (event) => {
       if (event.source === "extension") return;
       const snapshot = await ensureHajimiTask(cwd);
-      if (automaticRunLocked(snapshot.state)) {
-        pi.sendMessage({ customType: "hajimi-auto-lock", display: true, content: AUTOMATIC_LOCK_MESSAGE }, { triggerTurn: false });
-        return { action: "handled" as const };
-      }
       if (snapshot.state.interaction?.runtimeFailure) {
         const interaction = interactionFor(snapshot.state);
         delete interaction.runtimeFailure;

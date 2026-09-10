@@ -1,0 +1,107 @@
+[
+  {
+    "path": "resources/assets/shared-scripts/audit_final_figure_size.py",
+    "before": "return (8.5, 9.5) if profile == \"modeling\" else (5.0, 7.0)",
+    "after": "return (0.0, 8.5) if profile == \"modeling\" else (5.0, 7.0)"
+  },
+  {
+    "path": "resources/assets/shared-scripts/audit_final_figure_size.py",
+    "before": "print(f\"hard minimum={args.hard_min_pt:g} pt; recommended median={args.recommended_min_pt:g} pt\")",
+    "after": "print(f\"hard minimum={args.hard_min_pt:g} pt; recommended median={args.recommended_min_pt:g} pt\" if args.hard_min_pt > 0 else f\"no hard font minimum; recommended median={args.recommended_min_pt:g} pt (review only)\")"
+  },
+  {
+    "path": "resources/references/paper-layout-gate.md",
+    "before": "For the modeling profile, informative text after final scaling has an 8.5 pt hard minimum and a 9.5 pt recommended median. A `FAIL` blocks completion.",
+    "after": "For the modeling profile, 8.5 pt is a readability reference, not a hard minimum. Smaller text is acceptable when clear at final size; review its role, contrast, and surrounding space rather than enlarging every label to meet a number. Default small-font findings are non-blocking REVIEW notes. Do not sacrifice template proportions or information just to reach the reference size."
+  },
+  {
+    "path": "resources/references/paper-figure.md",
+    "before": "font ≥9pt",
+    "after": "font sizes chosen for readability at the actual inclusion size (9pt is a starting reference, not a hard minimum)"
+  },
+  {
+    "path": "resources/references/paper-figure.md",
+    "before": "配套下限：**数据线 lw≥0.9、刻度 ≥8pt、轴标签 ≥9pt**。",
+    "after": "配套建议：数据线 lw≥0.9；刻度 8pt、轴标签 9pt 可作为源字号起点。按实际引用尺寸检查可读性，清楚时允许更小字号，保留模板比例。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "- ⛔ 刻度字号下限 **8pt**、轴标签 **9pt**。",
+    "after": "- 刻度 **8pt**、轴标签 **9pt** 可作为源字号起点，并非硬下限；按实际引用尺寸下的可读性调整，清楚时允许更小字号，避免为凑数挤坏模板。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "> **⛔ tight_layout 的 pad 值必须 ≤ 0.5。**",
+    "after": "> `tight_layout` 的 `pad` 按模板和实际布局选择，不设统一上限。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "> 大 pad 值会挤压子图空间。推荐值：`pad=0.5`（默认）、`pad=0.3`（紧凑多面板）。",
+    "after": "> 可从模板原值开始；`pad=0.3`、`0.5` 或 `1.2` 均需结合面板、标签、色条与图例空间判断，避免不必要地重排。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "#### ⛔⛔ 多 panel 共用 colorbar：必须用 gridspec 的 cax，**不能用 `ax=axes`**（实测踩过）",
+    "after": "#### 多 panel 共用 colorbar：按布局选择 `ax=axes` 或独立 `cax`"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "**根因（实测坐实，别再试参数）：** `save_fig` 内部会**无条件**跑 `fig.tight_layout(pad=0.5)`",
+    "after": "**当前保存行为：** `save_fig` 保留已有画布和布局，不自动调用 `tight_layout`、收缩画布或移动标注。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "（见 `plot_utils._save`），而 `fig.colorbar(sm, ax=axes)` 预留的空间**会被 tight_layout 重算掉**",
+    "after": "若绘图代码显式调用 `tight_layout`，需留意它是否重算 `fig.colorbar(sm, ax=axes)` 预留的空间。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "→ 面板扩张回去、压到 colorbar 上 → **右列面板的刻度数字和 colorbar 的刻度数字叠在一起**。",
+    "after": "出现面板与色条重叠时，统一调整所需空间，再检查实际渲染。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "⛔ 调 `fraction`/`pad` 治不了：实测 `pad=0.08/0.11/0.14` 重叠一直在。",
+    "after": "`fraction`、`pad` 或独立 `cax` 均可按具体布局使用；优先保留模板已有方案。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "⛔ 也**别用 `constrained_layout=True`**：`plot_utils` 已设 `figure.constrained_layout.use=False`",
+    "after": "需要时可以显式使用 `constrained_layout=True`；样式默认关闭它，不代表禁止使用。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "（避免与 tight_layout 冲突），开了会打架。",
+    "after": "同一张图选用相容的布局方式，避免再叠加 `tight_layout` 重排。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "**正确写法 —— 把 cax 做成 gridspec 的一列，tight_layout 就会把它当同级一起排：**",
+    "after": "**一种可选写法 —— 把 cax 做成 gridspec 的一列，为色条明确留位：**"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_style_guide.md",
+    "before": "`tight_layout()` 是自动的、经常留一圈多余白边或把标签挤掉。多 panel 图最后手动定一次：",
+    "after": "显式调用 `tight_layout()` 后若留白或标签位置不合适，可手动调整多 panel 布局；保存本身不会自动重排："
+  },
+  {
+    "path": "resources/references/paper-figure.md",
+    "before": "`save_fig` 已带 `bbox_inches='tight'`，多为 figsize 太小或字太大，调 `figsize`/`fontsize`",
+    "after": "`save_fig` 默认 `bbox_inches=None`，不会自动扩展边界或调整布局；先调整边距、标注位置或画布尺寸，必要时再改字号。若明确需要紧边界裁剪，可显式用 Matplotlib `fig.savefig(..., bbox_inches='tight')`，注意导出物理尺寸可能变化"
+  },
+  {
+    "path": "fragments/original-size-preflight.md",
+    "before": "- ⛔ 刻度字号下限 **8pt**、轴标签 **9pt**。",
+    "after": "- 刻度 **8pt**、轴标签 **9pt** 可作为源字号起点，并非硬下限；按实际引用尺寸下的可读性调整，清楚时允许更小字号，避免为凑数挤坏模板。"
+  },
+  {
+    "path": "resources/assets/shared-scripts/figure_check.sh",
+    "before": "echo \"UPGRADE $bn: plain box plot → use Rain Cloud Plot (violin + box + strip)\"",
+    "after": "echo \"INFO $bn: 分布图按样本量、重复值和分布形态选型；箱线图或原始散点可以直接保留。仅在密度形态有意义且图层可清晰分开时考虑雨云图，不因本提示自动增加小提琴层。\""
+  },
+  {
+    "path": "resources/workflows/paper-figure.md",
+    "before": "3. Use the executable paths in `<active-project-root>/.codex-plot-runtime.json`.",
+    "after": "生成前先根据样本量、重复值和分布形态判断图形是否适合数据，再保真适配模板；小样本或大量相同值时可保留原始散点与简洁箱线，不必叠加密度层。采用雨云图时保留散点、箱体与半小提琴的错位布局，避免为凑齐元素而重叠堆放。\n\n3. Use the executable paths in `<active-project-root>/.codex-plot-runtime.json`."
+  }
+]

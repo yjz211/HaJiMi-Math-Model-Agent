@@ -34,7 +34,7 @@ Generate figures and tables from data: **$ARGUMENTS**
 
 ⛔⛔ **The real rule**: figures must NOT look like "ran with matplotlib defaults". `setup_style()` 已按种子随机换上 28 套精选学术配色之一（Okabe-Ito / Tol / Nord / 莫兰迪 / 期刊风等，均为出版级、避开 tab10 默认色）。你用 `PALETTE[n]` / `COLORS[...]` 取色即可自动跟随本篇被随机选中的那套；可再加 ≤2 个协调高亮色。禁止的是那套"从没自定义过"的 matplotlib 默认组合。
 
-**Quality floor**: 300 DPI PDF, no in-figure title (`plt.title`), font ≥9pt, grayscale-distinguishable, **`figure_check.sh` exit code 0** (CRITICAL only — INFO/WARNING don't block).
+**Quality floor**: 300 DPI PDF, no in-figure title (`plt.title`), font sizes chosen for readability at the actual inclusion size (9pt is a starting reference, not a hard minimum), grayscale-distinguishable, **`figure_check.sh` exit code 0** (CRITICAL only — INFO/WARNING don't block).
 
 **Color palette and recipes**: read `_utils/figure_style_guide.md` (color schemes) and `_utils/figure_recipes_*.md` (code examples).
 
@@ -651,39 +651,32 @@ save_fig(fig, 'figures/fig_q3_method_cmp.pdf')
 
 **★★ 第一步就把本题用到的配方【一次全预取】到一个文件**（强烈建议，别逐张取）。
 实测教训：逐张取要跑十几次命令，嫌麻烦就容易跳过，然后凭印象硬写——规划写着"等高线图
-(competition #14)"，凭印象写出来成了横向条形图，进阶图型全退化成 plot/bar/scatter。
+(recipe:competition.contour)"，凭印象写出来成了横向条形图，进阶图型全退化成 plot/bar/scatter。
 下面一条命令解决，之后写每张图只要翻这一个文件：
 
 ```bash
-# 从规划里自动抓出所有配方号，一次全取到 _utils/RECIPES_FOR_THIS_PAPER.md
-PLAN=""; for pf in PROBLEM_ANALYSIS.md TOPIC_PLAN.md PAPER_PLAN.md; do
-    [ -f "$pf" ] && PLAN="$PLAN $pf"
+# 从规划里自动抓出配方 ID 或兼容编号，一次全取到 _utils/RECIPES_FOR_THIS_PAPER.md
+PLAN=(); for pf in FIGURE_PLAN.json PROBLEM_ANALYSIS.md TOPIC_PLAN.md PAPER_PLAN.md; do
+    [ -f "$pf" ] && PLAN+=("$pf")
 done
 PYTHON=""; for _c in "$MH_PYTHON" python python3; do
     [ -z "$_c" ] && continue; command -v "$_c" >/dev/null 2>&1 && PYTHON="$_c" && break
 done
-grep -ohE '\((basic|advanced|empirical|competition|academic)[[:space:]]*#[[:space:]]*[0-9]+\)' $PLAN 2>/dev/null \
-  | tr -d '()' | sed 's/#[[:space:]]*/ /' | tr -s ' ' | sort -u \
-  | while read -r cat num; do
-        echo "########## $cat #$num ##########"
-        "$PYTHON" _utils/get_recipe.py "$cat" "$num" 2>/dev/null \
-            || "$PYTHON" skills/shared-scripts/get_recipe.py "$cat" "$num" 2>/dev/null
-        echo
-    done > _utils/RECIPES_FOR_THIS_PAPER.md
-echo "已预取 $(grep -c '^##########' _utils/RECIPES_FOR_THIS_PAPER.md 2>/dev/null || echo 0) 个配方 → _utils/RECIPES_FOR_THIS_PAPER.md"
-wc -c _utils/RECIPES_FOR_THIS_PAPER.md 2>/dev/null
+RECIPE_TOOL="_utils/get_recipe.py"
+[ -f "$RECIPE_TOOL" ] || RECIPE_TOOL="skills/shared-scripts/get_recipe.py"
+"$PYTHON" "$RECIPE_TOOL" --plan "${PLAN[@]}" --output _utils/RECIPES_FOR_THIS_PAPER.md
 ```
 
 单独补取某个配方（预取漏了或临时改图型时）：
 
 ```bash
-python3 _utils/get_recipe.py competition 14   # 等高线图
-python3 _utils/get_recipe.py advanced 1       # 棒棒糖图
+python3 _utils/get_recipe.py --id competition.contour   # 等高线图
+python3 _utils/get_recipe.py --id advanced.lollipop       # 棒棒糖图
 ```
 
 **⛔ For EVERY figure script you write, the workflow is:**
-1. Read the plan entry: `fig_xxx — 图表类型 (category #N)`
-2. **翻 `_utils/RECIPES_FOR_THIS_PAPER.md` 找到 `category #N` 那一段**（已预取好；漏了才单独 `get_recipe.py`）
+1. Read the plan entry: `fig_xxx — 图表类型 (recipe:<id>)`
+2. **翻 `_utils/RECIPES_FOR_THIS_PAPER.md` 找到 `recipe:<id>` 那一段**（已预取好；漏了才单独 `get_recipe.py`）
 3. Copy the recipe code as starting point
 4. Replace demo data with actual data from `figures/*.json`
 5. Save as `figures/gen_fig_xxx.py`
@@ -797,7 +790,7 @@ def cn(s):
   缩放比 0.92–1.10、刻度上页 7.8–9.4pt、文字重叠 0 处。
   ⛔ **别只记「≤7.2」**：近方图写 7.2in 仍被缩到 0.63、刻度变 5.4pt（`figure_check.sh` 分档闸会抓）。
   矢量图**略放大(1.0–1.6)无害**，字更大更清楚；怕的只有"原生远大于上页显示宽"。
-  配套下限：**数据线 lw≥0.9、刻度 ≥8pt、轴标签 ≥9pt**。
+  配套建议：数据线 lw≥0.9；刻度 8pt、轴标签 9pt 可作为源字号起点。按实际引用尺寸检查可读性，清楚时允许更小字号，保留模板比例。
   ⛔ **多 panel 共用 colorbar 必须用 gridspec `cax=`，不能 `ax=axes`**（`save_fig` 无条件跑
   `tight_layout` 会吃掉 `ax=axes` 预留的空间 → 面板压到 colorbar 上；调 `fraction`/`pad` 治不了，
   也别开 `constrained_layout`（plot_utils 已禁用）。写法见 `figure_style_guide.md`）。
@@ -833,7 +826,7 @@ If violations found (especially CRITICAL), fix and re-check before executing:
 - `RdYlGn` or `RdYlGn_r` colormap → use `coolwarm` (for diverging) or `YlOrRd` (for sequential). Do NOT use `RdBu_r` (too dark)
 - Empty value placeholders → read from data files
 - ⛔ **「N 张图的代码没画出规划要求的图型」**（规划写等高线却画成条形图这类）→ 翻
-  `_utils/RECIPES_FOR_THIS_PAPER.md` 里对应的 `category #N` 配方，按配方代码重写该图；
+  `_utils/RECIPES_FOR_THIS_PAPER.md` 里对应的 `recipe:<id>` 配方，按配方代码重写该图；
   若该图型确实不适合本题数据，**先改规划文档里的图型再改图**，别让规划与产物不一致。
   这是实测中图表质量塌方的首要原因，务必逐条处理完。
 </fix_patterns>
@@ -1005,7 +998,7 @@ fi
 **⛔ 修复循环（AI 执行，最多 3 轮，不阻断出稿）**：
 上面脚本若打印出某张图的 `ISSUE ...`，你必须逐张修复——数据图的修复是**改 `gen_fig_xxx.py` 的绘图代码**（不是改 LaTeX）：
 1. 用 Read 读 vision 反馈里点名的那张图对应的 `figures/gen_fig_xxx.py`
-2. 按反馈用 Edit 改：标签被截断 → `save_fig` 已带 `bbox_inches='tight'`，多为 figsize 太小或字太大，调 `figsize`/`fontsize`；图例压数据 → 改 `legend(loc=...)` 或 `bbox_to_anchor` 移到画布外；刻度重叠 → `plt.xticks(rotation=30, ha='right')` 或减少刻度数；子图挤压 → `fig.tight_layout()` 或调 `figsize`
+2. 按反馈用 Edit 改：标签被截断 → `save_fig` 默认 `bbox_inches=None`，不会自动扩展边界或调整布局；先调整边距、标注位置或画布尺寸，必要时再改字号。若明确需要紧边界裁剪，可显式用 Matplotlib `fig.savefig(..., bbox_inches='tight')`，注意导出物理尺寸可能变化；图例压数据 → 改 `legend(loc=...)` 或 `bbox_to_anchor` 移到画布外；刻度重叠 → `plt.xticks(rotation=30, ha='right')` 或减少刻度数；子图挤压 → `fig.tight_layout()` 或调 `figsize`
 3. 重跑该脚本：`$PYTHON figures/gen_fig_xxx.py`，确认新 PDF 生成
 4. **重新执行上面的检测脚本复核**（它只对还没 PASS 的图再调 vision）
 5. 每张图最多修 3 轮。3 轮后小结里「真待修」仍 > 0 → 这些图就是没修好的（仍留在 `_tmp/datafig_vision_pending.txt`、未进 `passed`），**警告即可、不阻断**，直接继续 Step 5（用户会自己复核）

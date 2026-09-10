@@ -1,6 +1,6 @@
 {
   "name": "@hajimi/desktop",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "HaJiMi — a Pi-powered mathematical modeling agent",
   "license": "MIT",
   "author": "Chasen",
@@ -44,7 +44,8 @@
     "pack": "npm run check:windows-runtime && npm run build:standalone && npm run build:electron && npx electron-builder --dir && node scripts/smoke-packaged-standalone.mjs",
     "pack:mac": "npm run build:standalone && npm run build:electron && npx electron-builder --mac --universal --dir && node scripts/smoke-packaged-standalone.mjs",
     "dist": "npm run check:windows-runtime && npm run build:standalone && npm run build:electron && npx electron-builder --publish never && node scripts/smoke-packaged-standalone.mjs",
-    "dist:mac": "npm run build:standalone && npm run build:electron && npx electron-builder --mac --universal --publish never && node scripts/smoke-packaged-standalone.mjs"
+    "dist:mac": "npm run build:standalone && npm run build:electron && npx electron-builder --mac --universal --publish never && node scripts/smoke-packaged-standalone.mjs",
+    "check:recipes": "node scripts/check-plot-recipe-routing.mjs"
   },
   "build": {
     "extends": "electron-builder.yml"

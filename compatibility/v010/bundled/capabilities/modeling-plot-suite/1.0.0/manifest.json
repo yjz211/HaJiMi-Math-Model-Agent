@@ -275,13 +275,13 @@
     },
     {
       "path": "fragments/original-size-preflight.md",
-      "sizeBytes": 3882,
-      "sha256": "85554526768fa897da934aa13c9e701d4679c7d6640285825bdaf8b080ce4456"
+      "sizeBytes": 4014,
+      "sha256": "75f486c8f26435ab12fc42e798aef216a4c02df3602b3d2a6daccbfd46e82ec9"
     },
     {
       "path": "fragments/stage-8-core.md",
-      "sizeBytes": 927,
-      "sha256": "ea414e226f1e08556dc1bca96df8afeb4e6b789774892a8658a92953577bf222"
+      "sizeBytes": 1092,
+      "sha256": "de9b2b2e57feeace2db01ccf30bd7f33e53a06d5b2e2c673b516db76aecfa0f2"
     },
     {
       "path": "fragments/statistics-figures.md",
@@ -295,13 +295,13 @@
     },
     {
       "path": "profiles/expressive.md",
-      "sizeBytes": 2878,
-      "sha256": "3f12b3500890f062c556cd5fec0e4e57f17da26260a12d7eba433b7d6635c461"
+      "sizeBytes": 2908,
+      "sha256": "7b4cf9f417631c1f071ffb8b1eaa801a6a3263b4900bb0a6fd21f97afe5ed1a1"
     },
     {
       "path": "profiles/restrained.md",
-      "sizeBytes": 1659,
-      "sha256": "2446a4103a6d13cdc1cef4ad7ebe80bfe793ef682fd9856b1adf637525109e01"
+      "sizeBytes": 1683,
+      "sha256": "2a37052e542dc617934bd2974e860ec94d3481a314f3608f32bbdbe50b51130f"
     },
     {
       "path": "resources/PACKAGE_MANIFEST.md",
@@ -315,8 +315,8 @@
     },
     {
       "path": "resources/SKILL.md",
-      "sizeBytes": 2959,
-      "sha256": "142b01fb2636373db1c2afbcc18527dfea5fa6cb9bded5e6239f9dd58a5a3120"
+      "sizeBytes": 3190,
+      "sha256": "46a7805e441b0ddea547c26ffcd034648fa4b9a50244197d565bfc59b27f770c"
     },
     {
       "path": "resources/agents/openai.yaml",
@@ -385,8 +385,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/audit_final_figure_size.py",
-      "sizeBytes": 10058,
-      "sha256": "ef8a2c2c62aafc50d68e1bd6ce7b4c2eff5fec8bee18fa56416e765fedf4110c"
+      "sizeBytes": 10176,
+      "sha256": "6c91fbeddd2ef667791a52d852c4cdf5eacc4285e141991bc09562810379aeee"
     },
     {
       "path": "resources/assets/shared-scripts/bib_authenticity_check.py",
@@ -650,8 +650,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_check.sh",
-      "sizeBytes": 28821,
-      "sha256": "90ed3fb93d37aaf6339cf4ec5e1503455dfb0f3f1a02db6652c4c82c745a77d3"
+      "sizeBytes": 28973,
+      "sha256": "6d73f69cf8db450a85cc56edb10541854d0f8e150130e70fb899037f39b8c387"
     },
     {
       "path": "resources/assets/shared-scripts/figure_check.sh.enc",
@@ -660,8 +660,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_exemplars.md",
-      "sizeBytes": 41487,
-      "sha256": "8ee7963cba1ecbba60e40bf72205ddc9fb74d88084506723b95e5f22f07a4aac"
+      "sizeBytes": 43030,
+      "sha256": "7e6b7a95281e59901b3723040a9eb45e1b1a78693556c3f84c2e97f4d74853f2"
     },
     {
       "path": "resources/assets/shared-scripts/figure_exemplars.md.enc",
@@ -720,8 +720,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/figure_style_guide.md",
-      "sizeBytes": 79109,
-      "sha256": "3dd47915c22557dbe59d5c3af76332ab81468c78fe4e0b6fdf702155f28268e7"
+      "sizeBytes": 81005,
+      "sha256": "4b915ee4aba0da72e28ca0f45f910ea0dea7cbc6da6307c78db01155de0bb9d6"
     },
     {
       "path": "resources/assets/shared-scripts/figure_style_guide.md.enc",
@@ -730,8 +730,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/get_recipe.py",
-      "sizeBytes": 3702,
-      "sha256": "0a7dcab85630937976753c88e89345fc12feee766554a635c912dde9e1604663"
+      "sizeBytes": 5937,
+      "sha256": "a0dbe1fd4626eadaef4bea6eb4d1ca0b157057a222e5e6d0eae804005ba439e8"
     },
     {
       "path": "resources/assets/shared-scripts/get_recipe.py.enc",
@@ -900,8 +900,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/plot_utils.py",
-      "sizeBytes": 102409,
-      "sha256": "9f47314d5045aad5dfa0863d836b86124aacf5cb90e93cc3c808324bf469aad7"
+      "sizeBytes": 101337,
+      "sha256": "d1444782f69982b17f1857217c2044044b185b213ca1929229eade21a1f86a91"
     },
     {
       "path": "resources/assets/shared-scripts/plot_utils.py.enc",
@@ -980,8 +980,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/writing_rules.md",
-      "sizeBytes": 58566,
-      "sha256": "7bfe37c0ae1bb3878c99972909decb38f9e42bacc3bb3f31a5730183e3897560"
+      "sizeBytes": 58832,
+      "sha256": "36bee60e6b67b0cdbb52e3faac47d5328dd32b5aaec5b8a393b4f9c002c1348a"
     },
     {
       "path": "resources/assets/shared-scripts/writing_rules.md.enc",
@@ -1040,8 +1040,8 @@
     },
     {
       "path": "resources/references/paper-figure.md",
-      "sizeBytes": 85306,
-      "sha256": "7503f49f0e43e2323872b1547c744bc05a426df44533a095d0b076fe2619633d"
+      "sizeBytes": 85280,
+      "sha256": "8edafa96e960d73dda871de620870abefac4bbee0fd28f4a1c2398bb4337d19d"
     },
     {
       "path": "resources/references/paper-illustration.md",
@@ -1050,8 +1050,8 @@
     },
     {
       "path": "resources/references/paper-layout-gate.md",
-      "sizeBytes": 4567,
-      "sha256": "fa0cb0482d6dcbefa63dfec9495dc05524f4a959b4767be5e097bcac04070fc6"
+      "sizeBytes": 4797,
+      "sha256": "57fb6f234f1d9f3f90384a410677565b4c607b7e3191865e0454b4b68e9b50b7"
     },
     {
       "path": "resources/references/paper-technical-diagram.md",
@@ -1065,8 +1065,8 @@
     },
     {
       "path": "resources/scripts/bootstrap.py",
-      "sizeBytes": 4565,
-      "sha256": "841b5b95d56a4b8eba1dda75b0b1cfcdd20ea361082e2d5101c7c78d8f35d82a"
+      "sizeBytes": 5928,
+      "sha256": "12d0add7bc0bd9e50686a3fe92e11e7f87faad3a21db7c85bb8d2776fadbf5df"
     },
     {
       "path": "resources/scripts/drawio_check_compat.py",
@@ -1115,8 +1115,8 @@
     },
     {
       "path": "resources/workflows/paper-figure.md",
-      "sizeBytes": 1053,
-      "sha256": "e6b8cdd2ad1154f5b65aadc2f5161c4e9462505ce7c8052801c842fb997d1c02"
+      "sizeBytes": 1788,
+      "sha256": "4b9e1d430cfdfa6f130aa469e750268739a02692282387c99907d354aae29f01"
     },
     {
       "path": "resources/workflows/paper-illustration.md",
@@ -1130,13 +1130,18 @@
     },
     {
       "path": "stage8-policy.md",
-      "sizeBytes": 2960,
-      "sha256": "6ec552dae61ac177e64dbf1cee05c359ecb69dc88c512e15fb26b4d29dbab86a"
+      "sizeBytes": 3369,
+      "sha256": "1d0cbc0542d5da11a53125fa8d988767b16873483203bdbac25ebb5502ec3979"
     },
     {
       "path": "upstream-planning.md",
-      "sizeBytes": 6215,
-      "sha256": "0f3ac63c6bffe0f9e33834ec82698c3cb7292f9bb98b8ab3513235b3beb65d7c"
+      "sizeBytes": 6231,
+      "sha256": "be210b11fc191b44ade5cd373980333d128a71d30dcc7dc8017e386eef26c311"
+    },
+    {
+      "path": "resources/assets/shared-scripts/recipe_registry.json",
+      "sizeBytes": 33187,
+      "sha256": "4f3cec4f4be5c12a969848a693c0a59e5fd619c5c24f06d4f267fd4670b5f2fa"
     }
   ],
   "omitted": [

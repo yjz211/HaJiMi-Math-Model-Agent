@@ -35,7 +35,7 @@ Run the injected final-size auditor. Supply the paper template's real dimensions
 python _utils/audit_final_figure_size.py figures/*.pdf --tex-root figures/latex_includes.tex --profile modeling --textwidth-mm <actual> --columnwidth-mm <actual> --linewidth-mm <actual> --textheight-mm <actual> --json figures/final_size_audit.json
 ```
 
-For the modeling profile, informative text after final scaling has an 8.5 pt hard minimum and a 9.5 pt recommended median. A `FAIL` blocks completion. `NOT_AUDITABLE` is not a pass: rasterized text, outlined text, and image-only illustrations require final-size visual inspection.
+For the modeling profile, 8.5 pt is a readability reference, not a hard minimum. Smaller text is acceptable when clear at final size; review its role, contrast, and surrounding space rather than enlarging every label to meet a number. Default small-font findings are non-blocking REVIEW notes. Do not sacrifice template proportions or information just to reach the reference size. `NOT_AUDITABLE` is not a pass: rasterized text, outlined text, and image-only illustrations require final-size visual inspection.
 
 ## 5. Preserve the approved size in the paper
 
