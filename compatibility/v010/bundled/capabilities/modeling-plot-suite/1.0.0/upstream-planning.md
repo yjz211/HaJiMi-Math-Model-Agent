@@ -22,7 +22,7 @@
 ## 唯一机器规划：FIGURE_PLAN.json
 示例仅展示字段，不是本题的图型或数量模板：
 ```json
-{"questions":[{"id":"q1","kind":"mixed","spatial":false,"modelCount":1}],"figures":[{"id":"fig_example","class":"DATA","question":"q1","chartType":"分组柱状图","recipe":"basic #1","reason":"实际分组值比较","message":"需要表达的核心信息","section":"问题一结果","sources":["work/q1_results.json"],"layout":"single","finalWidthMm":136,"outputs":["figures/fig_example.pdf","figures/fig_example.png"]}]}
+{"questions":[{"id":"q1","kind":"mixed","spatial":false,"modelCount":1}],"figures":[{"id":"fig_example","class":"DATA","question":"q1","chartType":"分组柱状图","recipe":"recipe:basic.grouped_bar","reason":"实际分组值比较","message":"需要表达的核心信息","section":"问题一结果","sources":["work/q1_results.json"],"layout":"single","finalWidthMm":136,"outputs":["figures/fig_example.pdf","figures/fig_example.png"]}]}
 ```
 完整计划必须满足上述数量与触发规则。路线图加 purpose="roadmap"；推导图加 purpose="derivation"；空间数据图加 spatial=true。每个问题都要被图集覆盖；跨问图用 question="all"，不能代替每问覆盖。
 

@@ -569,7 +569,7 @@ def setup_style(palette='auto'):
         })
 
     # ★ Hook plt.savefig — 即使不用 save_fig()，也能自动防遮挡
-    _hook_savefig(plt)
+    # Preserve author layout: do not install automatic savefig mutation hooks.
 
 
 def _hook_savefig(plt):
@@ -981,26 +981,7 @@ def _data_points_in_data_space(ax, is3d):
 
 
 def _save(fig, output):
-    """保存图表到指定路径。savefig hook 会自动检测并修复文字重叠。
-
-    PNG 输出强制 350 DPI（与 docx_export PDF→PNG 兜底链路一致），防止 Word 嵌入时中文标签糊。
-    PDF/SVG 矢量输出不受 DPI 影响。
-    """
-    # ★ 子图尺寸防护：检测子图是否被压缩得过小，如果是则修复
-    _guard_subplot_size(fig)
-    # ★ 无条件拉回 ax.text(transAxes, y<0 or y>1) 反模式（防 bbox=tight mediabox 爆炸）
-    _pull_back_outside_transaxes_text(fig)
-    # ★ 3D 轴不做 tight_layout：matplotlib 官方不支持，会把 3D 曲面挤塌
-    if not _has_3d_axes(fig):
-        try:
-            fig.tight_layout(pad=0.5)
-        except Exception:
-            pass
-    # ★ tight_layout 后再检查一次，防止 tight_layout 把子图压小
-    _guard_subplot_size(fig)
-    # ★ axes 内容占比检测：若所有 axes 占 figure 面积 < 50%，自动收缩 figsize
-    # 防止 "figsize=(10, 12) 但只画了上面 2 个小 panel，下面 8 寸全白" 这种产物
-    _auto_shrink_figsize_if_sparse(fig)
+    """Save without changing author layout, labels, axes, or canvas size."""
     # ★ 空 / 仅空白 路径直接拒绝（避免兜底成隐藏文件 ".pdf"）
     if not output or not str(output).strip():
         raise ValueError("save_fig: output path is empty")
@@ -1020,8 +1001,7 @@ def _save(fig, output):
     _save_kwargs = {'format': _ext, 'pad_inches': 0.15}
     # ★ 默认不用 bbox_inches='tight' —— 防止 ax.text(transAxes, y<0 or y>1) 这种
     # axes 外标注让 tight 包围盒爆炸（用户实测过 1496×23966 px 超长条 PNG）。
-    # 改用 figsize 等大输出 + _auto_shrink_figsize_if_sparse 把 axes 推到撑满 figure 80%，
-    # 既保证 axes label 不被截，又避免 mediabox 爆炸。
+    # Preserve the requested canvas size; layout is owned by the generator.
     _save_kwargs['bbox_inches'] = None
     if _ext in ('png', 'jpg', 'jpeg'):
         _save_kwargs['dpi'] = 350  # 防中文标签糊（与 docx_export PDF→PNG 兜底链路一致）

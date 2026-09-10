@@ -18,7 +18,7 @@ export function figurePlanErrors(plan: any, minimum = 8): string[] {
     ids.add(f.id);
     for (const k of ['chartType', 'reason', 'message', 'section', 'question', 'layout']) if (typeof f[k] !== 'string' || !f[k].trim()) errors.push(`${f.id}: missing ${k}`);
     if (!['DATA','DRAWIO','TIKZ'].includes(f.class)) errors.push(`${f.id}: class must be DATA/DRAWIO/TIKZ`);
-    if (!/^(basic|advanced|empirical|competition|academic)\s*#\s*\d+$|^custom$/.test(f.recipe ?? '')) errors.push(`${f.id}: recipe must be category #N or custom`);
+    if (!/^(basic|advanced|empirical|competition|academic)\s*#\s*\d+$|^recipe:[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$|^custom$/.test(f.recipe ?? '')) errors.push(`${f.id}: recipe must be recipe:<id>, category #N or custom`);
     if (!Array.isArray(f.sources) || !f.sources.length) errors.push(`${f.id}: sources required`);
     if (!Array.isArray(f.outputs) || !f.outputs.includes(`figures/${f.id}.pdf`)) errors.push(`${f.id}: outputs must include figures/${f.id}.pdf`);
     if (!(f.finalWidthMm > 0)) errors.push(`${f.id}: finalWidthMm required`);

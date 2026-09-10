@@ -27,7 +27,7 @@ def coefficient(raw: str) -> float:
 
 
 def profile_defaults(profile: str) -> tuple[float, float]:
-    return (8.5, 9.5) if profile == "modeling" else (5.0, 7.0)
+    return (0.0, 8.5) if profile == "modeling" else (5.0, 7.0)
 
 
 def detect_profile(script: Path) -> str:
@@ -228,7 +228,7 @@ def main() -> int:
                 results.append({"figure": str(pdf), "verdict": "NOT_AUDITABLE", "reason": str(exc)})
 
     print(f"=== final-size figure audit ({profile}) ===")
-    print(f"hard minimum={args.hard_min_pt:g} pt; recommended median={args.recommended_min_pt:g} pt")
+    print(f"hard minimum={args.hard_min_pt:g} pt; recommended median={args.recommended_min_pt:g} pt" if args.hard_min_pt > 0 else f"no hard font minimum; recommended median={args.recommended_min_pt:g} pt (review only)")
     for item in results:
         print(f"[{item['verdict']}] {item['figure']}")
         if "scale" in item and "effective_text_min_pt" in item:

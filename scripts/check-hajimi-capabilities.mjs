@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
+import { checkPlotRecipeRouting } from './check-plot-recipe-routing.mjs';
 
 const projectRoot = resolve(process.cwd());
 const capabilitiesRoot = join(projectRoot, "bundled", "capabilities");
@@ -35,6 +36,7 @@ function assertStages(value, label) {
 async function walk(root) {
   const output = [];
   for (const entry of await readdir(root, { withFileTypes: true })) {
+    if (entry.name === '__pycache__' || entry.name.endsWith('.pyc')) continue;
     const path = join(root, entry.name);
     if (entry.isDirectory()) output.push(...await walk(path));
     else if (entry.isFile()) output.push(path);
@@ -113,3 +115,5 @@ for (const [id, version] of expected) {
   }
   process.stdout.write(`${id}@${version}: ${manifest.files.length} files verified\n`);
 }
+
+process.stdout.write(await checkPlotRecipeRouting(projectRoot) + '\n');

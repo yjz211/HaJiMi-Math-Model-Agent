@@ -79,6 +79,19 @@ def main():
         existing = workspace / relative
         if existing.is_file() and sha256(existing) == "8399c469450a2b8c33c9ce70b19c04db93bf5c3b3c94f00f83423670e3d713d1":
             shutil.copy2(assets / "shared-scripts/plot_utils.py", existing)
+    # 0.1.3: refresh recognized routing files only; preserve all user modifications.
+    routing_baseline = {"figure_exemplars.md":"cdf35eb68d35f2ef814cf856f338e0f4466fab89d3b5e2954cef6a3ce549add5","figure_style_guide.md":"3dd47915c22557dbe59d5c3af76332ab81468c78fe4e0b6fdf702155f28268e7","get_recipe.py":"3f715cdfcca7532fd5c3c68e79594ea6bd758e21cb9b0c7ea150b1df8afe4065","writing_rules.md":"b133d5296f4b64ec07c60db4dc03b6110b0ecad6ce55e64b460f9e28e9c697e0"}
+    for folder in (workspace / "_utils", workspace / "skills/shared-scripts"):
+        for filename, expected in routing_baseline.items():
+            existing = folder / filename
+            if existing.is_file() and sha256(existing) == expected:
+                shutil.copy2(assets / "shared-scripts" / filename, existing)
+    # Refresh recognized pre-preservation helpers; keep user edits.
+    layout_helper_baselines = ["f8bd00832d65a4982f12510a2f097dbabd03b851102a7c6db6fbb3a3d8c2af4f","4fe20ca0f1439a218e5c5ccdb959f8bc295b9e45e107673562b3e3779afcff49","9f47314d5045aad5dfa0863d836b86124aacf5cb90e93cc3c808324bf469aad7"]
+    for folder in (workspace / "_utils", workspace / "skills/shared-scripts"):
+        existing = folder / "plot_utils.py"
+        if existing.is_file() and sha256(existing) in layout_helper_baselines:
+            shutil.copy2(assets / "shared-scripts/plot_utils.py", existing)
     profile = detect_profile(workspace) if args.profile == "auto" else args.profile
 
     shared_project = workspace / "skills/shared-scripts"

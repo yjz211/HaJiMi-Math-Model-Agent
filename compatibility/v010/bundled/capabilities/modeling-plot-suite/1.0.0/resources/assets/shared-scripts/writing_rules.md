@@ -146,16 +146,16 @@ which aligns with our hypothesis that the benefit scales with sequence length.
    4. 写进 FIGURE_MANIFEST 时显式标注 `[2-panel]` / `[4-panel]` / `[single]`
 
    **示例**（FIGURE_MANIFEST 写法，含本批新增 7 类典型）：
-   - `fig_q2_residual_diag [4-panel] — 残差诊断（Q-Q / 残差-拟合 / 直方图 / 残差-时间）— basic #5 — 章节: 问题二模型验证`
-   - `fig_q3_method_cmp [2-panel] — 算法对比（GA vs 模拟退火 收敛曲线 / 计算时间）— competition #1 — 章节: 问题三求解`
-   - `fig_q1_data_dist [single] — 训练集 vs 测试集分布 — basic #7 雨云图 — 章节: 问题一数据探索`
-   - `fig_train_curves [2-panel] — 训练曲线（Loss / Accuracy 共享 x=epoch）— basic #3 — 章节: 实验设置`
-   - `fig_cls_eval [2-panel] — 分类评估（混淆矩阵 / ROC 曲线）— competition #10 + #14 — 章节: 模型评估`
-   - `fig_eda_overview [4-panel] — EDA 概览（分布 / 缺失值 / 相关性 / 异常值）— basic #1 + #5 — 章节: 数据探索`
-   - `fig_preproc_cmp [2-panel] — 预处理前后（原始分布 / Box-Cox 后分布）— basic #7 — 章节: 数据清洗`
-   - `fig_space_time [2-panel] — 空间-时间联动（t=10 空间热图 / 选定点完整时序）— competition #8 — 章节: 问题二`
-   - `fig_explain [2-panel] — 可解释性（特征重要性 / SHAP 摘要）— advanced #7 — 章节: 模型可解释性`
-   - `fig_3d_views [3-panel] — 三维场多视角（俯视 / 侧视 / 等距）— competition #6 — 章节: 问题三可视化`
+   - `fig_q2_residual_diag [4-panel] — 残差诊断（Q-Q / 残差-拟合 / 直方图 / 残差-时间）— recipe:competition.residual_diagnostics — 章节: 问题二模型验证`
+   - `fig_q3_method_cmp [2-panel] — 算法对比（GA vs 模拟退火 收敛曲线 / 计算时间）— recipe:competition.convergence — 章节: 问题三求解`
+   - `fig_q1_data_dist [single] — 训练集 vs 测试集分布 — recipe:basic.raincloud 雨云图 — 章节: 问题一数据探索`
+   - `fig_train_curves [2-panel] — 训练曲线（Loss / Accuracy 共享 x=epoch）— recipe:basic.line — 章节: 实验设置`
+   - `fig_cls_eval [2-panel] — 分类评估（混淆矩阵 / ROC 曲线）— recipe:competition.confusion_matrix + recipe:competition.roc — 章节: 模型评估`
+   - `fig_eda_overview [4-panel] — EDA 概览（分布 / 缺失值 / 相关性 / 异常值）— recipe:basic.grouped_bar + recipe:basic.heatmap — 章节: 数据探索`
+   - `fig_preproc_cmp [2-panel] — 预处理前后（原始分布 / Box-Cox 后分布）— recipe:basic.raincloud — 章节: 数据清洗`
+   - `fig_space_time [2-panel] — 空间-时间联动（t=10 空间热图 / 选定点完整时序）— recipe:competition.spatiotemporal_heatmap + recipe:basic.line — 章节: 问题二`
+   - `fig_explain [2-panel] — 可解释性（特征重要性 / SHAP 摘要）— recipe:advanced.shap_summary — 章节: 模型可解释性`
+   - `fig_3d_views [3-panel] — 三维场多视角（俯视 / 侧视 / 等距）— recipe:competition.surface_3d — 章节: 问题三可视化`
 5. Per-page density: figures/tables ≤60% of page area, text ≥40%
 6. If a section has 3+ figures, each must have ≥5 lines of text between them
 
@@ -366,8 +366,8 @@ for text in ax.texts:
     text.set_color('white' if norm(val) > 0.6 else 'black')
 ```
 不要只用 `annot=True` 就完事——必须确保所有格子上的数字都清晰可读。
-10. **聚类热力图 + 树状图** — **⛔ 必须严格按照 advanced #14 配方的 `fig.add_axes()` 布局代码，不要用 gridspec 自己发挥。** 只保留顶部树状图，不用左侧树状图（会遮挡 y 轴标签）。树状图高度占比不超过 15%（`add_axes([0.22, 0.85, 0.56, 0.12])`）。热力图左边界 `_left` 必须 ≥ 0.22（给 y 轴标签+左侧色条留足空间）。如果有左侧分组色条，色条放在 `_left - 0.05` 处（宽度 0.025），色条和热力图之间至少留 0.025 的间距给 y 轴标签。**⛔ 禁止让色条和 y 轴标签区域重叠 — 这是最常见的遮挡 bug。**
-11. **帕累托图** — **⛔ 必须用 basic #9 配方的竖向布局（竖向柱状图 + 右轴累积折线），不要用横向柱状图 + twiny() 自己发挥。** 关键技巧：左轴 ylim 设为数据最大值的 2.5 倍，右轴 ylim 设为 `(-65, 110)`，这样柱子在下半部分、折线在上半部分，互不遮挡。
+10. **聚类热力图 + 树状图** — **⛔ 必须严格按照 recipe:advanced.cluster_heatmap 配方的 `fig.add_axes()` 布局代码，不要用 gridspec 自己发挥。** 只保留顶部树状图，不用左侧树状图（会遮挡 y 轴标签）。树状图高度占比不超过 15%（`add_axes([0.22, 0.85, 0.56, 0.12])`）。热力图左边界 `_left` 必须 ≥ 0.22（给 y 轴标签+左侧色条留足空间）。如果有左侧分组色条，色条放在 `_left - 0.05` 处（宽度 0.025），色条和热力图之间至少留 0.025 的间距给 y 轴标签。**⛔ 禁止让色条和 y 轴标签区域重叠 — 这是最常见的遮挡 bug。**
+11. **帕累托图** — **⛔ 必须用 recipe:basic.pareto 配方的竖向布局（竖向柱状图 + 右轴累积折线），不要用横向柱状图 + twiny() 自己发挥。** 关键技巧：左轴 ylim 设为数据最大值的 2.5 倍，右轴 ylim 设为 `(-65, 110)`，这样柱子在下半部分、折线在上半部分，互不遮挡。
 
 工具函数（在 `_utils/plot_utils.py` 中）：
 - `smart_labels(ax, xs, ys, texts, ...)` — 自动推开重叠标签（基于 adjustText 库）

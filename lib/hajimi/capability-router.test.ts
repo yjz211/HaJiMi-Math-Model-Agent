@@ -46,7 +46,7 @@ test("stage 8 jointly routes the hashed paper and plot capability bundles", asyn
     assert.match(guidance, /上页字号 = 代码字号 × \(论文引用宽 ÷ 原生figsize宽\)/);
     assert.match(guidance, /缩放比 0\.9–1\.1/);
     assert.match(guidance, /height ≤ 0\.80/);
-    assert.match(guidance, /刻度字号下限 \*\*8pt\*\*、轴标签 \*\*9pt\*\*/);
+    assert.match(guidance, /刻度 \*\*8pt\*\*、轴标签 \*\*9pt\*\* 可作为源字号起点，并非硬下限/);
     assert.doesNotMatch(guidance, /first-pass-design|setup_workspace\.py/);
 
     const focused = reduceWorkflowState(initial.state, {

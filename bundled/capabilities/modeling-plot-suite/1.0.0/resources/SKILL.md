@@ -17,9 +17,9 @@ Use the pattern: classify upstream, record a machine-readable contract, execute 
    - ILLUSTRATION -> `paper-illustration` only for qualifying pictorial or 3-D physical/engineering scenes;
    - HTML -> only when the user explicitly selects HTML instead of Draw.io;
    - MERMAID -> only when Mermaid or text-native maintainability is requested.
-4. For each non-empty class, read `workflows/<name>.md`, then its linked `references/<name>.md`, completely and execute it without weakening its drawing prompt or review loop.
+4. For each non-empty class, read `workflows/<name>.md`, then its linked `references/<name>.md`, completely and preserve its drawing methods and templates. Review scope, timing and repair limits follow `../stage8-policy.md`; legacy review loops do not add extra rounds.
 5. Reconcile the manifest after every pass. A missing planned output keeps the task open; retry or use only the documented fallback for that class. Never silently reclassify a missing figure.
-6. For every paper-bound figure, read `references/paper-layout-gate.md` and complete its inclusion-size and compiled-page checks before declaring completion.
+6. For paper-bound figures, read `references/paper-layout-gate.md`; apply its size guidance with review scope and timing governed by `../stage8-policy.md`. Inspect individual figures during drawing and compiled pages after paper layout; a figures-only request does not require a compiled paper.
 
 When uncertain whether something is a data curve or a TikZ construction, classify it as DATA. Route all non-data diagrams that require exact, reproducible structure to `paper-technical-diagram`, then choose Draw.io or TikZ internally. AI illustration must not replace evidence plots, engineering schematics that can be drawn deterministically, precise topology, or mathematical geometry.
 

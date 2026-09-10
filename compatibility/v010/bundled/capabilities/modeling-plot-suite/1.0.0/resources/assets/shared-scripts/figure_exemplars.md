@@ -119,22 +119,22 @@ TikZ 真正"高级"的地方在于**原生渲染数学符号 + 精确几何控�
 
 | 赛题领域 / 特征（命中即考虑） | 该领域评委期待的"标志图"（自由取舍/组合） | 配方或 custom |
 |---|---|---|
-| 图像/视觉处理（增强/去雾/分割/检测/重构/生成） | 真实样本 before/after 对比 + 局部放大、掩膜叠加、检测框可视化（见上一节"门面图"） | custom / comp #10,#11 |
-| 地理/空间/选址/覆盖 | 地理热力图、设施选址布局+覆盖半径圆、OD 流向图(流向线/弦图)、轨迹与路网叠加图 | comp #7,#18 / custom |
-| 图论/网络/社交网络/电网 | 网络拓扑图(节点大小=度/中心性、颜色=社区)、最短路/最小生成树高亮、传播路径快照 | comp #16 / custom(networkx) |
-| 路径/调度/物流(TSP/VRP/排产/车间) | 地图上的路线图、甘特图、时空轨迹图 | comp #15,#16 / custom |
-| 传染病/人口/生态动力学(SIR/SEIR/Logistic/L-V) | 仓室流图(TikZ/drawio)、各仓室随时间演化曲线、相平面/相轨迹、参数→峰值热力 | basic #3 / TikZ / custom |
+| 图像/视觉处理（增强/去雾/分割/检测/重构/生成） | 真实样本 before/after 对比 + 局部放大、掩膜叠加、检测框可视化（见上一节"门面图"） | custom / recipe:competition.confusion_matrix,recipe:competition.roc |
+| 地理/空间/选址/覆盖 | 地理热力图、设施选址布局+覆盖半径圆、OD 流向图(流向线/弦图)、轨迹与路网叠加图 | recipe:competition.china_choropleth,recipe:competition.spatiotemporal_heatmap / custom |
+| 图论/网络/社交网络/电网 | 网络拓扑图(节点大小=度/中心性、颜色=社区)、最短路/最小生成树高亮、传播路径快照 | recipe:competition.network_path / custom(networkx) |
+| 路径/调度/物流(TSP/VRP/排产/车间) | 地图上的路线图、甘特图、时空轨迹图 | recipe:competition.gantt,recipe:competition.network_path / custom |
+| 传染病/人口/生态动力学(SIR/SEIR/Logistic/L-V) | 仓室流图(TikZ/drawio)、各仓室随时间演化曲线、相平面/相轨迹、参数→峰值热力 | recipe:basic.line / TikZ / custom |
 | 物理场/连续介质(热/流体/电磁/应力/扩散) | 标量场云图(contourf)、矢量场(quiver/streamplot)、等值线、沿线剖面图 | custom(matplotlib) |
-| 优化(单/多目标/规划/智能算法) | 收敛曲线、可行域图(TikZ)、Pareto 前沿(2D/3D)、3D 响应曲面、最优方案布局图 | comp #1,#3,#6 / TikZ |
-| 评价/决策/排序(AHP/熵权/TOPSIS/模糊/灰色) | 指标体系树、权重图、雷达图、综合得分**排序条形图**、对象×维度热力 | comp #5 / advanced #1,#16 |
-| 预测/时间序列 | 预测vs实际带CI、残差诊断四联、多步衰减、序列分解 | empirical #12,#14,#16 / comp #8 |
-| 分类/聚类/异常检测 | 混淆矩阵、ROC、t-SNE/聚类散点、SHAP/特征重要性、轮廓系数肘部图 | comp #10,#11,#13 / advanced #7 |
-| 统计/计量/因果推断 | 森林图、DID 平行趋势、事件研究、安慰剂检验 | empirical #1,#2,#3,#4 |
-| 金融/投资/风险 | 有效前沿、收益-风险散点、相关性热力、回撤/净值曲线 | basic #4,#5 / custom |
-| 博弈/决策论 | 收益矩阵热力、博弈树(TikZ)、策略演化(复制动态)轨迹 | basic #5 / TikZ / custom |
+| 优化(单/多目标/规划/智能算法) | 收敛曲线、可行域图(TikZ)、Pareto 前沿(2D/3D)、3D 响应曲面、最优方案布局图 | recipe:competition.convergence,recipe:competition.pareto_front,recipe:competition.surface_3d / TikZ |
+| 评价/决策/排序(AHP/熵权/TOPSIS/模糊/灰色) | 指标体系树、权重图、雷达图、综合得分**排序条形图**、对象×维度热力 | recipe:competition.radar / recipe:advanced.lollipop,recipe:advanced.method_heatmap |
+| 预测/时间序列 | 预测vs实际带CI、残差诊断四联、多步衰减、序列分解 | recipe:empirical.prediction_ci,recipe:empirical.residual_diagnostics,recipe:empirical.multistep_decay / recipe:competition.residual_diagnostics |
+| 分类/聚类/异常检测 | 混淆矩阵、ROC、t-SNE/聚类散点、SHAP/特征重要性、轮廓系数肘部图 | recipe:competition.confusion_matrix,recipe:competition.roc,recipe:competition.cluster_3d / recipe:advanced.shap_summary |
+| 统计/计量/因果推断 | 森林图、DID 平行趋势、事件研究、安慰剂检验 | recipe:empirical.forest,recipe:empirical.parallel_trends,recipe:empirical.event_study,recipe:empirical.placebo |
+| 金融/投资/风险 | 有效前沿、收益-风险散点、相关性热力、回撤/净值曲线 | recipe:basic.scatter_regression,recipe:basic.heatmap / custom |
+| 博弈/决策论 | 收益矩阵热力、博弈树(TikZ)、策略演化(复制动态)轨迹 | recipe:basic.heatmap / TikZ / custom |
 | 信号/音频/振动/频谱 | 时域波形对比、频谱图、小波时频热力、功率谱密度 | custom(matplotlib) |
 | 元胞自动机/Agent 仿真/交通流 | 多时刻状态网格快照序列(montage)、密度时空图、演化热力 | custom |
-| 不确定性/灵敏度/鲁棒性 | 龙卷风图、蒙特卡洛结果分布、参数敏感性曲线、置信区间带 | comp #2 / custom |
+| 不确定性/灵敏度/鲁棒性 | 龙卷风图、蒙特卡洛结果分布、参数敏感性曲线、置信区间带 | recipe:competition.tornado / custom |
 
 放置：均放在对应子问题的"结果/分析"节；机理类(仓室流图、可行域、受力、光路)放该问"建模/假设"节。
 
@@ -284,17 +284,17 @@ TikZ 真正"高级"的地方在于**原生渲染数学符号 + 精确几何控�
 
 | 章节 | 图表 | 类型 | 配方 | 必选/可选 |
 |------|------|------|------|----------|
-| 数据描述 | 核心变量时序趋势（分区域） | 折线图 | basic #3 | 必选 |
-| 数据描述 | 核心变量分区域分布对比 | Ridgeline Plot | advanced #23 | ★推荐（展示东/中/西分布差异） |
-| 数据描述 | 变量相关性矩阵 | 聚类热力图 | advanced #14 | 必选 |
-| 数据描述 | 因变量空间分布地图 | 地理热力图 | competition #7 | ★必选（空间论文标配） |
-| 空间分析 | Moran's I 散点图 | 散点+象限 | empirical #5 变体 | 必选 |
-| 空间分析 | Moran's I 年度趋势 | 折线图 | basic #3 | 可选 |
-| 空间分析 | LISA 聚类地图 | 地理分类图 | competition #7 变体 | ★推荐 |
-| 实证结果 | 效应分解（直接/间接/总） | 发散柱状图 | advanced #20 | ★必选 |
-| 实证结果 | 核心系数+CI | 森林图 | empirical #1 | 必选 |
-| 稳健性 | 多权重矩阵系数对比 | Dot Plot with CI | advanced #13 | ★推荐 |
-| 异质性 | 分组回归对比 | Back-to-Back Bar | advanced #21 | ★推荐 |
+| 数据描述 | 核心变量时序趋势（分区域） | 折线图 | recipe:basic.line | 必选 |
+| 数据描述 | 核心变量分区域分布对比 | Ridgeline Plot | recipe:advanced.ridgeline | ★推荐（展示东/中/西分布差异） |
+| 数据描述 | 变量相关性矩阵 | 聚类热力图 | recipe:advanced.cluster_heatmap | 必选 |
+| 数据描述 | 因变量空间分布地图 | 地理热力图 | recipe:competition.china_choropleth | ★必选（空间论文标配） |
+| 空间分析 | Moran's I 散点图 | 散点+象限 | recipe:empirical.moran_scatter 变体 | 必选 |
+| 空间分析 | Moran's I 年度趋势 | 折线图 | recipe:basic.line | 可选 |
+| 空间分析 | LISA 聚类地图 | 地理分类图 | recipe:competition.china_choropleth 变体 | ★推荐 |
+| 实证结果 | 效应分解（直接/间接/总） | 发散柱状图 | recipe:advanced.diverging_bar | ★必选 |
+| 实证结果 | 核心系数+CI | 森林图 | recipe:empirical.forest | 必选 |
+| 稳健性 | 多权重矩阵系数对比 | Dot Plot with CI | recipe:advanced.dot_ci | ★推荐 |
+| 异质性 | 分组回归对比 | Back-to-Back Bar | recipe:advanced.back_to_back_bar | ★推荐 |
 | 引言 | 研究框架/技术路线 | TikZ | — | 必选 |
 
 合计参考：8-12 图 + 7-10 表 + 1-2 TikZ = 16-24 个
@@ -305,16 +305,16 @@ TikZ 真正"高级"的地方在于**原生渲染数学符号 + 精确几何控�
 
 | 章节 | 图表 | 类型 | 配方 | 必选/可选 |
 |------|------|------|------|----------|
-| 数据描述 | 核心变量趋势 | 折线图 | basic #3 | 必选 |
-| 数据描述 | 变量分布 | Ridgeline Plot | advanced #23 | 可选 |
-| 数据描述 | 相关性矩阵 | 热力图 | basic #5 | 必选 |
-| 实证结果 | 基准回归系数 | 森林图 | empirical #1 | 必选 |
-| 实证结果 | 平行趋势检验 | 平行趋势图 | empirical #2 | ★DID必选 |
-| 实证结果 | 动态效应 | Event Study | empirical #3 | ★DID推荐 |
-| 实证结果 | PSM 平衡性 | Love Plot | empirical #12 | PSM必选 |
-| 稳健性 | 安慰剂检验 | 安慰剂图 | empirical #4 | ★推荐 |
-| 稳健性 | 多模型系数对比 | Dot Plot with CI | advanced #13 | 推荐 |
-| 异质性 | 分组森林图 | 异质性森林图 | empirical #10 | 必选 |
+| 数据描述 | 核心变量趋势 | 折线图 | recipe:basic.line | 必选 |
+| 数据描述 | 变量分布 | Ridgeline Plot | recipe:advanced.ridgeline | 可选 |
+| 数据描述 | 相关性矩阵 | 热力图 | recipe:basic.heatmap | 必选 |
+| 实证结果 | 基准回归系数 | 森林图 | recipe:empirical.forest | 必选 |
+| 实证结果 | 平行趋势检验 | 平行趋势图 | recipe:empirical.parallel_trends | ★DID必选 |
+| 实证结果 | 动态效应 | Event Study | recipe:empirical.event_study | ★DID推荐 |
+| 实证结果 | PSM 平衡性 | Love Plot | recipe:empirical.psm_balance | PSM必选 |
+| 稳健性 | 安慰剂检验 | 安慰剂图 | recipe:empirical.placebo | ★推荐 |
+| 稳健性 | 多模型系数对比 | Dot Plot with CI | recipe:advanced.dot_ci | 推荐 |
+| 异质性 | 分组森林图 | 异质性森林图 | recipe:empirical.subgroup_forest | 必选 |
 | 机制 | 中介效应路径 | TikZ 路径图 | — | 可选 |
 | 引言 | 研究框架 | TikZ | — | 必选 |
 
@@ -324,18 +324,18 @@ TikZ 真正"高级"的地方在于**原生渲染数学符号 + 精确几何控�
 
 | 章节 | 图表 | 类型 | 配方 | 必选/可选 |
 |------|------|------|------|----------|
-| 数据描述 | 原始序列趋势 | 折线图 | basic #3 | 必选 |
-| 数据描述 | 序列分解（趋势+季节+残差） | 多面板子图 | basic #12 | 推荐 |
-| 数据描述 | 特征相关性 | 热力图 | basic #5 | 必选 |
-| 模型结果 | 预测 vs 实际 | 预测对比图+CI | competition #4 | ★必选 |
-| 模型结果 | 多模型精度对比 | 分组柱状图 | basic #1 | 必选 |
-| 模型结果 | 多模型精度矩阵 | 方法对比热力图 | advanced #16 | ★推荐 |
-| 模型结果 | 误差分布对比 | Grouped Violin | advanced #24 | ★推荐 |
-| 模型结果 | 多步预测衰减 | 衰减折线图 | empirical #16 变体 | 推荐 |
-| 模型结果 | 残差诊断 | 四联图 | competition #8 | 必选 |
-| 模型结果 | 特征重要性 | SHAP Summary | advanced #7 | ★推荐 |
-| 模型结果 | 多模型综合统计对比 | Taylor Diagram | advanced #19 | ★推荐（同时展示相关系数+标准差+RMSE） |
-| 消融 | 模块贡献 | Waterfall | advanced #6 | 可选 |
+| 数据描述 | 原始序列趋势 | 折线图 | recipe:basic.line | 必选 |
+| 数据描述 | 序列分解（趋势+季节+残差） | 多面板子图 | recipe:basic.multipanel | 推荐 |
+| 数据描述 | 特征相关性 | 热力图 | recipe:basic.heatmap | 必选 |
+| 模型结果 | 预测 vs 实际 | 预测对比图+CI | recipe:competition.prediction_actual | ★必选 |
+| 模型结果 | 多模型精度对比 | 分组柱状图 | recipe:basic.grouped_bar | 必选 |
+| 模型结果 | 多模型精度矩阵 | 方法对比热力图 | recipe:advanced.method_heatmap | ★推荐 |
+| 模型结果 | 误差分布对比 | Grouped Violin | recipe:advanced.grouped_violin | ★推荐 |
+| 模型结果 | 多步预测衰减 | 衰减折线图 | recipe:empirical.multistep_decay 变体 | 推荐 |
+| 模型结果 | 残差诊断 | 四联图 | recipe:competition.residual_diagnostics | 必选 |
+| 模型结果 | 特征重要性 | SHAP Summary | recipe:advanced.shap_summary | ★推荐 |
+| 模型结果 | 多模型综合统计对比 | Taylor Diagram | recipe:advanced.taylor | ★推荐（同时展示相关系数+标准差+RMSE） |
+| 消融 | 模块贡献 | Waterfall | recipe:advanced.waterfall | 可选 |
 | 引言 | 技术路线 | TikZ | — | 必选 |
 
 ##### 套餐 D：分类/聚类（机器学习方向）
@@ -344,15 +344,15 @@ TikZ 真正"高级"的地方在于**原生渲染数学符号 + 精确几何控�
 
 | 章节 | 图表 | 类型 | 配方 | 必选/可选 |
 |------|------|------|------|----------|
-| 数据描述 | 类别分布 | 环形图 | basic #6 | 必选 |
-| 数据描述 | 特征分布对比 | Rain Cloud | academic #4 | 推荐 |
-| 数据描述 | 特征相关性 | 聚类热力图 | advanced #14 | 必选 |
-| 模型结果 | 混淆矩阵 | 热力图 | competition #10 | ★分类必选 |
-| 模型结果 | ROC 曲线 | ROC+AUC | competition #11 | ★分类必选 |
-| 模型结果 | 多模型对比 | 分组柱状图或雷达图 | basic #1 / comp #5 | 必选 |
-| 模型结果 | 特征重要性 | SHAP Summary | advanced #7 | ★推荐 |
-| 模型结果 | 聚类可视化 | t-SNE/3D散点 | academic #2 / comp #27 | ★聚类必选 |
-| 模型结果 | 聚类轮廓系数 | 肘部法则图 | competition #23 | 聚类推荐 |
+| 数据描述 | 类别分布 | 环形图 | recipe:basic.donut | 必选 |
+| 数据描述 | 特征分布对比 | Rain Cloud | recipe:basic.raincloud | 推荐 |
+| 数据描述 | 特征相关性 | 聚类热力图 | recipe:advanced.cluster_heatmap | 必选 |
+| 模型结果 | 混淆矩阵 | 热力图 | recipe:competition.confusion_matrix | ★分类必选 |
+| 模型结果 | ROC 曲线 | ROC+AUC | recipe:competition.roc | ★分类必选 |
+| 模型结果 | 多模型对比 | 分组柱状图或雷达图 | recipe:basic.grouped_bar / recipe:competition.radar | 必选 |
+| 模型结果 | 特征重要性 | SHAP Summary | recipe:advanced.shap_summary | ★推荐 |
+| 模型结果 | 聚类可视化 | t-SNE/3D散点 | recipe:academic.tsne_umap / recipe:competition.cluster_3d | ★聚类必选 |
+| 模型结果 | 聚类轮廓系数 | 肘部法则图 | recipe:competition.kmeans | 聚类推荐 |
 | 引言 | 技术路线 | TikZ | — | 必选 |
 
 ##### 套餐 E：综合评价（熵权法 / TOPSIS / AHP / 模糊综合）
@@ -362,14 +362,14 @@ TikZ 真正"高级"的地方在于**原生渲染数学符号 + 精确几何控�
 | 章节 | 图表 | 类型 | 配方 | 必选/可选 |
 |------|------|------|------|----------|
 | 数据描述 | 指标体系结构 | TikZ 树状图 | — | ★必选 |
-| 数据描述 | 指标相关性 | 热力图 | basic #5 | 必选 |
-| 评价结果 | 权重分配 | 横向柱状图 | basic #9 | 必选 |
-| 评价结果 | 综合得分排名 | 棒棒糖图 | advanced #1 | ★推荐 |
-| 评价结果 | 多维度对比 | 雷达图 | competition #5 | ★必选 |
-| 评价结果 | 评价对象×维度矩阵 | 方法对比热力图 | advanced #16 | 推荐 |
-| 评价结果 | 各维度得分分布对比 | Grouped Violin | advanced #24 | ★推荐（展示得分分布形态） |
-| 评价结果 | 得分时序变化 | 折线图 | basic #3 | 可选 |
-| 灵敏度 | 权重敏感度 | 龙卷风图 | competition #2 | 推荐 |
+| 数据描述 | 指标相关性 | 热力图 | recipe:basic.heatmap | 必选 |
+| 评价结果 | 权重分配 | 横向柱状图 | custom | 必选 |
+| 评价结果 | 综合得分排名 | 棒棒糖图 | recipe:advanced.lollipop | ★推荐 |
+| 评价结果 | 多维度对比 | 雷达图 | recipe:competition.radar | ★必选 |
+| 评价结果 | 评价对象×维度矩阵 | 方法对比热力图 | recipe:advanced.method_heatmap | 推荐 |
+| 评价结果 | 各维度得分分布对比 | Grouped Violin | recipe:advanced.grouped_violin | ★推荐（展示得分分布形态） |
+| 评价结果 | 得分时序变化 | 折线图 | recipe:basic.line | 可选 |
+| 灵敏度 | 权重敏感度 | 龙卷风图 | recipe:competition.tornado | 推荐 |
 | 引言 | 研究框架 | TikZ | — | 必选 |
 
 ##### 套餐 F：结构方程 / 中介效应 / 调节效应
@@ -378,14 +378,14 @@ TikZ 真正"高级"的地方在于**原生渲染数学符号 + 精确几何控�
 
 | 章节 | 图表 | 类型 | 配方 | 必选/可选 |
 |------|------|------|------|----------|
-| 数据描述 | 变量分布 | Ridgeline 或 Rain Cloud | advanced #23 / academic #4 | 推荐 |
-| 数据描述 | 相关性矩阵 | 热力图 | basic #5 | 必选 |
+| 数据描述 | 变量分布 | Ridgeline 或 Rain Cloud | recipe:advanced.ridgeline / recipe:basic.raincloud | 推荐 |
+| 数据描述 | 相关性矩阵 | 热力图 | recipe:basic.heatmap | 必选 |
 | 理论模型 | SEM 路径图 | TikZ 路径图 | — | ★必选 |
-| 实证结果 | 路径系数 | 森林图 | empirical #1 | 必选 |
-| 实证结果 | 中介效应分解 | Waterfall | advanced #6 | ★推荐 |
-| 实证结果 | 调节效应边际图 | 边际效应图 | empirical #9 | 调节必选 |
-| 稳健性 | Bootstrap CI | Dot Plot with CI | advanced #13 | 推荐 |
-| 异质性 | 分组路径对比 | 配对点图 | advanced #22 | 推荐 |
+| 实证结果 | 路径系数 | 森林图 | recipe:empirical.forest | 必选 |
+| 实证结果 | 中介效应分解 | Waterfall | recipe:advanced.waterfall | ★推荐 |
+| 实证结果 | 调节效应边际图 | 边际效应图 | recipe:empirical.marginal_effects | 调节必选 |
+| 稳健性 | Bootstrap CI | Dot Plot with CI | recipe:advanced.dot_ci | 推荐 |
+| 异质性 | 分组路径对比 | 配对点图 | recipe:advanced.paired_dot | 推荐 |
 | 引言 | 研究框架 | TikZ | — | 必选 |
 
 ##### 方法不在以上套餐范围内时

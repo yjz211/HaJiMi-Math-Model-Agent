@@ -1,0 +1,54 @@
+[
+  {
+    "path": "stage8-policy.md",
+    "before": [
+      "1. figures 图表完成：执行上游规划和所选绘图模式，首轮完成图集。连续做两轮集中检查，查看有无文字/图例/批注重叠；每轮如有，把所有冲突位置一次列清，统一安排锚点、偏移与避让，直接修改对应绘图代码后集中修复。不要边看边逐点反复试改。字号、留白等沿用原版生成前预计算，不强制重新跑历史全套视觉检查。此时完全不处理论文里的浮动位置、分页、图文占比或插图落页；内部标签位置仍在本阶段处理。图集完成后转writing，保存图件快照。",
+      "1. figures 图表完成：执行上游规划和所选绘图模式，首轮完成图集。快速看一遍有无文字/图例/批注重叠；如有，把所有冲突位置一次列清，统一安排锚点、偏移与避让，再集中修一次。不要边看边逐点反复试改。字号、留白等沿用原版生成前预计算，不强制重新跑历史全套视觉检查。此时完全不处理论文里的浮动位置、分页、图文占比或插图落页；内部标签位置仍在本阶段处理。图集完成后转writing，保存图件快照。"
+    ],
+    "after": "1. figures 图表完成：执行上游规划和所选绘图模式，首轮完成图集。对每张图完整查看实际渲染，检查数据表达、模板保真、文字、图例、色条、遮挡和裁切，汇总全部问题后再集中修复。每轮修复后重新完整查看该图，通过即停止；仍有问题再集中修复，每张图最多三轮修复，首轮出图不计入修复次数。第三轮修复后仍须完整检查；若仍有问题，保留结果并明确说明未解决的问题，不自动开启第四轮，不把未解决的严重缺陷标为通过。修复优先保留模板结构和信息元素，一般美观偏好不触发新一轮。多张图再整体看风格是否协调。字号、留白等沿用生成前预计算，不强制重新跑历史全套视觉检查。此时不处理论文浮动位置、分页、图文占比或插图落页；内部标签位置在本阶段处理。图集完成后转writing，保存图件快照。"
+  },
+  {
+    "path": "profiles/expressive.md",
+    "before": [
+      "默认按stage8-policy.md做两轮集中检查，并直接修改对应绘图代码修复",
+      "默认按stage8-policy.md快速检查并一次集中修复重叠"
+    ],
+    "after": "逐张完整检查、集中修复与复查，修复轮次上限统一按stage8-policy.md执行"
+  },
+  {
+    "path": "profiles/restrained.md",
+    "before": [
+      "默认遵循stage8-policy.md的两轮集中检查与对应代码修复，并做轻量复核",
+      "默认遵循stage8-policy.md的一次集中重叠修复与轻量复核"
+    ],
+    "after": "逐张完整检查、集中修复与复查，修复轮次上限统一按stage8-policy.md执行"
+  },
+  {
+    "path": "resources/SKILL.md",
+    "before": [
+      "completely and execute it without weakening its drawing prompt or review loop."
+    ],
+    "after": "completely and preserve its drawing methods and templates. Review scope, timing and repair limits follow `../stage8-policy.md`; legacy review loops do not add extra rounds."
+  },
+  {
+    "path": "resources/SKILL.md",
+    "before": [
+      "For every paper-bound figure, read `references/paper-layout-gate.md` and complete its inclusion-size and compiled-page checks before declaring completion."
+    ],
+    "after": "For paper-bound figures, read `references/paper-layout-gate.md`; apply its size guidance with review scope and timing governed by `../stage8-policy.md`. Inspect individual figures during drawing and compiled pages after paper layout; a figures-only request does not require a compiled paper."
+  },
+  {
+    "path": "resources/workflows/paper-figure.md",
+    "before": [
+      "Never paraphrase or weaken the loaded drawing instructions, visual standards, recipes, or review threshold."
+    ],
+    "after": "Preserve the loaded drawing methods, templates and recipes. Review scope, timing and repair limits follow `../stage8-policy.md` relative to resources; legacy audit and repair loops do not add extra rounds."
+  },
+  {
+    "path": "fragments/stage-8-core.md",
+    "before": [
+      "Every paper figure requires claim refs, evidence refs, source/output paths, caption role, approved LaTeX width, source audit, final-size audit, body reference, and compiled-page inspection."
+    ],
+    "after": "Retain claim refs, evidence refs, source/output paths and caption role. Review scope, timing and repair limits follow stage8-policy.md: inspect each actual figure, collect problems before repair, and inspect it again after repair. Paper inclusion and compiled-page review occur after paper layout; figures-only delivery does not require a compiled paper."
+  }
+]

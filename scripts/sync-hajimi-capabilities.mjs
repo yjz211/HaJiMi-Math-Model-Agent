@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { copyFile, mkdir, readFile, readdir, rename, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { adaptHajimiPaper } from "./adapt-hajimi-paper.mjs";
+import { applyCompatPlotRouting } from './apply-compat-plot-routing.mjs';
+import { applyPlotRecipeRouting } from './apply-plot-recipe-routing.mjs';
 import { patchHajimiLegacyPlot } from './patch-hajimi-legacy-plot.mjs';
 
 const projectRoot = resolve(process.cwd());
@@ -154,7 +156,7 @@ for (const capability of capabilities.filter(item => !args.length || item.id ===
     await copyFile(source, destination);
   }
   if (capability.id === "modeling-paper-standard") await adaptHajimiPaper(destinationRoot);
-  if (legacyPlot) await patchHajimiLegacyPlot(destinationRoot);
+  if (legacyPlot) { await patchHajimiLegacyPlot(destinationRoot); await applyPlotRecipeRouting(destinationRoot); await applyCompatPlotRouting(projectRoot); }
   const sourceEntrypointHash = await sha256File(sourceSkill);
   const files = [];
   for (const path of (await walk(destinationRoot)).filter(path => !path.includes('__pycache__') && !path.endsWith('.pyc'))) {

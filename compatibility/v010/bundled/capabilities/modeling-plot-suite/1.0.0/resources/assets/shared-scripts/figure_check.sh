@@ -114,7 +114,7 @@ for script in figures/gen_fig*.py; do
     fi
     # Detect plain box plots (should be Rain Cloud)
     if grep -n 'boxplot\|box_plot' "$script" 2>/dev/null | grep -v 'rain\|violin\|strip\|swarm' > /dev/null; then
-        echo "UPGRADE $bn: plain box plot → use Rain Cloud Plot (violin + box + strip)"
+        echo "INFO $bn: 分布图按样本量、重复值和分布形态选型；箱线图或原始散点可以直接保留。仅在密度形态有意义且图层可清晰分开时考虑雨云图，不因本提示自动增加小提琴层。"
         type_violations=$((type_violations+1))
     fi
     # Detect pie charts (should be Donut/Waffle)

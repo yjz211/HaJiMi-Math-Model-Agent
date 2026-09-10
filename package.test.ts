@@ -12,7 +12,7 @@ const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), 
 
 test("HaJiMi identity, Pi runtime versions, and product resources are pinned", () => {
   assert.equal(pkg.name, "@hajimi/desktop");
-  assert.equal(pkg.version, "0.1.2");
+  assert.equal(pkg.version, "0.1.3");
   assert.equal(pkg.devDependencies["@earendil-works/pi-ai"], "0.85.0");
   assert.equal(pkg.devDependencies["@earendil-works/pi-coding-agent"], "0.85.0");
   assert.equal(pkg.devDependencies["@earendil-works/pi-server"], "0.85.0");

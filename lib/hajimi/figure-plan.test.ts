@@ -12,6 +12,9 @@ test('full-set plan distinguishes unique figures, required sources and reasoning
  figures.push({...base,id:'fig_roadmap',class:'DRAWIO',purpose:'roadmap',recipe:'custom',outputs:['figures/fig_roadmap.pdf']});
  const plan={questions:[{id:'q1',kind:'data'}],figures};
  assert.deepEqual(figurePlanErrors(plan),[]);
+ const stablePlan={...plan,figures:figures.map(f=>({...f,recipe:f.class==='DATA'?'recipe:basic.line':'custom'}))};
+ assert.deepEqual(figurePlanErrors(stablePlan),[]);
+ assert.ok(figurePlanErrors({...plan,figures:figures.map(f=>({...f,recipe:'recipe:invalid'}))}).some(x=>x.includes('recipe must be')));
  assert.ok(figurePlanErrors({...plan,figures:figures.filter(f=>f.id!=='fig_7')},3).some(x=>x.includes('at least 8')));
  assert.ok(figurePlanErrors(plan,10).some(x=>x.includes('at least 10')));
  assert.ok(figurePlanErrors({...plan,questions:[{id:'q1',kind:'reasoning',spatial:true}]}).some(x=>x.includes('derivation')));

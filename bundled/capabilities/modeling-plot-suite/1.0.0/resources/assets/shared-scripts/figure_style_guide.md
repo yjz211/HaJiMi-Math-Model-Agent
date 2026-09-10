@@ -29,69 +29,69 @@ A paper needs visual variety — mix basic and advanced charts. A paper with ALL
 | Data characteristic | Best figure type | Recipes file | Avoid |
 |---|---|---|---|
 | ≤3 methods × 1-2 metrics | Three-line table | — | Any chart — too few data points for a meaningful figure |
-| 4+ methods × 1 metric | Lollipop Chart or Grouped Bar | advanced #1, basic #1 | — |
-| A vs B (2 methods, multiple metrics) | Dumbbell Chart | advanced #2 | heatmap — 2 rows looks like a traffic light |
-| A vs B vs C (3-5 methods, multiple metrics) | Grouped Bar Chart or Radar chart | basic #1, competition #5 | — |
-| Methods × Metrics matrix (≤5×5) | Method Comparison Heatmap or Grouped Bar | advanced #16, basic #1 | — |
-| Methods × Metrics (show trends across metrics) | Parallel Coordinates | advanced #17 | multiple separate charts |
-| Methods × Metrics matrix (>5×5) | Heatmap with values | basic #5 | — |
-| Methods × Datasets ranking | Bump Chart or Grouped Bar | advanced #4, basic #1 | — |
-| Before/after comparison | Dumbbell Chart or Grouped Bar | advanced #2, basic #1 | — |
-| Before/after (paired samples) | Paired Dot Plot | advanced #22 | grouped bar (hides individual variation) |
-| Relative to baseline (±%) | Diverging Bar Chart | advanced #20 | grouped bar (doesn't show direction clearly) |
-| Two-group mirror comparison | Back-to-Back Bar Chart | advanced #21 | — |
-| Multi-model statistical comparison | Taylor Diagram | advanced #19 | separate RMSE/R²/StdDev bar charts |
-| Distribution comparison (5-15 groups) | Ridgeline Plot | advanced #23 | multiple histograms (wastes space) |
-| Distribution comparison (2-4 groups × categories) | Grouped Violin Plot | advanced #24 | box plot (hides distribution shape) |
-| Module contribution (ablation) | Waterfall Chart | advanced #6 | bar chart |
-| Time series (1-3 lines) | Line plot with CI band | basic #3 | — |
-| Time series (4+ lines) | Small multiples (subplot grid) | basic #12 | spaghetti plot |
-| Distribution (1 group) | Violin + strip | basic #11 | histogram |
-| Distribution (2-5 groups) | Rain Cloud Plot | academic #4 | box plot |
-| Proportion/composition | Donut Chart or Stacked Area | basic #6, #8 | pie chart |
-| Correlation matrix | Heatmap + dendrogram | advanced #14 | plain heatmap |
-| 2D scatter + relationship | Scatter + regression + R² | basic #4 | — |
-| 2D joint distribution (large N) | Hexbin + marginal histograms | competition #24 | plain scatter (overplotting) |
-| 2D joint distribution (small N, clusters) | KDE contour + marginal density | competition #25 | plain scatter |
-| 2D relationship + distribution | Scatter + regression + marginal density | competition #26 | scatter without marginals |
-| High-dim features | t-SNE/UMAP scatter | academic #2 | — |
-| 3D clustering results (3 features) | 3D scatter + centroids | competition #27 | 2D scatter (loses dimension) |
-| Multi-criteria evaluation | Radar chart | competition #5 | — |
-| Feature importance | SHAP Summary Plot | advanced #7 | horizontal bar |
-| Classification result | Confusion matrix | competition #10 | — |
-| Binary classifier comparison | ROC + AUC | competition #11 | — |
-| Probability reliability | Calibration Plot | advanced #11 | — |
-| Sensitivity (single-param sweep, rank drivers) | Tornado Chart (barh sorted by range) | competition #2 | grouped bar (loses ranking) |
-| Throughput/flow loss per stage | Sankey Diagram | advanced #5 | stacked bar (hides chain) |
-| Two-factor response / error propagation | 3D Surface + projected contour | competition #6 | heatmap (loses magnitude) |
+| 4+ methods × 1 metric | Lollipop Chart or Grouped Bar | recipe:advanced.lollipop, recipe:basic.grouped_bar | — |
+| A vs B (2 methods, multiple metrics) | Dumbbell Chart | recipe:advanced.dumbbell | heatmap — 2 rows looks like a traffic light |
+| A vs B vs C (3-5 methods, multiple metrics) | Grouped Bar Chart or Radar chart | recipe:basic.grouped_bar, recipe:competition.radar | — |
+| Methods × Metrics matrix (≤5×5) | Method Comparison Heatmap or Grouped Bar | recipe:advanced.method_heatmap, recipe:basic.grouped_bar | — |
+| Methods × Metrics (show trends across metrics) | Parallel Coordinates | recipe:advanced.parallel_coordinates | multiple separate charts |
+| Methods × Metrics matrix (>5×5) | Heatmap with values | recipe:basic.heatmap | — |
+| Methods × Datasets ranking | Bump Chart or Grouped Bar | recipe:advanced.bump, recipe:basic.grouped_bar | — |
+| Before/after comparison | Dumbbell Chart or Grouped Bar | recipe:advanced.dumbbell, recipe:basic.grouped_bar | — |
+| Before/after (paired samples) | Paired Dot Plot | recipe:advanced.paired_dot | grouped bar (hides individual variation) |
+| Relative to baseline (±%) | Diverging Bar Chart | recipe:advanced.diverging_bar | grouped bar (doesn't show direction clearly) |
+| Two-group mirror comparison | Back-to-Back Bar Chart | recipe:advanced.back_to_back_bar | — |
+| Multi-model statistical comparison | Taylor Diagram | recipe:advanced.taylor | separate RMSE/R²/StdDev bar charts |
+| Distribution comparison (5-15 groups) | Ridgeline Plot | recipe:advanced.ridgeline | multiple histograms (wastes space) |
+| Distribution comparison (2-4 groups × categories) | Grouped Violin Plot | recipe:advanced.grouped_violin | box plot (hides distribution shape) |
+| Module contribution (ablation) | Waterfall Chart | recipe:advanced.waterfall | bar chart |
+| Time series (1-3 lines) | Line plot with CI band | recipe:basic.line | — |
+| Time series (4+ lines) | Small multiples (subplot grid) | recipe:basic.multipanel | spaghetti plot |
+| Distribution (1 group) | Violin + strip | recipe:basic.raincloud_violin | histogram |
+| Distribution (2-5 groups) | Rain Cloud Plot | recipe:basic.raincloud | box plot |
+| Proportion/composition | Donut Chart or Stacked Area | recipe:basic.donut, recipe:basic.area | pie chart |
+| Correlation matrix | Heatmap + dendrogram | recipe:advanced.cluster_heatmap | plain heatmap |
+| 2D scatter + relationship | Scatter + regression + R² | recipe:basic.scatter_regression | — |
+| 2D joint distribution (large N) | Hexbin + marginal histograms | recipe:competition.hexbin_joint | plain scatter (overplotting) |
+| 2D joint distribution (small N, clusters) | KDE contour + marginal density | recipe:competition.kde_joint | plain scatter |
+| 2D relationship + distribution | Scatter + regression + marginal density | recipe:competition.scatter_regression_marginals | scatter without marginals |
+| High-dim features | t-SNE/UMAP scatter | recipe:academic.tsne_umap | — |
+| 3D clustering results (3 features) | 3D scatter + centroids | recipe:competition.cluster_3d | 2D scatter (loses dimension) |
+| Multi-criteria evaluation | Radar chart | recipe:competition.radar | — |
+| Feature importance | SHAP Summary Plot | recipe:advanced.shap_summary | horizontal bar |
+| Classification result | Confusion matrix | recipe:competition.confusion_matrix | — |
+| Binary classifier comparison | ROC + AUC | recipe:competition.roc | — |
+| Probability reliability | Calibration Plot | recipe:advanced.calibration | — |
+| Sensitivity (single-param sweep, rank drivers) | Tornado Chart (barh sorted by range) | recipe:competition.tornado | grouped bar (loses ranking) |
+| Throughput/flow loss per stage | Sankey Diagram | recipe:advanced.sankey | stacked bar (hides chain) |
+| Two-factor response / error propagation | 3D Surface + projected contour | recipe:competition.surface_3d | heatmap (loses magnitude) |
 
 ### By problem domain (competition)
 
 | Problem type | Recommended figures | Recipes |
 |---|---|---|
-| Optimization (GA/PSO/SA) | Convergence curve + 3D surface + Pareto front | comp #1, #6, #3 |
-| Scheduling/routing | Gantt chart + Network path | comp #15, #16 |
-| Classification/clustering | Confusion matrix + ROC + 3D cluster scatter | comp #10, #11, #13 |
-| Regression/prediction | Prediction vs Actual with CI band + Error Rain Cloud + Multi-step decay + Model accuracy heatmap | empirical #12, #14, #16, #13 |
-| Sensitivity analysis | Tornado chart + Contour + 3D surface | comp #2, #14, #6 |
-| Spatial data | China province choropleth + Spatiotemporal matrix | comp #7, #18 |
-| Multi-objective | 2D Pareto + 3D Pareto surface | comp #3, #19 |
-| Factor decomposition | Waterfall chart | comp #20, advanced #6 |
+| Optimization (GA/PSO/SA) | Convergence curve + 3D surface + Pareto front | recipe:competition.convergence, recipe:competition.surface_3d, recipe:competition.pareto_front |
+| Scheduling/routing | Gantt chart + Network path | recipe:competition.gantt, recipe:competition.network_path |
+| Classification/clustering | Confusion matrix + ROC + 3D cluster scatter | recipe:competition.confusion_matrix, recipe:competition.roc, recipe:competition.cluster_3d |
+| Regression/prediction | Prediction vs Actual with CI band + Error Rain Cloud + Multi-step decay + Model accuracy heatmap | recipe:empirical.prediction_ci, recipe:empirical.prediction_error_raincloud, recipe:empirical.multistep_decay, recipe:empirical.prediction_accuracy_heatmap |
+| Sensitivity analysis | Tornado chart + Contour + 3D surface | recipe:competition.tornado, recipe:competition.contour, recipe:competition.surface_3d |
+| Spatial data | China province choropleth + Spatiotemporal matrix | recipe:competition.china_choropleth, recipe:competition.spatiotemporal_heatmap |
+| Multi-objective | 2D Pareto + 3D Pareto surface | recipe:competition.pareto_front, recipe:competition.pareto_surface_3d |
+| Factor decomposition | Waterfall chart | recipe:competition.waterfall, recipe:advanced.waterfall |
 
 ### By problem domain (academic/empirical)
 
 | Paper type | Recommended figures | Recipes |
 |---|---|---|
-| DID/causal inference | Parallel trends + Event study + Placebo | empirical #2, #3, #4 |
-| Regression analysis | Forest plot + Heterogeneity forest + Marginal effects | empirical #1, #10, #15 |
-| Prediction/forecasting | Prediction with CI band + Error Rain Cloud + Multi-step decay + Model heatmap | empirical #12, #14, #16, #13 |
-| Deep learning | Training curves + Attention map + t-SNE | academic #3, #6, #2 |
-| Model comparison | Grouped Bar + Method Comparison Heatmap + Radar | basic #1, advanced #16, comp #5 |
-| Hyperparameter tuning | Sensitivity grid + 3D loss landscape | academic #7, #8 |
-| Meta-analysis | Forest plot + Funnel plot | empirical #1, advanced #12 |
-| Survival analysis | Kaplan-Meier curve | advanced #9 |
-| Genomics/omics | Volcano plot + Cluster heatmap | advanced #10, #14 |
-| Method agreement | Bland-Altman plot | advanced #8 |
+| DID/causal inference | Parallel trends + Event study + Placebo | recipe:empirical.parallel_trends, recipe:empirical.event_study, recipe:empirical.placebo |
+| Regression analysis | Forest plot + Heterogeneity forest + Marginal effects | recipe:empirical.forest, recipe:empirical.subgroup_forest, recipe:empirical.marginal_effects |
+| Prediction/forecasting | Prediction with CI band + Error Rain Cloud + Multi-step decay + Model heatmap | recipe:empirical.prediction_ci, recipe:empirical.prediction_error_raincloud, recipe:empirical.multistep_decay, recipe:empirical.prediction_accuracy_heatmap |
+| Deep learning | Training curves + Attention map + t-SNE | recipe:academic.training_curves, recipe:academic.attention_heatmap, recipe:academic.tsne_umap |
+| Model comparison | Grouped Bar + Method Comparison Heatmap + Radar | recipe:basic.grouped_bar, recipe:advanced.method_heatmap, recipe:competition.radar |
+| Hyperparameter tuning | Sensitivity grid + 3D loss landscape | recipe:academic.hyperparameter_sensitivity, recipe:competition.surface_3d |
+| Meta-analysis | Forest plot + Funnel plot | recipe:empirical.forest, recipe:advanced.funnel |
+| Survival analysis | Kaplan-Meier curve | recipe:advanced.kaplan_meier |
+| Genomics/omics | Volcano plot + Cluster heatmap | recipe:advanced.volcano, recipe:advanced.cluster_heatmap |
+| Method agreement | Bland-Altman plot | recipe:advanced.bland_altman |
 
 ### Anti-patterns (check before generating — but use judgment)
 
@@ -310,8 +310,8 @@ for i, ax in enumerate(axes.flat):
     ax.set_title(f'({chr(97+i)})', fontsize=11, fontweight='bold', loc='left', pad=3)
 ```
 
-> **⛔ tight_layout 的 pad 值必须 ≤ 0.5。**
-> 大 pad 值会挤压子图空间。推荐值：`pad=0.5`（默认）、`pad=0.3`（紧凑多面板）。
+> `tight_layout` 的 `pad` 按模板和实际布局选择，不设统一上限。
+> 可从模板原值开始；`pad=0.3`、`0.5` 或 `1.2` 均需结合面板、标签、色条与图例空间判断，避免不必要地重排。
 > 如果需要子图间距更大，用 `hspace`/`wspace` 参数而不是增大 pad。
 
 > **⛔ 子图标注必须用 `ax.set_title()` 而不是 `ax.text(transAxes)`。**
@@ -548,18 +548,18 @@ ax.set_title('(a) ...', fontsize=FS_TITLE, fontweight='bold', loc='left', pad=5)
 
 - ⛔ **需要更多信息量时"加 panel 密度"，不要"把画布摊大"** —— 画布越大缩得越狠，字反而越小。
 - ⛔ 数据线 `lw` 下限 **0.9**（缩放后仍 ≥0.7pt）；参考线/网格线可 0.6–0.8，但**数据线不能低于 0.9**。
-- ⛔ 刻度字号下限 **8pt**、轴标签 **9pt**。
+- 刻度 **8pt**、轴标签 **9pt** 可作为源字号起点，并非硬下限；按实际引用尺寸下的可读性调整，清楚时允许更小字号，避免为凑数挤坏模板。
 
-#### ⛔⛔ 多 panel 共用 colorbar：必须用 gridspec 的 cax，**不能用 `ax=axes`**（实测踩过）
+#### 多 panel 共用 colorbar：按布局选择 `ax=axes` 或独立 `cax`
 
-**根因（实测坐实，别再试参数）：** `save_fig` 内部会**无条件**跑 `fig.tight_layout(pad=0.5)`
-（见 `plot_utils._save`），而 `fig.colorbar(sm, ax=axes)` 预留的空间**会被 tight_layout 重算掉**
-→ 面板扩张回去、压到 colorbar 上 → **右列面板的刻度数字和 colorbar 的刻度数字叠在一起**。
-⛔ 调 `fraction`/`pad` 治不了：实测 `pad=0.08/0.11/0.14` 重叠一直在。
-⛔ 也**别用 `constrained_layout=True`**：`plot_utils` 已设 `figure.constrained_layout.use=False`
-（避免与 tight_layout 冲突），开了会打架。
+**当前保存行为：** `save_fig` 保留已有画布和布局，不自动调用 `tight_layout`、收缩画布或移动标注。
+若绘图代码显式调用 `tight_layout`，需留意它是否重算 `fig.colorbar(sm, ax=axes)` 预留的空间。
+出现面板与色条重叠时，统一调整所需空间，再检查实际渲染。
+`fraction`、`pad` 或独立 `cax` 均可按具体布局使用；优先保留模板已有方案。
+需要时可以显式使用 `constrained_layout=True`；样式默认关闭它，不代表禁止使用。
+同一张图选用相容的布局方式，避免再叠加 `tight_layout` 重排。
 
-**正确写法 —— 把 cax 做成 gridspec 的一列，tight_layout 就会把它当同级一起排：**
+**一种可选写法 —— 把 cax 做成 gridspec 的一列，为色条明确留位：**
 ```python
 fig = plt.figure(figsize=(5.4, 4.9))                      # 近方图 → 5.0-5.4in（见上表）
 gs  = fig.add_gridspec(2, 3, width_ratios=[1, 1, 0.055],  # 第3列留给 colorbar
@@ -624,7 +624,7 @@ ax.plot(x, y, '-o', markersize=4.4, markeredgecolor='white', markeredgewidth=0.7
 ```
 
 **⑥ 多 panel 用 `subplots_adjust` 手动抠边距（46% vs 0%）**
-`tight_layout()` 是自动的、经常留一圈多余白边或把标签挤掉。多 panel 图最后手动定一次：
+显式调用 `tight_layout()` 后若留白或标签位置不合适，可手动调整多 panel 布局；保存本身不会自动重排：
 
 ```python
 gs = gridspec.GridSpec(2, 2, hspace=0.44, wspace=0.24,   # 子图间距：0.24~0.52 常用

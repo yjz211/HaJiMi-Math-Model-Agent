@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "changes": [
+    {
+      "path": "upstream-planning.md",
+      "before": "{\"questions\":[{\"id\":\"q1\",\"kind\":\"mixed\",\"spatial\":false,\"modelCount\":1}],\"figures\":[{\"id\":\"fig_example\",\"class\":\"DATA\",\"question\":\"q1\",\"chartType\":\"分组柱状图\",\"recipe\":\"basic #1\",\"reason\":\"实际分组值比较\",\"message\":\"需要表达的核心信息\",\"section\":\"问题一结果\",\"sources\":[\"work/q1_results.json\"],\"layout\":\"single\",\"finalWidthMm\":136,\"outputs\":[\"figures/fig_example.pdf\",\"figures/fig_example.png\"]}]}\n",
+      "after": "{\"questions\":[{\"id\":\"q1\",\"kind\":\"mixed\",\"spatial\":false,\"modelCount\":1}],\"figures\":[{\"id\":\"fig_example\",\"class\":\"DATA\",\"question\":\"q1\",\"chartType\":\"分组柱状图\",\"recipe\":\"recipe:basic.grouped_bar\",\"reason\":\"实际分组值比较\",\"message\":\"需要表达的核心信息\",\"section\":\"问题一结果\",\"sources\":[\"work/q1_results.json\"],\"layout\":\"single\",\"finalWidthMm\":136,\"outputs\":[\"figures/fig_example.pdf\",\"figures/fig_example.png\"]}]}\n"
+    },
+    {
+      "path": "resources/references/paper-figure.md",
+      "before": "(competition #14)\"，凭印象写出来成了横向条形图，进阶图型全退化成 plot/bar/scatter。\n",
+      "after": "(recipe:competition.contour)\"，凭印象写出来成了横向条形图，进阶图型全退化成 plot/bar/scatter。\n"
+    },
+    {
+      "path": "resources/references/paper-figure.md",
+      "before": "python3 _utils/get_recipe.py competition 14   # 等高线图\n",
+      "after": "python3 _utils/get_recipe.py --id competition.contour   # 等高线图\n"
+    },
+    {
+      "path": "resources/references/paper-figure.md",
+      "before": "python3 _utils/get_recipe.py advanced 1       # 棒棒糖图\n",
+      "after": "python3 _utils/get_recipe.py --id advanced.lollipop       # 棒棒糖图\n"
+    },
+    {
+      "path": "resources/references/paper-figure.md",
+      "before": "1. Read the plan entry: `fig_xxx — 图表类型 (category #N)`\n",
+      "after": "1. Read the plan entry: `fig_xxx — 图表类型 (recipe:<id>)`\n"
+    },
+    {
+      "path": "resources/references/paper-figure.md",
+      "before": "2. **翻 `_utils/RECIPES_FOR_THIS_PAPER.md` 找到 `category #N` 那一段**（已预取好；漏了才单独 `get_recipe.py`）\n",
+      "after": "2. **翻 `_utils/RECIPES_FOR_THIS_PAPER.md` 找到 `recipe:<id>` 那一段**（已预取好；漏了才单独 `get_recipe.py`）\n"
+    },
+    {
+      "path": "resources/references/paper-figure.md",
+      "before": "  `_utils/RECIPES_FOR_THIS_PAPER.md` 里对应的 `category #N` 配方，按配方代码重写该图；\n",
+      "after": "  `_utils/RECIPES_FOR_THIS_PAPER.md` 里对应的 `recipe:<id>` 配方，按配方代码重写该图；\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 图像/视觉处理（增强/去雾/分割/检测/重构/生成） | 真实样本 before/after 对比 + 局部放大、掩膜叠加、检测框可视化（见上一节\"门面图\"） | custom / comp #10,#11 |\n",
+      "after": "| 图像/视觉处理（增强/去雾/分割/检测/重构/生成） | 真实样本 before/after 对比 + 局部放大、掩膜叠加、检测框可视化（见上一节\"门面图\"） | custom / recipe:competition.confusion_matrix,recipe:competition.roc |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 地理/空间/选址/覆盖 | 地理热力图、设施选址布局+覆盖半径圆、OD 流向图(流向线/弦图)、轨迹与路网叠加图 | comp #7,#18 / custom |\n",
+      "after": "| 地理/空间/选址/覆盖 | 地理热力图、设施选址布局+覆盖半径圆、OD 流向图(流向线/弦图)、轨迹与路网叠加图 | recipe:competition.china_choropleth,recipe:competition.spatiotemporal_heatmap / custom |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 图论/网络/社交网络/电网 | 网络拓扑图(节点大小=度/中心性、颜色=社区)、最短路/最小生成树高亮、传播路径快照 | comp #16 / custom(networkx) |\n",
+      "after": "| 图论/网络/社交网络/电网 | 网络拓扑图(节点大小=度/中心性、颜色=社区)、最短路/最小生成树高亮、传播路径快照 | recipe:competition.network_path / custom(networkx) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 路径/调度/物流(TSP/VRP/排产/车间) | 地图上的路线图、甘特图、时空轨迹图 | comp #15,#16 / custom |\n",
+      "after": "| 路径/调度/物流(TSP/VRP/排产/车间) | 地图上的路线图、甘特图、时空轨迹图 | recipe:competition.gantt,recipe:competition.network_path / custom |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 传染病/人口/生态动力学(SIR/SEIR/Logistic/L-V) | 仓室流图(TikZ/drawio)、各仓室随时间演化曲线、相平面/相轨迹、参数→峰值热力 | basic #3 / TikZ / custom |\n",
+      "after": "| 传染病/人口/生态动力学(SIR/SEIR/Logistic/L-V) | 仓室流图(TikZ/drawio)、各仓室随时间演化曲线、相平面/相轨迹、参数→峰值热力 | recipe:basic.line / TikZ / custom |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 优化(单/多目标/规划/智能算法) | 收敛曲线、可行域图(TikZ)、Pareto 前沿(2D/3D)、3D 响应曲面、最优方案布局图 | comp #1,#3,#6 / TikZ |\n",
+      "after": "| 优化(单/多目标/规划/智能算法) | 收敛曲线、可行域图(TikZ)、Pareto 前沿(2D/3D)、3D 响应曲面、最优方案布局图 | recipe:competition.convergence,recipe:competition.pareto_front,recipe:competition.surface_3d / TikZ |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 评价/决策/排序(AHP/熵权/TOPSIS/模糊/灰色) | 指标体系树、权重图、雷达图、综合得分**排序条形图**、对象×维度热力 | comp #5 / advanced #1,#16 |\n",
+      "after": "| 评价/决策/排序(AHP/熵权/TOPSIS/模糊/灰色) | 指标体系树、权重图、雷达图、综合得分**排序条形图**、对象×维度热力 | recipe:competition.radar / recipe:advanced.lollipop,recipe:advanced.method_heatmap |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 预测/时间序列 | 预测vs实际带CI、残差诊断四联、多步衰减、序列分解 | empirical #12,#14,#16 / comp #8 |\n",
+      "after": "| 预测/时间序列 | 预测vs实际带CI、残差诊断四联、多步衰减、序列分解 | recipe:empirical.prediction_ci,recipe:empirical.residual_diagnostics,recipe:empirical.multistep_decay / recipe:competition.residual_diagnostics |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 分类/聚类/异常检测 | 混淆矩阵、ROC、t-SNE/聚类散点、SHAP/特征重要性、轮廓系数肘部图 | comp #10,#11,#13 / advanced #7 |\n",
+      "after": "| 分类/聚类/异常检测 | 混淆矩阵、ROC、t-SNE/聚类散点、SHAP/特征重要性、轮廓系数肘部图 | recipe:competition.confusion_matrix,recipe:competition.roc,recipe:competition.cluster_3d / recipe:advanced.shap_summary |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 统计/计量/因果推断 | 森林图、DID 平行趋势、事件研究、安慰剂检验 | empirical #1,#2,#3,#4 |\n",
+      "after": "| 统计/计量/因果推断 | 森林图、DID 平行趋势、事件研究、安慰剂检验 | recipe:empirical.forest,recipe:empirical.parallel_trends,recipe:empirical.event_study,recipe:empirical.placebo |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 金融/投资/风险 | 有效前沿、收益-风险散点、相关性热力、回撤/净值曲线 | basic #4,#5 / custom |\n",
+      "after": "| 金融/投资/风险 | 有效前沿、收益-风险散点、相关性热力、回撤/净值曲线 | recipe:basic.scatter_regression,recipe:basic.heatmap / custom |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 博弈/决策论 | 收益矩阵热力、博弈树(TikZ)、策略演化(复制动态)轨迹 | basic #5 / TikZ / custom |\n",
+      "after": "| 博弈/决策论 | 收益矩阵热力、博弈树(TikZ)、策略演化(复制动态)轨迹 | recipe:basic.heatmap / TikZ / custom |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 不确定性/灵敏度/鲁棒性 | 龙卷风图、蒙特卡洛结果分布、参数敏感性曲线、置信区间带 | comp #2 / custom |\n",
+      "after": "| 不确定性/灵敏度/鲁棒性 | 龙卷风图、蒙特卡洛结果分布、参数敏感性曲线、置信区间带 | recipe:competition.tornado / custom |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 核心变量时序趋势（分区域） | 折线图 | basic #3 | 必选 |\n",
+      "after": "| 数据描述 | 核心变量时序趋势（分区域） | 折线图 | recipe:basic.line | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 核心变量分区域分布对比 | Ridgeline Plot | advanced #23 | ★推荐（展示东/中/西分布差异） |\n",
+      "after": "| 数据描述 | 核心变量分区域分布对比 | Ridgeline Plot | recipe:advanced.ridgeline | ★推荐（展示东/中/西分布差异） |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 变量相关性矩阵 | 聚类热力图 | advanced #14 | 必选 |\n",
+      "after": "| 数据描述 | 变量相关性矩阵 | 聚类热力图 | recipe:advanced.cluster_heatmap | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 因变量空间分布地图 | 地理热力图 | competition #7 | ★必选（空间论文标配） |\n",
+      "after": "| 数据描述 | 因变量空间分布地图 | 地理热力图 | recipe:competition.china_choropleth | ★必选（空间论文标配） |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 空间分析 | Moran's I 散点图 | 散点+象限 | empirical #5 变体 | 必选 |\n",
+      "after": "| 空间分析 | Moran's I 散点图 | 散点+象限 | recipe:empirical.moran_scatter 变体 | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 空间分析 | Moran's I 年度趋势 | 折线图 | basic #3 | 可选 |\n",
+      "after": "| 空间分析 | Moran's I 年度趋势 | 折线图 | recipe:basic.line | 可选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 空间分析 | LISA 聚类地图 | 地理分类图 | competition #7 变体 | ★推荐 |\n",
+      "after": "| 空间分析 | LISA 聚类地图 | 地理分类图 | recipe:competition.china_choropleth 变体 | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 效应分解（直接/间接/总） | 发散柱状图 | advanced #20 | ★必选 |\n",
+      "after": "| 实证结果 | 效应分解（直接/间接/总） | 发散柱状图 | recipe:advanced.diverging_bar | ★必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 核心系数+CI | 森林图 | empirical #1 | 必选 |\n",
+      "after": "| 实证结果 | 核心系数+CI | 森林图 | recipe:empirical.forest | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 稳健性 | 多权重矩阵系数对比 | Dot Plot with CI | advanced #13 | ★推荐 |\n",
+      "after": "| 稳健性 | 多权重矩阵系数对比 | Dot Plot with CI | recipe:advanced.dot_ci | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 异质性 | 分组回归对比 | Back-to-Back Bar | advanced #21 | ★推荐 |\n",
+      "after": "| 异质性 | 分组回归对比 | Back-to-Back Bar | recipe:advanced.back_to_back_bar | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 核心变量趋势 | 折线图 | basic #3 | 必选 |\n",
+      "after": "| 数据描述 | 核心变量趋势 | 折线图 | recipe:basic.line | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 变量分布 | Ridgeline Plot | advanced #23 | 可选 |\n",
+      "after": "| 数据描述 | 变量分布 | Ridgeline Plot | recipe:advanced.ridgeline | 可选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 相关性矩阵 | 热力图 | basic #5 | 必选 |\n",
+      "after": "| 数据描述 | 相关性矩阵 | 热力图 | recipe:basic.heatmap | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 基准回归系数 | 森林图 | empirical #1 | 必选 |\n",
+      "after": "| 实证结果 | 基准回归系数 | 森林图 | recipe:empirical.forest | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 平行趋势检验 | 平行趋势图 | empirical #2 | ★DID必选 |\n",
+      "after": "| 实证结果 | 平行趋势检验 | 平行趋势图 | recipe:empirical.parallel_trends | ★DID必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 动态效应 | Event Study | empirical #3 | ★DID推荐 |\n",
+      "after": "| 实证结果 | 动态效应 | Event Study | recipe:empirical.event_study | ★DID推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | PSM 平衡性 | Love Plot | empirical #12 | PSM必选 |\n",
+      "after": "| 实证结果 | PSM 平衡性 | Love Plot | recipe:empirical.psm_balance | PSM必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 稳健性 | 安慰剂检验 | 安慰剂图 | empirical #4 | ★推荐 |\n",
+      "after": "| 稳健性 | 安慰剂检验 | 安慰剂图 | recipe:empirical.placebo | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 稳健性 | 多模型系数对比 | Dot Plot with CI | advanced #13 | 推荐 |\n",
+      "after": "| 稳健性 | 多模型系数对比 | Dot Plot with CI | recipe:advanced.dot_ci | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 异质性 | 分组森林图 | 异质性森林图 | empirical #10 | 必选 |\n",
+      "after": "| 异质性 | 分组森林图 | 异质性森林图 | recipe:empirical.subgroup_forest | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 原始序列趋势 | 折线图 | basic #3 | 必选 |\n",
+      "after": "| 数据描述 | 原始序列趋势 | 折线图 | recipe:basic.line | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 序列分解（趋势+季节+残差） | 多面板子图 | basic #12 | 推荐 |\n",
+      "after": "| 数据描述 | 序列分解（趋势+季节+残差） | 多面板子图 | recipe:basic.multipanel | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 特征相关性 | 热力图 | basic #5 | 必选 |\n",
+      "after": "| 数据描述 | 特征相关性 | 热力图 | recipe:basic.heatmap | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 预测 vs 实际 | 预测对比图+CI | competition #4 | ★必选 |\n",
+      "after": "| 模型结果 | 预测 vs 实际 | 预测对比图+CI | recipe:competition.prediction_actual | ★必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 多模型精度对比 | 分组柱状图 | basic #1 | 必选 |\n",
+      "after": "| 模型结果 | 多模型精度对比 | 分组柱状图 | recipe:basic.grouped_bar | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 多模型精度矩阵 | 方法对比热力图 | advanced #16 | ★推荐 |\n",
+      "after": "| 模型结果 | 多模型精度矩阵 | 方法对比热力图 | recipe:advanced.method_heatmap | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 误差分布对比 | Grouped Violin | advanced #24 | ★推荐 |\n",
+      "after": "| 模型结果 | 误差分布对比 | Grouped Violin | recipe:advanced.grouped_violin | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 多步预测衰减 | 衰减折线图 | empirical #16 变体 | 推荐 |\n",
+      "after": "| 模型结果 | 多步预测衰减 | 衰减折线图 | recipe:empirical.multistep_decay 变体 | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 残差诊断 | 四联图 | competition #8 | 必选 |\n",
+      "after": "| 模型结果 | 残差诊断 | 四联图 | recipe:competition.residual_diagnostics | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 特征重要性 | SHAP Summary | advanced #7 | ★推荐 |\n",
+      "after": "| 模型结果 | 特征重要性 | SHAP Summary | recipe:advanced.shap_summary | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 多模型综合统计对比 | Taylor Diagram | advanced #19 | ★推荐（同时展示相关系数+标准差+RMSE） |\n",
+      "after": "| 模型结果 | 多模型综合统计对比 | Taylor Diagram | recipe:advanced.taylor | ★推荐（同时展示相关系数+标准差+RMSE） |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 消融 | 模块贡献 | Waterfall | advanced #6 | 可选 |\n",
+      "after": "| 消融 | 模块贡献 | Waterfall | recipe:advanced.waterfall | 可选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 类别分布 | 环形图 | basic #6 | 必选 |\n",
+      "after": "| 数据描述 | 类别分布 | 环形图 | recipe:basic.donut | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 特征分布对比 | Rain Cloud | academic #4 | 推荐 |\n",
+      "after": "| 数据描述 | 特征分布对比 | Rain Cloud | recipe:basic.raincloud | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 特征相关性 | 聚类热力图 | advanced #14 | 必选 |\n",
+      "after": "| 数据描述 | 特征相关性 | 聚类热力图 | recipe:advanced.cluster_heatmap | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 混淆矩阵 | 热力图 | competition #10 | ★分类必选 |\n",
+      "after": "| 模型结果 | 混淆矩阵 | 热力图 | recipe:competition.confusion_matrix | ★分类必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | ROC 曲线 | ROC+AUC | competition #11 | ★分类必选 |\n",
+      "after": "| 模型结果 | ROC 曲线 | ROC+AUC | recipe:competition.roc | ★分类必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 多模型对比 | 分组柱状图或雷达图 | basic #1 / comp #5 | 必选 |\n",
+      "after": "| 模型结果 | 多模型对比 | 分组柱状图或雷达图 | recipe:basic.grouped_bar / recipe:competition.radar | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 特征重要性 | SHAP Summary | advanced #7 | ★推荐 |\n",
+      "after": "| 模型结果 | 特征重要性 | SHAP Summary | recipe:advanced.shap_summary | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 聚类可视化 | t-SNE/3D散点 | academic #2 / comp #27 | ★聚类必选 |\n",
+      "after": "| 模型结果 | 聚类可视化 | t-SNE/3D散点 | recipe:academic.tsne_umap / recipe:competition.cluster_3d | ★聚类必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 模型结果 | 聚类轮廓系数 | 肘部法则图 | competition #23 | 聚类推荐 |\n",
+      "after": "| 模型结果 | 聚类轮廓系数 | 肘部法则图 | recipe:competition.kmeans | 聚类推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 指标相关性 | 热力图 | basic #5 | 必选 |\n",
+      "after": "| 数据描述 | 指标相关性 | 热力图 | recipe:basic.heatmap | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 评价结果 | 权重分配 | 横向柱状图 | basic #9 | 必选 |\n",
+      "after": "| 评价结果 | 权重分配 | 横向柱状图 | custom | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 评价结果 | 综合得分排名 | 棒棒糖图 | advanced #1 | ★推荐 |\n",
+      "after": "| 评价结果 | 综合得分排名 | 棒棒糖图 | recipe:advanced.lollipop | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 评价结果 | 多维度对比 | 雷达图 | competition #5 | ★必选 |\n",
+      "after": "| 评价结果 | 多维度对比 | 雷达图 | recipe:competition.radar | ★必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 评价结果 | 评价对象×维度矩阵 | 方法对比热力图 | advanced #16 | 推荐 |\n",
+      "after": "| 评价结果 | 评价对象×维度矩阵 | 方法对比热力图 | recipe:advanced.method_heatmap | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 评价结果 | 各维度得分分布对比 | Grouped Violin | advanced #24 | ★推荐（展示得分分布形态） |\n",
+      "after": "| 评价结果 | 各维度得分分布对比 | Grouped Violin | recipe:advanced.grouped_violin | ★推荐（展示得分分布形态） |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 评价结果 | 得分时序变化 | 折线图 | basic #3 | 可选 |\n",
+      "after": "| 评价结果 | 得分时序变化 | 折线图 | recipe:basic.line | 可选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 灵敏度 | 权重敏感度 | 龙卷风图 | competition #2 | 推荐 |\n",
+      "after": "| 灵敏度 | 权重敏感度 | 龙卷风图 | recipe:competition.tornado | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 变量分布 | Ridgeline 或 Rain Cloud | advanced #23 / academic #4 | 推荐 |\n",
+      "after": "| 数据描述 | 变量分布 | Ridgeline 或 Rain Cloud | recipe:advanced.ridgeline / recipe:basic.raincloud | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 数据描述 | 相关性矩阵 | 热力图 | basic #5 | 必选 |\n",
+      "after": "| 数据描述 | 相关性矩阵 | 热力图 | recipe:basic.heatmap | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 路径系数 | 森林图 | empirical #1 | 必选 |\n",
+      "after": "| 实证结果 | 路径系数 | 森林图 | recipe:empirical.forest | 必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 中介效应分解 | Waterfall | advanced #6 | ★推荐 |\n",
+      "after": "| 实证结果 | 中介效应分解 | Waterfall | recipe:advanced.waterfall | ★推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 实证结果 | 调节效应边际图 | 边际效应图 | empirical #9 | 调节必选 |\n",
+      "after": "| 实证结果 | 调节效应边际图 | 边际效应图 | recipe:empirical.marginal_effects | 调节必选 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 稳健性 | Bootstrap CI | Dot Plot with CI | advanced #13 | 推荐 |\n",
+      "after": "| 稳健性 | Bootstrap CI | Dot Plot with CI | recipe:advanced.dot_ci | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_exemplars.md",
+      "before": "| 异质性 | 分组路径对比 | 配对点图 | advanced #22 | 推荐 |\n",
+      "after": "| 异质性 | 分组路径对比 | 配对点图 | recipe:advanced.paired_dot | 推荐 |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| 4+ methods × 1 metric | Lollipop Chart or Grouped Bar | advanced #1, basic #1 | — |\n",
+      "after": "| 4+ methods × 1 metric | Lollipop Chart or Grouped Bar | recipe:advanced.lollipop, recipe:basic.grouped_bar | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| A vs B (2 methods, multiple metrics) | Dumbbell Chart | advanced #2 | heatmap — 2 rows looks like a traffic light |\n",
+      "after": "| A vs B (2 methods, multiple metrics) | Dumbbell Chart | recipe:advanced.dumbbell | heatmap — 2 rows looks like a traffic light |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| A vs B vs C (3-5 methods, multiple metrics) | Grouped Bar Chart or Radar chart | basic #1, competition #5 | — |\n",
+      "after": "| A vs B vs C (3-5 methods, multiple metrics) | Grouped Bar Chart or Radar chart | recipe:basic.grouped_bar, recipe:competition.radar | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Methods × Metrics matrix (≤5×5) | Method Comparison Heatmap or Grouped Bar | advanced #16, basic #1 | — |\n",
+      "after": "| Methods × Metrics matrix (≤5×5) | Method Comparison Heatmap or Grouped Bar | recipe:advanced.method_heatmap, recipe:basic.grouped_bar | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Methods × Metrics (show trends across metrics) | Parallel Coordinates | advanced #17 | multiple separate charts |\n",
+      "after": "| Methods × Metrics (show trends across metrics) | Parallel Coordinates | recipe:advanced.parallel_coordinates | multiple separate charts |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Methods × Metrics matrix (>5×5) | Heatmap with values | basic #5 | — |\n",
+      "after": "| Methods × Metrics matrix (>5×5) | Heatmap with values | recipe:basic.heatmap | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Methods × Datasets ranking | Bump Chart or Grouped Bar | advanced #4, basic #1 | — |\n",
+      "after": "| Methods × Datasets ranking | Bump Chart or Grouped Bar | recipe:advanced.bump, recipe:basic.grouped_bar | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Before/after comparison | Dumbbell Chart or Grouped Bar | advanced #2, basic #1 | — |\n",
+      "after": "| Before/after comparison | Dumbbell Chart or Grouped Bar | recipe:advanced.dumbbell, recipe:basic.grouped_bar | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Before/after (paired samples) | Paired Dot Plot | advanced #22 | grouped bar (hides individual variation) |\n",
+      "after": "| Before/after (paired samples) | Paired Dot Plot | recipe:advanced.paired_dot | grouped bar (hides individual variation) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Relative to baseline (±%) | Diverging Bar Chart | advanced #20 | grouped bar (doesn't show direction clearly) |\n",
+      "after": "| Relative to baseline (±%) | Diverging Bar Chart | recipe:advanced.diverging_bar | grouped bar (doesn't show direction clearly) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Two-group mirror comparison | Back-to-Back Bar Chart | advanced #21 | — |\n",
+      "after": "| Two-group mirror comparison | Back-to-Back Bar Chart | recipe:advanced.back_to_back_bar | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Multi-model statistical comparison | Taylor Diagram | advanced #19 | separate RMSE/R²/StdDev bar charts |\n",
+      "after": "| Multi-model statistical comparison | Taylor Diagram | recipe:advanced.taylor | separate RMSE/R²/StdDev bar charts |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Distribution comparison (5-15 groups) | Ridgeline Plot | advanced #23 | multiple histograms (wastes space) |\n",
+      "after": "| Distribution comparison (5-15 groups) | Ridgeline Plot | recipe:advanced.ridgeline | multiple histograms (wastes space) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Distribution comparison (2-4 groups × categories) | Grouped Violin Plot | advanced #24 | box plot (hides distribution shape) |\n",
+      "after": "| Distribution comparison (2-4 groups × categories) | Grouped Violin Plot | recipe:advanced.grouped_violin | box plot (hides distribution shape) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Module contribution (ablation) | Waterfall Chart | advanced #6 | bar chart |\n",
+      "after": "| Module contribution (ablation) | Waterfall Chart | recipe:advanced.waterfall | bar chart |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Time series (1-3 lines) | Line plot with CI band | basic #3 | — |\n",
+      "after": "| Time series (1-3 lines) | Line plot with CI band | recipe:basic.line | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Time series (4+ lines) | Small multiples (subplot grid) | basic #12 | spaghetti plot |\n",
+      "after": "| Time series (4+ lines) | Small multiples (subplot grid) | recipe:basic.multipanel | spaghetti plot |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Distribution (1 group) | Violin + strip | basic #11 | histogram |\n",
+      "after": "| Distribution (1 group) | Violin + strip | recipe:basic.raincloud_violin | histogram |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Distribution (2-5 groups) | Rain Cloud Plot | academic #4 | box plot |\n",
+      "after": "| Distribution (2-5 groups) | Rain Cloud Plot | recipe:basic.raincloud | box plot |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Proportion/composition | Donut Chart or Stacked Area | basic #6, #8 | pie chart |\n",
+      "after": "| Proportion/composition | Donut Chart or Stacked Area | recipe:basic.donut, recipe:basic.area | pie chart |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Correlation matrix | Heatmap + dendrogram | advanced #14 | plain heatmap |\n",
+      "after": "| Correlation matrix | Heatmap + dendrogram | recipe:advanced.cluster_heatmap | plain heatmap |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| 2D scatter + relationship | Scatter + regression + R² | basic #4 | — |\n",
+      "after": "| 2D scatter + relationship | Scatter + regression + R² | recipe:basic.scatter_regression | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| 2D joint distribution (large N) | Hexbin + marginal histograms | competition #24 | plain scatter (overplotting) |\n",
+      "after": "| 2D joint distribution (large N) | Hexbin + marginal histograms | recipe:competition.hexbin_joint | plain scatter (overplotting) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| 2D joint distribution (small N, clusters) | KDE contour + marginal density | competition #25 | plain scatter |\n",
+      "after": "| 2D joint distribution (small N, clusters) | KDE contour + marginal density | recipe:competition.kde_joint | plain scatter |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| 2D relationship + distribution | Scatter + regression + marginal density | competition #26 | scatter without marginals |\n",
+      "after": "| 2D relationship + distribution | Scatter + regression + marginal density | recipe:competition.scatter_regression_marginals | scatter without marginals |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| High-dim features | t-SNE/UMAP scatter | academic #2 | — |\n",
+      "after": "| High-dim features | t-SNE/UMAP scatter | recipe:academic.tsne_umap | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| 3D clustering results (3 features) | 3D scatter + centroids | competition #27 | 2D scatter (loses dimension) |\n",
+      "after": "| 3D clustering results (3 features) | 3D scatter + centroids | recipe:competition.cluster_3d | 2D scatter (loses dimension) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Multi-criteria evaluation | Radar chart | competition #5 | — |\n",
+      "after": "| Multi-criteria evaluation | Radar chart | recipe:competition.radar | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Feature importance | SHAP Summary Plot | advanced #7 | horizontal bar |\n",
+      "after": "| Feature importance | SHAP Summary Plot | recipe:advanced.shap_summary | horizontal bar |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Classification result | Confusion matrix | competition #10 | — |\n",
+      "after": "| Classification result | Confusion matrix | recipe:competition.confusion_matrix | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Binary classifier comparison | ROC + AUC | competition #11 | — |\n",
+      "after": "| Binary classifier comparison | ROC + AUC | recipe:competition.roc | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Probability reliability | Calibration Plot | advanced #11 | — |\n",
+      "after": "| Probability reliability | Calibration Plot | recipe:advanced.calibration | — |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Sensitivity (single-param sweep, rank drivers) | Tornado Chart (barh sorted by range) | competition #2 | grouped bar (loses ranking) |\n",
+      "after": "| Sensitivity (single-param sweep, rank drivers) | Tornado Chart (barh sorted by range) | recipe:competition.tornado | grouped bar (loses ranking) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Throughput/flow loss per stage | Sankey Diagram | advanced #5 | stacked bar (hides chain) |\n",
+      "after": "| Throughput/flow loss per stage | Sankey Diagram | recipe:advanced.sankey | stacked bar (hides chain) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Two-factor response / error propagation | 3D Surface + projected contour | competition #6 | heatmap (loses magnitude) |\n",
+      "after": "| Two-factor response / error propagation | 3D Surface + projected contour | recipe:competition.surface_3d | heatmap (loses magnitude) |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Optimization (GA/PSO/SA) | Convergence curve + 3D surface + Pareto front | comp #1, #6, #3 |\n",
+      "after": "| Optimization (GA/PSO/SA) | Convergence curve + 3D surface + Pareto front | recipe:competition.convergence, recipe:competition.surface_3d, recipe:competition.pareto_front |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Scheduling/routing | Gantt chart + Network path | comp #15, #16 |\n",
+      "after": "| Scheduling/routing | Gantt chart + Network path | recipe:competition.gantt, recipe:competition.network_path |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Classification/clustering | Confusion matrix + ROC + 3D cluster scatter | comp #10, #11, #13 |\n",
+      "after": "| Classification/clustering | Confusion matrix + ROC + 3D cluster scatter | recipe:competition.confusion_matrix, recipe:competition.roc, recipe:competition.cluster_3d |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Regression/prediction | Prediction vs Actual with CI band + Error Rain Cloud + Multi-step decay + Model accuracy heatmap | empirical #12, #14, #16, #13 |\n",
+      "after": "| Regression/prediction | Prediction vs Actual with CI band + Error Rain Cloud + Multi-step decay + Model accuracy heatmap | recipe:empirical.prediction_ci, recipe:empirical.prediction_error_raincloud, recipe:empirical.multistep_decay, recipe:empirical.prediction_accuracy_heatmap |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Sensitivity analysis | Tornado chart + Contour + 3D surface | comp #2, #14, #6 |\n",
+      "after": "| Sensitivity analysis | Tornado chart + Contour + 3D surface | recipe:competition.tornado, recipe:competition.contour, recipe:competition.surface_3d |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Spatial data | China province choropleth + Spatiotemporal matrix | comp #7, #18 |\n",
+      "after": "| Spatial data | China province choropleth + Spatiotemporal matrix | recipe:competition.china_choropleth, recipe:competition.spatiotemporal_heatmap |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Multi-objective | 2D Pareto + 3D Pareto surface | comp #3, #19 |\n",
+      "after": "| Multi-objective | 2D Pareto + 3D Pareto surface | recipe:competition.pareto_front, recipe:competition.pareto_surface_3d |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Factor decomposition | Waterfall chart | comp #20, advanced #6 |\n",
+      "after": "| Factor decomposition | Waterfall chart | recipe:competition.waterfall, recipe:advanced.waterfall |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| DID/causal inference | Parallel trends + Event study + Placebo | empirical #2, #3, #4 |\n",
+      "after": "| DID/causal inference | Parallel trends + Event study + Placebo | recipe:empirical.parallel_trends, recipe:empirical.event_study, recipe:empirical.placebo |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Regression analysis | Forest plot + Heterogeneity forest + Marginal effects | empirical #1, #10, #15 |\n",
+      "after": "| Regression analysis | Forest plot + Heterogeneity forest + Marginal effects | recipe:empirical.forest, recipe:empirical.subgroup_forest, recipe:empirical.marginal_effects |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Prediction/forecasting | Prediction with CI band + Error Rain Cloud + Multi-step decay + Model heatmap | empirical #12, #14, #16, #13 |\n",
+      "after": "| Prediction/forecasting | Prediction with CI band + Error Rain Cloud + Multi-step decay + Model heatmap | recipe:empirical.prediction_ci, recipe:empirical.prediction_error_raincloud, recipe:empirical.multistep_decay, recipe:empirical.prediction_accuracy_heatmap |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Deep learning | Training curves + Attention map + t-SNE | academic #3, #6, #2 |\n",
+      "after": "| Deep learning | Training curves + Attention map + t-SNE | recipe:academic.training_curves, recipe:academic.attention_heatmap, recipe:academic.tsne_umap |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Model comparison | Grouped Bar + Method Comparison Heatmap + Radar | basic #1, advanced #16, comp #5 |\n",
+      "after": "| Model comparison | Grouped Bar + Method Comparison Heatmap + Radar | recipe:basic.grouped_bar, recipe:advanced.method_heatmap, recipe:competition.radar |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Hyperparameter tuning | Sensitivity grid + 3D loss landscape | academic #7, #8 |\n",
+      "after": "| Hyperparameter tuning | Sensitivity grid + 3D loss landscape | recipe:academic.hyperparameter_sensitivity, recipe:competition.surface_3d |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Meta-analysis | Forest plot + Funnel plot | empirical #1, advanced #12 |\n",
+      "after": "| Meta-analysis | Forest plot + Funnel plot | recipe:empirical.forest, recipe:advanced.funnel |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Survival analysis | Kaplan-Meier curve | advanced #9 |\n",
+      "after": "| Survival analysis | Kaplan-Meier curve | recipe:advanced.kaplan_meier |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Genomics/omics | Volcano plot + Cluster heatmap | advanced #10, #14 |\n",
+      "after": "| Genomics/omics | Volcano plot + Cluster heatmap | recipe:advanced.volcano, recipe:advanced.cluster_heatmap |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/figure_style_guide.md",
+      "before": "| Method agreement | Bland-Altman plot | advanced #8 |\n",
+      "after": "| Method agreement | Bland-Altman plot | recipe:advanced.bland_altman |\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_q2_residual_diag [4-panel] — 残差诊断（Q-Q / 残差-拟合 / 直方图 / 残差-时间）— basic #5 — 章节: 问题二模型验证`\n",
+      "after": "   - `fig_q2_residual_diag [4-panel] — 残差诊断（Q-Q / 残差-拟合 / 直方图 / 残差-时间）— recipe:competition.residual_diagnostics — 章节: 问题二模型验证`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_q3_method_cmp [2-panel] — 算法对比（GA vs 模拟退火 收敛曲线 / 计算时间）— competition #1 — 章节: 问题三求解`\n",
+      "after": "   - `fig_q3_method_cmp [2-panel] — 算法对比（GA vs 模拟退火 收敛曲线 / 计算时间）— recipe:competition.convergence — 章节: 问题三求解`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_q1_data_dist [single] — 训练集 vs 测试集分布 — basic #7 雨云图 — 章节: 问题一数据探索`\n",
+      "after": "   - `fig_q1_data_dist [single] — 训练集 vs 测试集分布 — recipe:basic.raincloud 雨云图 — 章节: 问题一数据探索`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_train_curves [2-panel] — 训练曲线（Loss / Accuracy 共享 x=epoch）— basic #3 — 章节: 实验设置`\n",
+      "after": "   - `fig_train_curves [2-panel] — 训练曲线（Loss / Accuracy 共享 x=epoch）— recipe:basic.line — 章节: 实验设置`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_cls_eval [2-panel] — 分类评估（混淆矩阵 / ROC 曲线）— competition #10 + #14 — 章节: 模型评估`\n",
+      "after": "   - `fig_cls_eval [2-panel] — 分类评估（混淆矩阵 / ROC 曲线）— recipe:competition.confusion_matrix + recipe:competition.roc — 章节: 模型评估`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_eda_overview [4-panel] — EDA 概览（分布 / 缺失值 / 相关性 / 异常值）— basic #1 + #5 — 章节: 数据探索`\n",
+      "after": "   - `fig_eda_overview [4-panel] — EDA 概览（分布 / 缺失值 / 相关性 / 异常值）— recipe:basic.grouped_bar + recipe:basic.heatmap — 章节: 数据探索`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_preproc_cmp [2-panel] — 预处理前后（原始分布 / Box-Cox 后分布）— basic #7 — 章节: 数据清洗`\n",
+      "after": "   - `fig_preproc_cmp [2-panel] — 预处理前后（原始分布 / Box-Cox 后分布）— recipe:basic.raincloud — 章节: 数据清洗`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_space_time [2-panel] — 空间-时间联动（t=10 空间热图 / 选定点完整时序）— competition #8 — 章节: 问题二`\n",
+      "after": "   - `fig_space_time [2-panel] — 空间-时间联动（t=10 空间热图 / 选定点完整时序）— recipe:competition.spatiotemporal_heatmap + recipe:basic.line — 章节: 问题二`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_explain [2-panel] — 可解释性（特征重要性 / SHAP 摘要）— advanced #7 — 章节: 模型可解释性`\n",
+      "after": "   - `fig_explain [2-panel] — 可解释性（特征重要性 / SHAP 摘要）— recipe:advanced.shap_summary — 章节: 模型可解释性`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "   - `fig_3d_views [3-panel] — 三维场多视角（俯视 / 侧视 / 等距）— competition #6 — 章节: 问题三可视化`\n",
+      "after": "   - `fig_3d_views [3-panel] — 三维场多视角（俯视 / 侧视 / 等距）— recipe:competition.surface_3d — 章节: 问题三可视化`\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "10. **聚类热力图 + 树状图** — **⛔ 必须严格按照 advanced #14 配方的 `fig.add_axes()` 布局代码，不要用 gridspec 自己发挥。** 只保留顶部树状图，不用左侧树状图（会遮挡 y 轴标签）。树状图高度占比不超过 15%（`add_axes([0.22, 0.85, 0.56, 0.12])`）。热力图左边界 `_left` 必须 ≥ 0.22（给 y 轴标签+左侧色条留足空间）。如果有左侧分组色条，色条放在 `_left - 0.05` 处（宽度 0.025），色条和热力图之间至少留 0.025 的间距给 y 轴标签。**⛔ 禁止让色条和 y 轴标签区域重叠 — 这是最常见的遮挡 bug。**\n",
+      "after": "10. **聚类热力图 + 树状图** — **⛔ 必须严格按照 recipe:advanced.cluster_heatmap 配方的 `fig.add_axes()` 布局代码，不要用 gridspec 自己发挥。** 只保留顶部树状图，不用左侧树状图（会遮挡 y 轴标签）。树状图高度占比不超过 15%（`add_axes([0.22, 0.85, 0.56, 0.12])`）。热力图左边界 `_left` 必须 ≥ 0.22（给 y 轴标签+左侧色条留足空间）。如果有左侧分组色条，色条放在 `_left - 0.05` 处（宽度 0.025），色条和热力图之间至少留 0.025 的间距给 y 轴标签。**⛔ 禁止让色条和 y 轴标签区域重叠 — 这是最常见的遮挡 bug。**\n"
+    },
+    {
+      "path": "resources/assets/shared-scripts/writing_rules.md",
+      "before": "11. **帕累托图** — **⛔ 必须用 basic #9 配方的竖向布局（竖向柱状图 + 右轴累积折线），不要用横向柱状图 + twiny() 自己发挥。** 关键技巧：左轴 ylim 设为数据最大值的 2.5 倍，右轴 ylim 设为 `(-65, 110)`，这样柱子在下半部分、折线在上半部分，互不遮挡。\n",
+      "after": "11. **帕累托图** — **⛔ 必须用 recipe:basic.pareto 配方的竖向布局（竖向柱状图 + 右轴累积折线），不要用横向柱状图 + twiny() 自己发挥。** 关键技巧：左轴 ylim 设为数据最大值的 2.5 倍，右轴 ylim 设为 `(-65, 110)`，这样柱子在下半部分、折线在上半部分，互不遮挡。\n"
+    },
+    {
+      "path": "resources/references/paper-figure.md",
+      "before": "# 从规划里自动抓出所有配方号，一次全取到 _utils/RECIPES_FOR_THIS_PAPER.md\nPLAN=\"\"; for pf in PROBLEM_ANALYSIS.md TOPIC_PLAN.md PAPER_PLAN.md; do\n    [ -f \"$pf\" ] && PLAN=\"$PLAN $pf\"\ndone\nPYTHON=\"\"; for _c in \"$MH_PYTHON\" python python3; do\n    [ -z \"$_c\" ] && continue; command -v \"$_c\" >/dev/null 2>&1 && PYTHON=\"$_c\" && break\ndone\ngrep -ohE '\\((basic|advanced|empirical|competition|academic)[[:space:]]*#[[:space:]]*[0-9]+\\)' $PLAN 2>/dev/null \\\n  | tr -d '()' | sed 's/#[[:space:]]*/ /' | tr -s ' ' | sort -u \\\n  | while read -r cat num; do\n        echo \"########## $cat #$num ##########\"\n        \"$PYTHON\" _utils/get_recipe.py \"$cat\" \"$num\" 2>/dev/null \\\n            || \"$PYTHON\" skills/shared-scripts/get_recipe.py \"$cat\" \"$num\" 2>/dev/null\n        echo\n    done > _utils/RECIPES_FOR_THIS_PAPER.md\necho \"已预取 $(grep -c '^##########' _utils/RECIPES_FOR_THIS_PAPER.md 2>/dev/null || echo 0) 个配方 → _utils/RECIPES_FOR_THIS_PAPER.md\"\nwc -c _utils/RECIPES_FOR_THIS_PAPER.md 2>/dev/null\n",
+      "after": "# 从规划里自动抓出配方 ID 或兼容编号，一次全取到 _utils/RECIPES_FOR_THIS_PAPER.md\nPLAN=(); for pf in FIGURE_PLAN.json PROBLEM_ANALYSIS.md TOPIC_PLAN.md PAPER_PLAN.md; do\n    [ -f \"$pf\" ] && PLAN+=(\"$pf\")\ndone\nPYTHON=\"\"; for _c in \"$MH_PYTHON\" python python3; do\n    [ -z \"$_c\" ] && continue; command -v \"$_c\" >/dev/null 2>&1 && PYTHON=\"$_c\" && break\ndone\nRECIPE_TOOL=\"_utils/get_recipe.py\"\n[ -f \"$RECIPE_TOOL\" ] || RECIPE_TOOL=\"skills/shared-scripts/get_recipe.py\"\n\"$PYTHON\" \"$RECIPE_TOOL\" --plan \"${PLAN[@]}\" --output _utils/RECIPES_FOR_THIS_PAPER.md\n"
+    }
+  ],
+  "corrections": [
+    {
+      "file": "resources/assets/shared-scripts/figure_exemplars.md",
+      "context": "| 预测/时间序列 |",
+      "before": "empirical #12,#14,#16",
+      "after": "empirical #13,#8,#16"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_exemplars.md",
+      "context": "| 分类/聚类/异常检测 |",
+      "before": "comp #10,#11,#13",
+      "after": "comp #10,#11,#27"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_exemplars.md",
+      "context": "Moran's I 散点图",
+      "before": "empirical #5",
+      "after": "empirical #17"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_exemplars.md",
+      "context": "| 数据描述 | 特征分布对比 |",
+      "before": "academic #4",
+      "after": "basic #7"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_exemplars.md",
+      "context": "| 模型结果 | 聚类可视化 |",
+      "before": "academic #2",
+      "after": "academic #3"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_exemplars.md",
+      "context": "| 评价结果 | 权重分配 | 横向柱状图 |",
+      "before": "basic #9",
+      "after": "custom"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_exemplars.md",
+      "context": "| 数据描述 | 变量分布 | Ridgeline 或 Rain Cloud",
+      "before": "academic #4",
+      "after": "basic #7"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "Distribution (2-5 groups)",
+      "before": "academic #4",
+      "after": "basic #7"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "High-dim features",
+      "before": "academic #2",
+      "after": "academic #3"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "Classification/clustering",
+      "before": "comp #10, #11, #13",
+      "after": "comp #10, #11, #27"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "Regression/prediction",
+      "before": "empirical #12, #14, #16, #13",
+      "after": "empirical #13, #15, #16, #14"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "Regression analysis",
+      "before": "empirical #1, #10, #15",
+      "after": "empirical #1, #10, #9"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "Prediction/forecasting",
+      "before": "empirical #12, #14, #16, #13",
+      "after": "empirical #13, #15, #16, #14"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "Deep learning",
+      "before": "academic #3, #6, #2",
+      "after": "academic #2, #4, #3"
+    },
+    {
+      "file": "resources/assets/shared-scripts/figure_style_guide.md",
+      "context": "Hyperparameter tuning",
+      "before": "academic #7, #8",
+      "after": "academic #6, competition #6"
+    },
+    {
+      "file": "resources/assets/shared-scripts/writing_rules.md",
+      "context": "fig_q2_residual_diag",
+      "before": "basic #5",
+      "after": "competition #8"
+    },
+    {
+      "file": "resources/assets/shared-scripts/writing_rules.md",
+      "context": "fig_cls_eval",
+      "before": "competition #10 + #14",
+      "after": "competition #10 + #11"
+    },
+    {
+      "file": "resources/assets/shared-scripts/writing_rules.md",
+      "context": "fig_space_time",
+      "before": "competition #8",
+      "after": "competition #18 + basic #3"
+    }
+  ]
+}
