@@ -920,8 +920,8 @@
     },
     {
       "path": "resources/assets/shared-scripts/recipe_registry.json",
-      "sizeBytes": 33187,
-      "sha256": "4f3cec4f4be5c12a969848a693c0a59e5fd619c5c24f06d4f267fd4670b5f2fa"
+      "sizeBytes": 32425,
+      "sha256": "0f09d60641343630449e9cc18c660bdd11fda5cc1e484e90ebd66526d2f28040"
     },
     {
       "path": "resources/assets/shared-scripts/stats_utils.py",
